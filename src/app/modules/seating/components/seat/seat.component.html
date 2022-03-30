@@ -1,0 +1,43 @@
+<div
+  (mouseenter)="isTooltipVisible=true" (mouseleave)="isTooltipVisible=false"
+  class="seat-wrapper d-flex align-items-center"
+  [class.flex-column]="
+    charPosition === charPositionEnum.up ||
+    charPosition === charPositionEnum.down
+  "
+>
+  <mat-icon
+    *ngIf="
+      charPosition === charPositionEnum.up ||
+      charPosition === charPositionEnum.left
+    "
+    class="chair"
+    [class.free-chair]="chairType === chairTypeEnum.free"
+    [class.reserved-chair]="chairType === chairTypeEnum.reserved"
+    [class.fixed-chair]="chairType === chairTypeEnum.fixed"
+    >event_seat</mat-icon
+  >
+
+  <div class="seat-item1">
+    <div (click)="selectSeat()" class="seat-place">
+      <mat-icon>computer</mat-icon>
+    </div>
+  </div>
+
+  <mat-icon
+    *ngIf="
+      charPosition === charPositionEnum.down ||
+      charPosition === charPositionEnum.right
+    "
+    class="chair"
+    [class.free-chair]="chairType === chairTypeEnum.free"
+    [class.reserved-chair]="chairType === chairTypeEnum.reserved"
+    [class.fixed-chair]="chairType === chairTypeEnum.fixed"
+    >event_seat</mat-icon
+  >
+  <div class="my-tooltip" *ngIf="isTooltipVisible">Roman</div>
+</div>
+
+
+
+

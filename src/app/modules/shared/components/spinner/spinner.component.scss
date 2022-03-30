@@ -1,0 +1,50 @@
+.spinner {
+  .icon {
+    display: flex;
+    z-index: 1;
+    margin: 0 auto;
+    width: 32px;
+    height: 32px;
+  }
+
+  &.overlay-spinner {
+    display: flex;
+    position: absolute;
+    justify-content: center;
+    min-height: 32px;
+    min-width: 32px;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #ffffff;
+    z-index: 1000;
+    opacity: 0.8;
+
+    &--center {
+      align-items: center;
+    }
+
+    &--top {
+      align-items: flex-start;
+      padding-top: 40px;
+    }
+
+    &--bottom {
+      align-items: flex-end;
+      padding-bottom: 40px;
+    }
+  }
+
+  &.overlay-black {
+    background-color: #000;
+  }
+}
+
+.center {
+  display: flex;
+  nc-spinner {
+    margin-left: auto;
+    margin-right: auto;
+  }
+}

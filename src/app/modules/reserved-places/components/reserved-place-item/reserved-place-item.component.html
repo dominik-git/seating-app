@@ -1,0 +1,43 @@
+<div class="d-flex flex-column reserved-place-item">
+  <div>{{ reservedItems[0].date | dateDay: true }}</div>
+  <div *ngFor="let reservedItem of reservedItems">
+    <ng-container *ngIf="reservedItem.bookedItem == BookedItemEnum.carPlace">
+      <div
+        *ngTemplateOutlet="carPlaceTemplate; context: { item: reservedItem }"
+      ></div>
+    </ng-container>
+    <ng-container *ngIf="reservedItem.bookedItem == BookedItemEnum.desk">
+      <div
+        *ngTemplateOutlet="deskTemplate; context: { item: reservedItem }"
+      ></div>
+    </ng-container>
+  </div>
+</div>
+
+<ng-template let-reservedItem="item" #carPlaceTemplate>
+  <div class="d-flex flex-column align-items-center justify-content-center">
+    <span><mat-icon> directions_car</mat-icon></span>
+    <span>{{ reservedItem.carPlaceId }}</span>
+    <div>
+      <mat-checkbox
+        class="example-margin"
+        (change)="onDateSelect($event)"
+        [disabled]="isPlaceReserved()"
+        [(ngModel)]="isDaySelected"
+      ></mat-checkbox>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template let-reservedItem="item" #deskTemplate>
+  <div class="d-flex flex-column align-items-center justify-content-center">
+    <span> <mat-icon>event_seat</mat-icon></span>
+    <span>{{ reservedItem.deskId }}</span>
+    <div>
+      <mat-checkbox
+        class="example-margin"
+        (change)="onDateSelect($event)"
+      ></mat-checkbox>
+    </div>
+  </div>
+</ng-template>

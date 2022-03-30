@@ -1,0 +1,15 @@
+<div class="month-picker">
+  <mat-icon class="icon left" (click)="decreaseWeek()"
+    >keyboard_arrow_left</mat-icon
+  >
+  <p class="month-picker-text">
+    {{
+      (daysInWeek[0] | dateDay) +
+        " -" +
+        (daysInWeek[daysInWeek.length - 1] | dateDay)
+    }}
+  </p>
+  <mat-icon class="icon right" (click)="increaseWeek()"
+    >keyboard_arrow_right</mat-icon
+  >
+</div>

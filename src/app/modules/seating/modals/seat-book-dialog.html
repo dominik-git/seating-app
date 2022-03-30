@@ -1,0 +1,27 @@
+<div class="dialog-wrapper">
+  <mat-spinner *ngIf="loading"></mat-spinner>
+  <div [class.hidden] = "loading">
+    <mat-dialog-content class="mat-typography">
+      <app-week-picker
+        [selectedDateInput]="data.selectedDate"
+        (selectedDateRangeOutput)="onSelectDateRangeOutput($event)"
+      ></app-week-picker>
+      <div *ngFor="let day of seatsInWeek">
+        <div>
+          <app-space-book-time-slot
+            [day]="day"
+            (selectDay)="onDaySelect($event)"
+            (unSelectDay)="onDayUnSelect($event)"
+            [isDaySelected]="isDaySelected(day.date)"
+          ></app-space-book-time-slot>
+        </div>
+      </div>
+    </mat-dialog-content>
+    <mat-dialog-actions align="end">
+      <button mat-button mat-dialog-close>Cancel</button>
+      <button mat-button (click)="closeDialog()" cdkFocusInitial>
+        Reserve
+      </button>
+    </mat-dialog-actions>
+  </div>
+</div>

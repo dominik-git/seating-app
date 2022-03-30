@@ -1,0 +1,63 @@
+<ng-container  *ngIf="!data?.fixedPlace">
+  <div class="dialog-wrapper">
+    <mat-spinner *ngIf="loading"></mat-spinner>
+    <div [class.hidden] = "loading">
+      <h1 mat-dialog-title *ngIf="!data?.fixedPlace" >Assign user to place</h1>
+      <mat-dialog-content class="mat-typography">
+        <form class="example-form" >
+          <mat-form-field class="example-full-width" appearance="fill">
+            <mat-label>Assignee</mat-label>
+            <input type="text" matInput [formControl]="myControl" [matAutocomplete]="auto">
+            <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
+              <mat-option *ngFor="let option of filteredOptions | async" [value]="option">
+                {{option.fullName}}
+              </mat-option>
+            </mat-autocomplete>
+          </mat-form-field>
+        </form>
+      </mat-dialog-content>
+      <mat-dialog-actions align="end">
+        <button mat-button mat-dialog-close>Cancel</button>
+        <button mat-button cdkFocusInitial (click)="assignPlace()" >
+          Assign
+        </button>
+      </mat-dialog-actions>
+
+    </div>
+  </div>
+</ng-container>
+
+<ng-container *ngIf="data?.fixedPlace as fixedPlace">
+  <div class="dialog-wrapper">
+    <mat-spinner *ngIf="loading"></mat-spinner>
+    <div [class.hidden] = "loading">
+      <h1 mat-dialog-title *ngIf="data?.fixedPlace as fixedPlace" >Place is assigned to {{fixedPlace.fullName}}</h1>
+      <h1 mat-dialog-title *ngIf="!data?.fixedPlace" >Assign user to place</h1>
+
+      <mat-dialog-content class="mat-typography">
+
+        <div class="d-flex">
+          <img
+            class="avatar mat-elevation-z8"
+            src="https://source.unsplash.com/c_GmwfHBDzk/200x200"
+          />
+          <div>
+            <div>{{fixedPlace?.position}}</div>
+          </div>
+        </div>
+
+
+
+      </mat-dialog-content>
+      <mat-dialog-actions align="end">
+        <button mat-button mat-dialog-close>Cancel</button>
+        <button mat-button  cdkFocusInitial (click)="unAssignPlace()" >
+          UnAssign
+        </button>
+      </mat-dialog-actions>
+
+    </div>
+  </div>
+</ng-container>
+
+

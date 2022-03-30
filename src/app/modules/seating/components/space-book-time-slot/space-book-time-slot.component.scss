@@ -1,0 +1,49 @@
+.card {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  min-height: 68px;
+  cursor: default;
+  -webkit-user-select: none;
+  user-select: none;
+  border: 1px solid grey;
+  border-radius: 8px;
+  padding: 10px;
+  margin-bottom: 8px;
+}
+
+.left {
+  display: flex;
+  flex-direction: row;
+
+  .available {
+    height: 60px;
+    width: 4px;
+    border-left: 4px solid #7ed321;
+    border-radius: 99px;
+    margin-right: 16px;
+  }
+  .slot-details {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding-top: 8px;
+    padding-bottom: 8px;
+    .date {
+      font-size: 17px;
+      font-weight: 500;
+      color: #626262;
+    }
+  }
+
+  .reserved-slot{
+    border-left: 4px solid red;
+  }
+}
+
+.right {
+  display: flex;
+  align-items: center;
+}
