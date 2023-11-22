@@ -13,6 +13,8 @@ export function generateDeskData(min: number, max: number) {
   return array;
 }
 
+
+
 export function generateFixedDesk(min: number, max: number) {
   let array = [];
   for (let x = min; x <= max; x++) {
@@ -76,6 +78,96 @@ export function getParkingData() {
 export function randomIntFromInterval(min: number, max: number) {
   // min and max included
   return Math.floor(Math.random() * (max - min + 1) + min).toString();
+}
+
+export function getParkingData2(min: number, max: number) {
+  let array = [];
+  for (let x = min; x <= max; x++) {
+    let obj;
+    if(x <=9) {
+
+      obj = {
+        seatId: 'P0' + x,
+        state: randomIntFromInterval(0, 1),
+        type: randomIntFromInterval(0, 1),
+        fullName: 'John doe'+x,
+        position: 'software engineer',
+      };
+    } else {
+       obj = {
+        seatId: 'P' + x,
+        state: randomIntFromInterval(0, 1),
+        type: randomIntFromInterval(0, 1),
+        fullName: 'John doe'+x,
+        position: 'software engineer',
+      };
+    }
+
+
+    array.push(obj);
+  }
+
+  array.push(  {
+    seatId: 'P100',
+    state: 1,
+    type: 1,
+    fullName: 'John doe',
+    position: 'software engineer',
+  })
+  array.push(  {
+    seatId: 'P227',
+    state: 1,
+    type: 1,
+    fullName: 'John doe',
+    position: 'software engineer',
+  })
+  array.push(  {
+    seatId: 'P228',
+    state: 1,
+    type: 1,
+    fullName: 'John doe',
+    position: 'software engineer',
+  })
+  array.push(  {
+    seatId: 'P229',
+    state: 1,
+    type: 1,
+    fullName: 'John doe',
+    position: 'software engineer',
+  })
+  array.push(  {
+    seatId: 'P230',
+    state: 1,
+    type: 1,
+    fullName: 'John doe',
+    position: 'software engineer',
+  })
+  array.push(  {
+    seatId: 'P235',
+    state: 1,
+    type: 1,
+    fullName: 'John doe',
+    position: 'software engineer',
+  })
+  array.push(  {
+    seatId: 'P244',
+    state: 1,
+    type: 1,
+    fullName: 'John doe',
+    position: 'software engineer',
+  })
+  array.push(  {
+    seatId: 'P307',
+    state: 1,
+    type: 1,
+    fullName: 'John doe',
+    position: 'software engineer',
+  })
+
+
+
+
+  return array;
 }
 
 

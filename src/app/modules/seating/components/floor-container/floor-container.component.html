@@ -2,17 +2,26 @@
 
 <div class="booking-navigation">
   <div class="me-3">
+<!--    <mat-form-field appearance="fill">-->
+<!--      <mat-label>Choose a date</mat-label>-->
+<!--      <input-->
+<!--        matInput-->
+<!--        [matDatepicker]="picker"-->
+<!--        name="date" formControlName="date" [(ngModel)]="date.value"-->
+
+<!--      />-->
+<!--      <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>-->
+<!--      <mat-datepicker #picker></mat-datepicker>-->
+<!--    </mat-form-field>-->
     <mat-form-field appearance="fill">
       <mat-label>Choose a date</mat-label>
-      <input
-        matInput
-        [matDatepicker]="picker"
-        [(ngModel)]="selectedDate"
-        (ngModelChange)="dateChanged()"
-      />
+      <input matInput [matDatepicker]="picker" placeholder="From Date" [formControl]="date" (dateInput)="dateChanged()">
+
+      <mat-hint>MM/DD/YYYY</mat-hint>
       <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
       <mat-datepicker #picker></mat-datepicker>
     </mat-form-field>
+
   </div>
 
   <mat-form-field appearance="fill">
@@ -32,18 +41,18 @@
   <app-floor-five-svg
     #sceneWrapper
     *ngIf="(selectedState$ | async) === StateEnum.floor5"
-    (elementReference)="floorSelected($event)"
+    (elementReference)="selectedSvgImage = $event"
   ></app-floor-five-svg>
   <app-floor-seven-svg
     *ngIf="(selectedState$ | async) === StateEnum.floor7"
-    (elementReference)="floorSelected($event)"
+    (elementReference)="selectedSvgImage = $event"
     #sceneWrapper
   >
   </app-floor-seven-svg>
   <app-parking-place-svg
-
-    (elementReference)="parkingPlaceSelected($event)"
     *ngIf="(selectedState$ | async) === StateEnum.parking"
+    (elementReference)="selectedSvgImage = $event"
+
     #sceneWrapper
   >
   </app-parking-place-svg>

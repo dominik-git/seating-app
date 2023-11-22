@@ -1,4 +1,5 @@
 import {
+  AfterViewInit,
   Component,
   EventEmitter,
   Input,
@@ -12,7 +13,7 @@ import * as moment from 'moment';
   templateUrl: './week-picker.component.html',
   styleUrls: ['./week-picker.component.scss'],
 })
-export class WeekPickerComponent implements OnInit {
+export class WeekPickerComponent implements OnInit, AfterViewInit {
   daysInWeek: Date[];
   @Input() selectedDateInput: Date;
   @Output() selectedDateRangeOutput = new EventEmitter<Date[]>();
@@ -22,7 +23,12 @@ export class WeekPickerComponent implements OnInit {
   ngOnInit(): void {
 
     this.daysInWeek = this.dates(this.selectedDateInput);
-    // this.selectedDateRangeOutput.emit(this.daysInWeek);
+
+  }
+
+
+  ngAfterViewInit(): void {
+    this.selectedDateRangeOutput.emit(this.daysInWeek);
   }
 
   increaseWeek(): void {
@@ -64,6 +70,7 @@ export class WeekPickerComponent implements OnInit {
     }
     return false;
   }
+
 
 
 }

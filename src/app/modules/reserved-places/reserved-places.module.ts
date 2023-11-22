@@ -8,12 +8,20 @@ import { ReservedPlaceItemComponent } from './components/reserved-place-item/res
 import {MatCheckboxModule} from "@angular/material/checkbox";
 import {FormsModule} from "@angular/forms";
 import {MaterialModule} from "../material/material.module";
+import {CalendarModule, DateAdapter} from 'angular-calendar';
+import { adapterFactory } from 'angular-calendar/date-adapters/date-fns';
+import { WeekViewComponent } from './components/week-view/week-view.component';
+import { MonthViewComponent } from './components/month-view/month-view.component';
+import { ListViewComponent } from './components/list-view/list-view.component';
 
 @NgModule({
   declarations: [
     ReservedPlacesComponent,
     ReservedPlacesListComponent,
     ReservedPlaceItemComponent,
+    WeekViewComponent,
+    MonthViewComponent,
+    ListViewComponent,
   ],
   imports: [
     CommonModule,
@@ -22,6 +30,7 @@ import {MaterialModule} from "../material/material.module";
     MatCheckboxModule,
     FormsModule,
     MaterialModule,
+    CalendarModule.forRoot({ provide: DateAdapter, useFactory: adapterFactory }),
   ],
 })
 export class ReservedPlacesModule {}

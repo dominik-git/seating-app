@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import {generateDeskData, generateFixedDesk, getParkingData} from '../../MockedData/data';
+import {generateDeskData, generateFixedDesk, getParkingData, getParkingData2} from '../../MockedData/data';
 import { StateEnum } from '../../enums/state.enum';
 import { ChairTypeEnum } from '../../enums/chairType.enum';
 import { BookedItemEnum } from '../../enums/booked-item.enum';
@@ -16,12 +16,16 @@ export class BookingResourceService {
     console.log('date:' + date, 'state: ' + state);
     const dataFloor7 = generateDeskData(701, 759);
     const dataFloor5 = generateDeskData(501, 564);
+    const parking = getParkingData2(1, 20);
 
     let response: any = [];
     if (state === StateEnum.floor7) {
       response = dataFloor7;
     } else if (state === StateEnum.floor5) {
       response = dataFloor5;
+    }
+    else if (state === StateEnum.parking) {
+      response = parking;
     }
 
     let obs = new Observable((subscriber) => {

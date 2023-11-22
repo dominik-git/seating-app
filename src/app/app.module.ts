@@ -26,6 +26,7 @@ import {MatDialogModule} from "@angular/material/dialog";
 import {MDBBootstrapModule} from "angular-bootstrap-md";
 import {AdminEffect} from "@store/effects/admin.effect";
 import {ToastrModule} from "ngx-toastr";
+import { CalendarModule } from 'angular-calendar';
 
 
 @NgModule({

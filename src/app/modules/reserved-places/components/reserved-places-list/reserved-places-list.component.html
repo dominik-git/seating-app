@@ -1,13 +1,7 @@
 <app-spinner [isLoading]="isLoading"></app-spinner>
-<div class="month-picker-wrapper">
-  <app-week-picker
-    [selectedDateInput]="date"
-    (selectedDateRangeOutput)="onSelectDateRangeOutput($event)"
-  ></app-week-picker>
-</div>
-<div class="reserved-places-list">
-  <div *ngFor="let reservedItemArray of reservedItems">
-    <app-reserved-place-item [reservedItems]="reservedItemArray">
-    </app-reserved-place-item>
-  </div>
-</div>
+
+<ng-container *ngIf="!isLoading">
+  <app-week-view [viewDate]="date" [reservedPlaces]="reservedItems"></app-week-view>
+</ng-container>
+
+
