@@ -5,23 +5,17 @@ import { ReservedPlacesListComponent } from './components/reserved-places-list/r
 import { SharedModule } from '../shared/shared.module';
 import { ReservedPlacesRoutingModule } from './reserved-places-routing.module';
 import { ReservedPlaceItemComponent } from './components/reserved-place-item/reserved-place-item.component';
-import {MatCheckboxModule} from "@angular/material/checkbox";
-import {FormsModule} from "@angular/forms";
-import {MaterialModule} from "../material/material.module";
-import {CalendarModule, DateAdapter} from 'angular-calendar';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { FormsModule } from '@angular/forms';
+import { MaterialModule } from '../material/material.module';
+import { CalendarModule, DateAdapter } from 'angular-calendar';
 import { adapterFactory } from 'angular-calendar/date-adapters/date-fns';
-import { WeekViewComponent } from './components/week-view/week-view.component';
-import { MonthViewComponent } from './components/month-view/month-view.component';
-import { ListViewComponent } from './components/list-view/list-view.component';
 
 @NgModule({
   declarations: [
     ReservedPlacesComponent,
     ReservedPlacesListComponent,
     ReservedPlaceItemComponent,
-    WeekViewComponent,
-    MonthViewComponent,
-    ListViewComponent,
   ],
   imports: [
     CommonModule,
@@ -30,7 +24,10 @@ import { ListViewComponent } from './components/list-view/list-view.component';
     MatCheckboxModule,
     FormsModule,
     MaterialModule,
-    CalendarModule.forRoot({ provide: DateAdapter, useFactory: adapterFactory }),
+    CalendarModule.forRoot({
+      provide: DateAdapter,
+      useFactory: adapterFactory,
+    }),
   ],
 })
 export class ReservedPlacesModule {}
