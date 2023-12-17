@@ -6,11 +6,6 @@ import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { StoreModule } from '@ngrx/store';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
-import { MatSidenavModule } from '@angular/material/sidenav';
-import { MatToolbarModule } from '@angular/material/toolbar';
-import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
-import { MatIconModule } from '@angular/material/icon';
-import { MatDividerModule } from '@angular/material/divider';
 // import ngx-translate and the http loader
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
@@ -19,12 +14,11 @@ import { rootReducer } from './store/reducers';
 import { EffectsModule } from '@ngrx/effects';
 import { LoadingEffects } from '@store/effects/loading.effect';
 import { AppEffects } from '@store/effects/app.effect';
-import { MatLegacyProgressSpinnerModule as MatProgressSpinnerModule } from '@angular/material/legacy-progress-spinner';
 
 import { BookingEffects } from '@store/effects/booking';
-import { MatLegacyDialogModule as MatDialogModule } from '@angular/material/legacy-dialog';
 
 import { AdminEffect } from '@store/effects/admin.effect';
+import { MaterialModule } from './modules/material/material.module';
 
 @NgModule({
   declarations: [AppComponent],
@@ -32,7 +26,6 @@ import { AdminEffect } from '@store/effects/admin.effect';
     BrowserModule,
     AppRoutingModule,
     BrowserAnimationsModule,
-    MatDialogModule,
     EffectsModule.forRoot([
       AppEffects,
       LoadingEffects,
@@ -52,12 +45,7 @@ import { AdminEffect } from '@store/effects/admin.effect';
         deps: [HttpClient],
       },
     }),
-    MatToolbarModule,
-    MatSidenavModule,
-    MatButtonModule,
-    MatIconModule,
-    MatDividerModule,
-    MatProgressSpinnerModule,
+    MaterialModule,
   ],
   providers: [],
   bootstrap: [AppComponent],

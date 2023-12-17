@@ -1,8 +1,7 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA, MatLegacyDialogRef as MatDialogRef } from '@angular/material/legacy-dialog';
-import { SelectedDay } from '../components/space-book-time-slot/space-book-time-slot.component';
 import { BookingResourceService } from '../../../services/booking/booking-resource.service';
 import { SeatsInRange } from '../../../models/booking.model';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 
 @Component({
   selector: 'dialog-content-example-dialog',
@@ -44,9 +43,11 @@ export class SeatBookDialog implements OnInit {
         this.seatsInWeek = response as SeatsInRange[];
       });
   }
+
   onDaySelect(date: Date) {
     this.bookedDays.push(date);
   }
+
   onDayUnSelect(date: Date) {
     this.bookedDays = this.bookedDays.filter(
       (dayItem) => dayItem.getDate() !== date.getDate()
