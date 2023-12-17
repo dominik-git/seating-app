@@ -1,7 +1,7 @@
-import {Component, Input, OnInit} from '@angular/core';
-import { MatLegacyCheckboxChange as MatCheckboxChange } from '@angular/material/legacy-checkbox';
-import {BookedItemModel} from "../../../../models/booked-item.model";
-import {BookedItemEnum} from "../../../../enums/booked-item.enum";
+import { Component, Input, OnInit } from '@angular/core';
+import { BookedItemModel } from '../../../../models/booked-item.model';
+import { BookedItemEnum } from '../../../../enums/booked-item.enum';
+import { MatCheckboxChange } from '@angular/material/checkbox';
 
 @Component({
   selector: 'app-reserved-place-item',
@@ -11,13 +11,12 @@ import {BookedItemEnum} from "../../../../enums/booked-item.enum";
 export class ReservedPlaceItemComponent implements OnInit {
   isDaySelected = false;
   BookedItemEnum = BookedItemEnum;
- @Input() reservedItems: BookedItemModel[];
-
+  @Input() reservedItems: BookedItemModel[];
 
   constructor() {}
 
   ngOnInit(): void {
-    console.log(this.reservedItems)
+    console.log(this.reservedItems);
   }
 
   onDateSelect($event: MatCheckboxChange) {}

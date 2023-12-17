@@ -5,11 +5,11 @@ import { ReservedPlacesListComponent } from './components/reserved-places-list/r
 import { SharedModule } from '../shared/shared.module';
 import { ReservedPlacesRoutingModule } from './reserved-places-routing.module';
 import { ReservedPlaceItemComponent } from './components/reserved-place-item/reserved-place-item.component';
-import { MatLegacyCheckboxModule as MatCheckboxModule } from '@angular/material/legacy-checkbox';
 import { FormsModule } from '@angular/forms';
 import { MaterialModule } from '../material/material.module';
 import { CalendarModule, DateAdapter } from 'angular-calendar';
 import { adapterFactory } from 'angular-calendar/date-adapters/date-fns';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 
 @NgModule({
   declarations: [

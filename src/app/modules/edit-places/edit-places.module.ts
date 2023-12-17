@@ -1,16 +1,13 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { EditPlacesContainerComponent } from './edit-places-container/edit-places-container.component';
-import {EditPlacesRoutingModule} from "./edit-places-routing.module";
-import {SharedModule} from "../shared/shared.module";
+import { EditPlacesRoutingModule } from './edit-places-routing.module';
+import { SharedModule } from '../shared/shared.module';
 
-import {MaterialModule} from "../material/material.module";
-import {FormsModule, ReactiveFormsModule} from "@angular/forms";
-import {AssignFixedPlaceDialog} from "./modals/assign-fixed-place-dialog";
-import {MatLegacyAutocompleteModule as MatAutocompleteModule} from "@angular/material/legacy-autocomplete";
-
-
-
+import { MaterialModule } from '../material/material.module';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { AssignFixedPlaceDialog } from './modals/assign-fixed-place-dialog';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
 
 @NgModule({
   declarations: [EditPlacesContainerComponent, AssignFixedPlaceDialog],
@@ -20,8 +17,9 @@ import {MatLegacyAutocompleteModule as MatAutocompleteModule} from "@angular/mat
     SharedModule,
     MaterialModule,
     FormsModule,
-    MatAutocompleteModule,
+
     ReactiveFormsModule,
+    MatAutocompleteModule,
   ],
 })
 export class EditPlacesModule {}

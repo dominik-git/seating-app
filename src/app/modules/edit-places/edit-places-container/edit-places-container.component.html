@@ -1,39 +1,41 @@
 <app-spinner [isLoading]="(isLoading$ | async) || false"></app-spinner>
 
 <div class="booking-navigation">
-  <mat-form-field appearance="fill">
-    <mat-label>Favorite food</mat-label>
-    <mat-select
-      (selectionChange)="optionChanged($event.value)"
-      [(ngModel)]="selectedOption"
-    >
-      <mat-option [value]="StateEnum.floor5"> 5 floor</mat-option>
-      <mat-option [value]="StateEnum.floor7">7 floor</mat-option>
-      <mat-option [value]="StateEnum.parking">Parking</mat-option>
-    </mat-select>
-  </mat-form-field>
-  <button mat-raised-button color="primary" (click)="saveFixedPlaces()">Save</button>
+
+
+    <mat-form-field appearance="fill">
+        <mat-label>Favorite food</mat-label>
+        <mat-select
+                (selectionChange)="optionChanged($event.value)"
+                [(ngModel)]="selectedOption"
+        >
+            <mat-option [value]="StateEnum.floor5"> 5 floor</mat-option>
+            <mat-option [value]="StateEnum.floor7">7 floor</mat-option>
+            <mat-option [value]="StateEnum.parking">Parking</mat-option>
+        </mat-select>
+    </mat-form-field>
+    <button mat-raised-button color="primary" (click)="saveFixedPlaces()">Save</button>
 </div>
 
 <div class="state-wrapper" *ngIf="((isLoading$ | async) || false) == false">
-  <app-floor-five-svg
-    #sceneWrapper
-    *ngIf="(selectedPlace$ | async) === StateEnum.floor5"
-    (elementReference)="placeSelected($event)"
-  ></app-floor-five-svg>
-  <app-floor-seven-svg
-    *ngIf="(selectedPlace$ | async) === StateEnum.floor7"
-    (elementReference)="placeSelected($event)"
-    #sceneWrapper
-  >
-  </app-floor-seven-svg>
-  <app-parking-place-svg
+    <app-floor-five-svg
+        #sceneWrapper
+        *ngIf="(selectedPlace$ | async) === StateEnum.floor5"
+        (elementReference)="placeSelected($event)"
+    ></app-floor-five-svg>
+    <app-floor-seven-svg
+            *ngIf="(selectedPlace$ | async) === StateEnum.floor7"
+            (elementReference)="placeSelected($event)"
+            #sceneWrapper
+    >
+    </app-floor-seven-svg>
+    <app-parking-place-svg
 
-    (elementReference)="placeSelected($event)"
-    *ngIf="(selectedPlace$ | async) === StateEnum.parking"
-    #sceneWrapper
-  >
-  </app-parking-place-svg>
-  <!--  <app-floor-five-svg #sceneWrapper></app-floor-five-svg>-->
-  <app-seat-tooltip></app-seat-tooltip>
+            (elementReference)="placeSelected($event)"
+            *ngIf="(selectedPlace$ | async) === StateEnum.parking"
+            #sceneWrapper
+    >
+    </app-parking-place-svg>
+    <!--  <app-floor-five-svg #sceneWrapper></app-floor-five-svg>-->
+    <app-seat-tooltip></app-seat-tooltip>
 </div>
