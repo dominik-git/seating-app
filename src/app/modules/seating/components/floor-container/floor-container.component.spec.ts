@@ -8,8 +8,8 @@ describe('FloorContainerComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ FloorContainerComponent ]
-    })
+    imports: [FloorContainerComponent]
+})
     .compileComponents();
   });
 

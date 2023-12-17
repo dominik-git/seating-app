@@ -8,8 +8,8 @@ describe('SeatTooltipComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ SeatTooltipComponent ]
-    })
+    imports: [SeatTooltipComponent]
+})
     .compileComponents();
   });
 

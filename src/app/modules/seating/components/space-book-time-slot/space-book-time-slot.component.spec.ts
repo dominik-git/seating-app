@@ -8,8 +8,8 @@ describe('SpaceBookTimeSlotComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ SpaceBookTimeSlotComponent ]
-    })
+    imports: [SpaceBookTimeSlotComponent]
+})
     .compileComponents();
   });
 

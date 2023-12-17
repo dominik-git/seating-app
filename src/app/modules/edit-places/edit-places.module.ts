@@ -10,16 +10,15 @@ import { AssignFixedPlaceDialog } from './modals/assign-fixed-place-dialog';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 
 @NgModule({
-  declarations: [EditPlacesContainerComponent, AssignFixedPlaceDialog],
-  imports: [
-    CommonModule,
-    EditPlacesRoutingModule,
-    SharedModule,
-    MaterialModule,
-    FormsModule,
-
-    ReactiveFormsModule,
-    MatAutocompleteModule,
-  ],
+    imports: [
+        CommonModule,
+        EditPlacesRoutingModule,
+        SharedModule,
+        MaterialModule,
+        FormsModule,
+        ReactiveFormsModule,
+        MatAutocompleteModule,
+        EditPlacesContainerComponent, AssignFixedPlaceDialog,
+    ],
 })
 export class EditPlacesModule {}

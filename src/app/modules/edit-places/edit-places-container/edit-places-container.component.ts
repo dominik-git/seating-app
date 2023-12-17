@@ -11,11 +11,36 @@ import { ChangePlace, LoadFixedPlaces } from '@actions/admin/admin.actions';
 import { AssignFixedPlaceDialog } from '../modals/assign-fixed-place-dialog';
 import { FixedPlaceModel } from '../../../models/fixedPlace.model';
 import { MatDialog } from '@angular/material/dialog';
+import { ParkingPlaceSvgComponent } from '../../shared/components/parking-place-svg/parking-place-svg.component';
+import { FloorSevenSvgComponent } from '../../shared/components/floor-seven-svg/floor-seven-svg.component';
+import { FloorFiveSvgComponent } from '../../shared/components/floor-five-svg/floor-five-svg.component';
+import { NgIf, AsyncPipe } from '@angular/common';
+import { MatButtonModule } from '@angular/material/button';
+import { MatOptionModule } from '@angular/material/core';
+import { FormsModule } from '@angular/forms';
+import { MatSelectModule } from '@angular/material/select';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { SpinnerComponent } from '../../shared/components/spinner/spinner.component';
 
 @Component({
-  selector: 'app-edit-places-container',
-  templateUrl: './edit-places-container.component.html',
-  styleUrls: ['./edit-places-container.component.scss'],
+    selector: 'app-edit-places-container',
+    templateUrl: './edit-places-container.component.html',
+    styleUrls: ['./edit-places-container.component.scss'],
+    standalone: true,
+    imports: [
+        SpinnerComponent,
+        MatFormFieldModule,
+        MatSelectModule,
+        FormsModule,
+        MatOptionModule,
+        MatButtonModule,
+        NgIf,
+        FloorFiveSvgComponent,
+        FloorSevenSvgComponent,
+        ParkingPlaceSvgComponent,
+        SeatTooltipComponent,
+        AsyncPipe,
+    ],
 })
 export class EditPlacesContainerComponent implements OnInit, AfterViewInit {
   private readonly fixedClass = 'fixedPlace';

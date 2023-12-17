@@ -1,10 +1,21 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { SeatsInRange } from '../../../../models/booking.model';
+import { DateDayPipe } from '../../../shared/pipes/date-day.pipe';
+import { FormsModule } from '@angular/forms';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { NgIf } from '@angular/common';
 
 @Component({
-  selector: 'app-space-book-time-slot',
-  templateUrl: './space-book-time-slot.component.html',
-  styleUrls: ['./space-book-time-slot.component.scss'],
+    selector: 'app-space-book-time-slot',
+    templateUrl: './space-book-time-slot.component.html',
+    styleUrls: ['./space-book-time-slot.component.scss'],
+    standalone: true,
+    imports: [
+        NgIf,
+        MatCheckboxModule,
+        FormsModule,
+        DateDayPipe,
+    ],
 })
 export class SpaceBookTimeSlotComponent implements OnInit {
   @Input() day: SeatsInRange;

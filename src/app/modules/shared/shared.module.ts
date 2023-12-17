@@ -11,26 +11,23 @@ import {FloorSevenSvgComponent} from "./components/floor-seven-svg/floor-seven-s
 import {FloorFiveSvgComponent} from "./components/floor-five-svg/floor-five-svg.component";
 
 @NgModule({
-  declarations: [
-    SpinnerComponent,
-    SeatTooltipComponent,
-    WeekPickerComponent,
-    DateDayPipe,
-    MonthPickerComponent,
-    ParkingPlaceSvgComponent,
-    FloorSevenSvgComponent,
-    FloorFiveSvgComponent,
-  ],
-  imports: [CommonModule, MaterialModule],
-  exports: [
-    SpinnerComponent,
-    SeatTooltipComponent,
-    WeekPickerComponent,
-    DateDayPipe,
-    MonthPickerComponent,
-    ParkingPlaceSvgComponent,
-    FloorSevenSvgComponent,
-    FloorFiveSvgComponent,
-  ],
+    imports: [CommonModule, MaterialModule, SpinnerComponent,
+        SeatTooltipComponent,
+        WeekPickerComponent,
+        DateDayPipe,
+        MonthPickerComponent,
+        ParkingPlaceSvgComponent,
+        FloorSevenSvgComponent,
+        FloorFiveSvgComponent],
+    exports: [
+        SpinnerComponent,
+        SeatTooltipComponent,
+        WeekPickerComponent,
+        DateDayPipe,
+        MonthPickerComponent,
+        ParkingPlaceSvgComponent,
+        FloorSevenSvgComponent,
+        FloorFiveSvgComponent,
+    ],
 })
 export class SharedModule {}

@@ -16,22 +16,20 @@ import { SharedModule } from '../shared/shared.module';
 import { MaterialModule } from '../material/material.module';
 
 @NgModule({
-  declarations: [
-    SeatingComponent,
-    SeatComponent,
-    SvgComponent,
-    FloorContainerComponent,
-    SeatBookDialog,
-    SpaceBookTimeSlotComponent,
-  ],
-  imports: [
-    CommonModule,
-    SeatingRoutingModule,
-    FormsModule,
-    SharedModule,
-    MaterialModule,
-    ReactiveFormsModule,
-  ],
-  exports: [SeatBookDialog],
+    imports: [
+        CommonModule,
+        SeatingRoutingModule,
+        FormsModule,
+        SharedModule,
+        MaterialModule,
+        ReactiveFormsModule,
+        SeatingComponent,
+        SeatComponent,
+        SvgComponent,
+        FloorContainerComponent,
+        SeatBookDialog,
+        SpaceBookTimeSlotComponent,
+    ],
+    exports: [SeatBookDialog],
 })
 export class SeatingModule {}

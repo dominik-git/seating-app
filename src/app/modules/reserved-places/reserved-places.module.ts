@@ -12,22 +12,20 @@ import { adapterFactory } from 'angular-calendar/date-adapters/date-fns';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 
 @NgModule({
-  declarations: [
-    ReservedPlacesComponent,
-    ReservedPlacesListComponent,
-    ReservedPlaceItemComponent,
-  ],
-  imports: [
-    CommonModule,
-    SharedModule,
-    ReservedPlacesRoutingModule,
-    MatCheckboxModule,
-    FormsModule,
-    MaterialModule,
-    CalendarModule.forRoot({
-      provide: DateAdapter,
-      useFactory: adapterFactory,
-    }),
-  ],
+    imports: [
+        CommonModule,
+        SharedModule,
+        ReservedPlacesRoutingModule,
+        MatCheckboxModule,
+        FormsModule,
+        MaterialModule,
+        CalendarModule.forRoot({
+            provide: DateAdapter,
+            useFactory: adapterFactory,
+        }),
+        ReservedPlacesComponent,
+        ReservedPlacesListComponent,
+        ReservedPlaceItemComponent,
+    ],
 })
 export class ReservedPlacesModule {}

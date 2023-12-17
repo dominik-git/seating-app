@@ -1,9 +1,10 @@
 import {Component, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core';
 
 @Component({
-  selector: 'app-seat-tooltip',
-  templateUrl: './seat-tooltip.component.html',
-  styleUrls: ['./seat-tooltip.component.scss']
+    selector: 'app-seat-tooltip',
+    templateUrl: './seat-tooltip.component.html',
+    styleUrls: ['./seat-tooltip.component.scss'],
+    standalone: true
 })
 export class SeatTooltipComponent implements OnChanges {
   person:any;

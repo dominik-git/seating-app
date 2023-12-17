@@ -8,8 +8,8 @@ describe('ParkingPlaceSvgComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ ParkingPlaceSvgComponent ]
-    })
+    imports: [ParkingPlaceSvgComponent]
+})
     .compileComponents();
   });
 

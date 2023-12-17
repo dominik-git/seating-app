@@ -8,8 +8,8 @@ describe('ReservedPlacesListComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ ReservedPlacesListComponent ]
-    })
+    imports: [ReservedPlacesListComponent]
+})
     .compileComponents();
   });
 

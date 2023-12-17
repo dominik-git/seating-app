@@ -7,11 +7,15 @@ import {
   Output,
 } from '@angular/core';
 import * as moment from 'moment';
+import { DateDayPipe } from '../../pipes/date-day.pipe';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
-  selector: 'app-week-picker',
-  templateUrl: './week-picker.component.html',
-  styleUrls: ['./week-picker.component.scss'],
+    selector: 'app-week-picker',
+    templateUrl: './week-picker.component.html',
+    styleUrls: ['./week-picker.component.scss'],
+    standalone: true,
+    imports: [MatIconModule, DateDayPipe],
 })
 export class WeekPickerComponent implements OnInit, AfterViewInit {
   daysInWeek: Date[];

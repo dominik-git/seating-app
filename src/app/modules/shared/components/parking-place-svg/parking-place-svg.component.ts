@@ -8,9 +8,10 @@ import {
 } from '@angular/core';
 import panzoom, { PanZoom } from 'panzoom';
 @Component({
-  selector: 'app-parking-place-svg',
-  templateUrl: './parking-place-svg.component.html',
-  styleUrls: ['./parking-place-svg.component.scss'],
+    selector: 'app-parking-place-svg',
+    templateUrl: './parking-place-svg.component.html',
+    styleUrls: ['./parking-place-svg.component.scss'],
+    standalone: true,
 })
 export class ParkingPlaceSvgComponent implements OnInit, AfterViewInit {
   @ViewChildren('scene') scene: any;

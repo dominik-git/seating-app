@@ -14,9 +14,10 @@ import * as fromRoot from '@store/reducers';
 
 
 @Component({
-  selector: 'app-floor-five-svg',
-  templateUrl: './floor-five-svg.component.html',
-  styleUrls: ['./floor-five-svg.component.scss'],
+    selector: 'app-floor-five-svg',
+    templateUrl: './floor-five-svg.component.html',
+    styleUrls: ['./floor-five-svg.component.scss'],
+    standalone: true,
 })
 export class FloorFiveSvgComponent implements OnInit, AfterViewInit {
   @ViewChildren('scene') scene: any;

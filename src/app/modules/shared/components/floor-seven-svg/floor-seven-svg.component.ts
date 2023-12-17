@@ -17,9 +17,10 @@ import { SeatTooltipComponent } from '../seat-tooltip/seat-tooltip.component';
 import { OpenBookDeskModal } from '@actions/booking/booking.action';
 
 @Component({
-  selector: 'app-floor-seven-svg',
-  templateUrl: './floor-seven-svg.component.html',
-  styleUrls: ['./floor-seven-svg.component.scss'],
+    selector: 'app-floor-seven-svg',
+    templateUrl: './floor-seven-svg.component.html',
+    styleUrls: ['./floor-seven-svg.component.scss'],
+    standalone: true,
 })
 export class FloorSevenSvgComponent
   implements OnInit, AfterViewInit

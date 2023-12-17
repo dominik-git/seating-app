@@ -2,9 +2,10 @@ import {AfterViewInit, Component, ElementRef, OnInit, ViewChild} from '@angular/
 import panzoom, {PanZoom} from "panzoom";
 
 @Component({
-  selector: 'app-svg',
-  templateUrl: './svg.component.svg',
-  styleUrls: ['./svg.component.scss']
+    selector: 'app-svg',
+    templateUrl: './svg.component.svg',
+    styleUrls: ['./svg.component.scss'],
+    standalone: true
 })
 export class SvgComponent implements OnInit , AfterViewInit{
   @ViewChild('scene', { static: false }) scene: ElementRef;

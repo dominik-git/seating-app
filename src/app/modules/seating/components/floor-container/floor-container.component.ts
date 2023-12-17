@@ -21,12 +21,39 @@ import {DeskModel} from "../../../../models/desk.model";
 import {ChairTypeEnum} from "../../../../enums/chairType.enum";
 import {OpenBookDeskModal} from "@actions/booking/booking.action";
 import {SeatTooltipComponent} from "../../../shared/components/seat-tooltip/seat-tooltip.component";
-import {UntypedFormControl} from "@angular/forms";
+import { UntypedFormControl, FormsModule, ReactiveFormsModule } from "@angular/forms";
+import { ParkingPlaceSvgComponent } from '../../../shared/components/parking-place-svg/parking-place-svg.component';
+import { FloorSevenSvgComponent } from '../../../shared/components/floor-seven-svg/floor-seven-svg.component';
+import { FloorFiveSvgComponent } from '../../../shared/components/floor-five-svg/floor-five-svg.component';
+import { NgIf, AsyncPipe } from '@angular/common';
+import { MatOptionModule } from '@angular/material/core';
+import { MatSelectModule } from '@angular/material/select';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { SpinnerComponent } from '../../../shared/components/spinner/spinner.component';
 
 @Component({
-  selector: 'app-floor-container',
-  templateUrl: './floor-container.component.html',
-  styleUrls: ['./floor-container.component.scss'],
+    selector: 'app-floor-container',
+    templateUrl: './floor-container.component.html',
+    styleUrls: ['./floor-container.component.scss'],
+    standalone: true,
+    imports: [
+        SpinnerComponent,
+        MatFormFieldModule,
+        MatInputModule,
+        MatDatepickerModule,
+        FormsModule,
+        ReactiveFormsModule,
+        MatSelectModule,
+        MatOptionModule,
+        NgIf,
+        FloorFiveSvgComponent,
+        FloorSevenSvgComponent,
+        ParkingPlaceSvgComponent,
+        SeatTooltipComponent,
+        AsyncPipe,
+    ],
 })
 export class FloorContainerComponent implements OnInit, AfterViewInit {
   @ViewChild(SeatTooltipComponent, {static: false})
