@@ -2,15 +2,24 @@ import { AfterViewInit, Component, ViewChild } from '@angular/core';
 import { BreakpointObserver } from '@angular/cdk/layout';
 import { MatSidenav } from '@angular/material/sidenav';
 import { delay } from 'rxjs/operators';
-import { TranslateService } from '@ngx-translate/core';
+import { TranslateService, TranslateModule } from '@ngx-translate/core';
 import { Store } from '@ngrx/store';
 
 import * as fromRoot from '../app/store/reducers/index';
 import { ChangeLanguage } from './store/actions/app/app.action';
+import { MatIconModule } from '@angular/material/icon';
+import { RouterLink, RouterOutlet } from '@angular/router';
 @Component({
-  selector: 'app-root',
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss'],
+    selector: 'app-root',
+    templateUrl: './app.component.html',
+    styleUrls: ['./app.component.scss'],
+    standalone: true,
+    imports: [
+        RouterLink,
+        MatIconModule,
+        RouterOutlet,
+        TranslateModule,
+    ],
 })
 export class AppComponent implements AfterViewInit {
   @ViewChild(MatSidenav)

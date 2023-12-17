@@ -20,38 +20,7 @@ import { BookingEffects } from '@store/effects/booking';
 import { AdminEffect } from '@store/effects/admin.effect';
 import { MatIconModule } from '@angular/material/icon';
 
-@NgModule({
-  declarations: [AppComponent],
-  imports: [
-    BrowserModule,
-    AppRoutingModule,
-    BrowserAnimationsModule,
-    EffectsModule.forRoot([
-      AppEffects,
-      LoadingEffects,
-      BookingEffects,
-      AdminEffect,
-    ]),
-    StoreModule.forRoot(rootReducer),
-    HttpClientModule,
-    StoreDevtoolsModule.instrument({
-      maxAge: 25,
-      autoPause: true, // Pauses recording actions and state changes when the extension window is not open
-    }),
-    TranslateModule.forRoot({
-      loader: {
-        provide: TranslateLoader,
-        useFactory: HttpLoaderFactory,
-        deps: [HttpClient],
-      },
-    }),
-    MatIconModule,
-  ],
-  providers: [],
-  bootstrap: [AppComponent],
-  exports: [],
-})
-export class AppModule {}
+
 
 // required for AOT compilation
 export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
