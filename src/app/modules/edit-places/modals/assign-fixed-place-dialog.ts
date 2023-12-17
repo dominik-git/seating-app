@@ -4,7 +4,7 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { BookingResourceService } from '../../../services/booking/booking-resource.service';
 import { SeatsInRange } from '../../../models/booking.model';
 import {FixedPlaceModel} from "../../../models/fixedPlace.model";
-import {FormControl} from "@angular/forms";
+import {UntypedFormControl} from "@angular/forms";
 import {Observable} from "rxjs";
 import {map, startWith} from "rxjs/operators";
 
@@ -17,7 +17,7 @@ export class AssignFixedPlaceDialog implements OnInit {
   seatsInWeek: SeatsInRange[];
   bookedDays: Date[] = [];
   loading = false;
-  myControl = new FormControl();
+  myControl = new UntypedFormControl();
   options = [{fullName: 'Mary', userId:1, position:'software engineer'}, {fullName: 'Shelley', userId:2,position:'software engineer'}, {fullName: 'Igor', userId:3,position:'software engineer'}];
   filteredOptions: Observable<any[]>;
 

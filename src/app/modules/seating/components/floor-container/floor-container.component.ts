@@ -21,7 +21,7 @@ import {DeskModel} from "../../../../models/desk.model";
 import {ChairTypeEnum} from "../../../../enums/chairType.enum";
 import {OpenBookDeskModal} from "@actions/booking/booking.action";
 import {SeatTooltipComponent} from "../../../shared/components/seat-tooltip/seat-tooltip.component";
-import {FormControl} from "@angular/forms";
+import {UntypedFormControl} from "@angular/forms";
 
 @Component({
   selector: 'app-floor-container',
@@ -39,7 +39,7 @@ export class FloorContainerComponent implements OnInit, AfterViewInit {
   isLoading$: Observable<boolean>;
   selectedOption: StateEnum;
   selectedDate: Date;
-  date: FormControl;
+  date: UntypedFormControl;
 
   desks: any[];
   selectedSvgImage: any;
@@ -69,7 +69,7 @@ export class FloorContainerComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit(): void {
-    this.date = new FormControl(new Date())
+    this.date = new UntypedFormControl(new Date())
 
     this.loadedDesks$.subscribe((response)=>{
       this.bookingItemsResponse = response;
