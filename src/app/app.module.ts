@@ -25,7 +25,6 @@ import { BookingEffects } from '@store/effects/booking';
 import { MatLegacyDialogModule as MatDialogModule } from '@angular/material/legacy-dialog';
 
 import { AdminEffect } from '@store/effects/admin.effect';
-import { ToastrModule } from 'ngx-toastr';
 
 @NgModule({
   declarations: [AppComponent],
@@ -59,7 +58,6 @@ import { ToastrModule } from 'ngx-toastr';
     MatIconModule,
     MatDividerModule,
     MatProgressSpinnerModule,
-    ToastrModule.forRoot(), // ToastrModule added
   ],
   providers: [],
   bootstrap: [AppComponent],

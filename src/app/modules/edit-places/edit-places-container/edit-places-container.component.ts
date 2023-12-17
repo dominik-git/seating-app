@@ -10,7 +10,6 @@ import { ChangePlace, LoadFixedPlaces } from '@actions/admin/admin.actions';
 import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 
 import { AssignFixedPlaceDialog } from '../modals/assign-fixed-place-dialog';
-import { ToastrService } from 'ngx-toastr';
 import { FixedPlaceModel } from '../../../models/fixedPlace.model';
 
 @Component({
@@ -46,8 +45,7 @@ export class EditPlacesContainerComponent implements OnInit, AfterViewInit {
 
   constructor(
     private readonly _store: Store<fromRoot.State>,
-    public dialog: MatDialog,
-    private toastr: ToastrService
+    public dialog: MatDialog
   ) {
     this.selectedPlace$ = this._store.pipe(
       select(fromRoot.getSelectedPlace),
@@ -67,7 +65,6 @@ export class EditPlacesContainerComponent implements OnInit, AfterViewInit {
   }
 
   saveFixedPlaces() {
-    this.toastr.success('saved!');
     console.log(this.fixedPlaces);
   }
 

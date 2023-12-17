@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Actions, Effect, ofType } from '@ngrx/effects';
+import { Actions, createEffect, ofType } from '@ngrx/effects';
 
 import {
   CHANGE_BOOK_DATE,
@@ -21,19 +21,21 @@ export class AppEffects {
     private readonly _store: Store<fromRoot.State>
   ) {}
 
-  @Effect() specialEffect$ = this.actions$.pipe(
-    ofType(...[CHANGE_STATE, CHANGE_BOOK_DATE, LOAD_DESKS]),
-    withLatestFrom(
-      this._store.pipe(select(fromRoot.getSelectedDate)),
-      this._store.pipe(select(fromRoot.getState))
-    ),
-    mergeMap(([action, date, state]) =>
-      this.bookingResourceService.getDesks(date, state).pipe(
-        map((movies) => ({
-          type: LOAD_DESKS_SUCCESSFUL,
-          payload: movies,
-        })),
-        catchError(() => EMPTY)
+  specialEffect$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(CHANGE_STATE, CHANGE_BOOK_DATE, LOAD_DESKS),
+      withLatestFrom(
+        this._store.pipe(select(fromRoot.getSelectedDate)),
+        this._store.pipe(select(fromRoot.getState))
+      ),
+      mergeMap(([action, date, state]) =>
+        this.bookingResourceService.getDesks(date, state).pipe(
+          map((movies) => ({
+            type: LOAD_DESKS_SUCCESSFUL,
+            payload: movies,
+          })),
+          catchError(() => EMPTY)
+        )
       )
     )
   );
