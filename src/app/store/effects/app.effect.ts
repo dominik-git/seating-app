@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
-import { Actions, createEffect, Effect, ofType } from '@ngrx/effects';
+import { Actions, Effect, ofType } from '@ngrx/effects';
+
 import {
   CHANGE_BOOK_DATE,
   CHANGE_STATE,
@@ -10,7 +11,7 @@ import { catchError, map, mergeMap, withLatestFrom } from 'rxjs/operators';
 import { EMPTY } from 'rxjs';
 import { select, Store } from '@ngrx/store';
 import * as fromRoot from '@store/reducers';
-import {BookingResourceService} from "../../services/booking/booking-resource.service";
+import { BookingResourceService } from '../../services/booking/booking-resource.service';
 
 @Injectable()
 export class AppEffects {
@@ -36,6 +37,4 @@ export class AppEffects {
       )
     )
   );
-
-
 }

@@ -20,14 +20,12 @@ import { EffectsModule } from '@ngrx/effects';
 import { LoadingEffects } from '@store/effects/loading.effect';
 import { AppEffects } from '@store/effects/app.effect';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import { BookingEffects } from '@store/effects/booking';
-import {MatDialogModule} from "@angular/material/dialog";
-import {MDBBootstrapModule} from "angular-bootstrap-md";
-import {AdminEffect} from "@store/effects/admin.effect";
-import {ToastrModule} from "ngx-toastr";
-import { CalendarModule } from 'angular-calendar';
 
+import { BookingEffects } from '@store/effects/booking';
+import { MatDialogModule } from '@angular/material/dialog';
+
+import { AdminEffect } from '@store/effects/admin.effect';
+import { ToastrModule } from 'ngx-toastr';
 
 @NgModule({
   declarations: [AppComponent],
@@ -36,7 +34,12 @@ import { CalendarModule } from 'angular-calendar';
     AppRoutingModule,
     BrowserAnimationsModule,
     MatDialogModule,
-    EffectsModule.forRoot([AppEffects, LoadingEffects,BookingEffects, AdminEffect]),
+    EffectsModule.forRoot([
+      AppEffects,
+      LoadingEffects,
+      BookingEffects,
+      AdminEffect,
+    ]),
     StoreModule.forRoot(rootReducer),
     HttpClientModule,
     StoreDevtoolsModule.instrument({
@@ -56,9 +59,7 @@ import { CalendarModule } from 'angular-calendar';
     MatIconModule,
     MatDividerModule,
     MatProgressSpinnerModule,
-    MDBBootstrapModule.forRoot(),
     ToastrModule.forRoot(), // ToastrModule added
-    NgbModule,
   ],
   providers: [],
   bootstrap: [AppComponent],

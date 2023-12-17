@@ -1,29 +1,17 @@
-import {
-  AfterViewInit,
-  Component,
-  OnInit,
-  ViewChild,
-  ViewChildren,
-} from '@angular/core';
+import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
 import { SeatTooltipComponent } from '../../shared/components/seat-tooltip/seat-tooltip.component';
 import { Observable, Subscription } from 'rxjs';
 import { select, Store } from '@ngrx/store';
 import * as fromRoot from '@store/reducers';
-import { take, tap } from 'rxjs/operators';
-import { ChangeBookDate, ChangeState, LoadDesk } from '@actions/app/app.action';
-import { DeskModel } from '../../../models/desk.model';
-import { ChairTypeEnum } from '../../../enums/chairType.enum';
-import { OpenBookDeskModal } from '@actions/booking/booking.action';
+import { tap } from 'rxjs/operators';
+
 import { StateEnum } from 'src/app/enums/state.enum';
 import { ChangePlace, LoadFixedPlaces } from '@actions/admin/admin.actions';
-import {MatDialog} from "@angular/material/dialog";
-import {SeatBookDialog} from "../../seating/modals/seat-book-dialog";
-import {AssignFixedPlaceDialog} from "../modals/assign-fixed-place-dialog";
-import {ToastrService} from "ngx-toastr";
-import {FixedPlaceModel} from "../../../models/fixedPlace.model";
-import {ComponentType} from "@angular/cdk/portal";
-import {MatDialogConfig} from "@angular/material/dialog/dialog-config";
-import {MatDialogRef} from "@angular/material/dialog/dialog-ref";
+import { MatDialog } from '@angular/material/dialog';
+
+import { AssignFixedPlaceDialog } from '../modals/assign-fixed-place-dialog';
+import { ToastrService } from 'ngx-toastr';
+import { FixedPlaceModel } from '../../../models/fixedPlace.model';
 
 @Component({
   selector: 'app-edit-places-container',
@@ -31,7 +19,7 @@ import {MatDialogRef} from "@angular/material/dialog/dialog-ref";
   styleUrls: ['./edit-places-container.component.scss'],
 })
 export class EditPlacesContainerComponent implements OnInit, AfterViewInit {
-  private readonly fixedClass = "fixedPlace"
+  private readonly fixedClass = 'fixedPlace';
   @ViewChild(SeatTooltipComponent, { static: false })
   hello: SeatTooltipComponent;
 
@@ -48,15 +36,19 @@ export class EditPlacesContainerComponent implements OnInit, AfterViewInit {
   selectedPlace$: Observable<any>;
   fixedPlaces$: any;
   assignedUsersToPlace = [];
-  fixedPlaces:any[] = []
+  fixedPlaces: any[] = [];
   subscription: Subscription;
-  copy :any;
+  copy: any;
 
-  dialogRef:any
+  dialogRef: any;
 
-  clickHandler:any
+  clickHandler: any;
 
-  constructor(private readonly _store: Store<fromRoot.State>, public dialog: MatDialog,private toastr: ToastrService) {
+  constructor(
+    private readonly _store: Store<fromRoot.State>,
+    public dialog: MatDialog,
+    private toastr: ToastrService
+  ) {
     this.selectedPlace$ = this._store.pipe(
       select(fromRoot.getSelectedPlace),
       tap((state) => {
@@ -68,18 +60,15 @@ export class EditPlacesContainerComponent implements OnInit, AfterViewInit {
     this.fixedPlaces$ = this._store.pipe(select(fromRoot.getFixedPlaces));
   }
 
-  ngOnInit(): void {
-
-
-  }
+  ngOnInit(): void {}
 
   ngAfterViewInit(): void {
     this._store.dispatch(LoadFixedPlaces());
   }
 
-  saveFixedPlaces(){
+  saveFixedPlaces() {
     this.toastr.success('saved!');
-    console.log(this.fixedPlaces)
+    console.log(this.fixedPlaces);
   }
 
   optionChanged(state: StateEnum) {
@@ -89,29 +78,29 @@ export class EditPlacesContainerComponent implements OnInit, AfterViewInit {
   placeSelected($event: any) {
     this.fixedPlaces$.subscribe((places: any) => {
       this.fixedPlaces = places;
-      this.selectedSvgImage = $event
+      this.selectedSvgImage = $event;
       this.addEventListenersToSvgImage();
     });
   }
 
-
   addEventListenersToSvgImage() {
     if (this.selectedSvgImage) {
-
       //if place is fixed , add class fixedPlace
-      const svgPlacesContainer =  this.selectedSvgImage.querySelectorAll('#Bookable_Slots')[0];
+      const svgPlacesContainer =
+        this.selectedSvgImage.querySelectorAll('#Bookable_Slots')[0];
       this.fixedPlaces.forEach((fixedPlace) => {
-        const svgElement = svgPlacesContainer.querySelector( '#' + fixedPlace.placeId)
+        const svgElement = svgPlacesContainer.querySelector(
+          '#' + fixedPlace.placeId
+        );
         svgElement.setAttribute('class', this.fixedClass);
       });
 
       this.desks = svgPlacesContainer.childNodes;
 
-
       this.desks.forEach((svgElement) => {
-        const svgClass = svgElement.getAttribute("class");
+        const svgClass = svgElement.getAttribute('class');
         // if svg element has class fixedPlace then fill color red
-        if(svgClass == this.fixedClass) {
+        if (svgClass == this.fixedClass) {
           svgElement.style.fill = '#D7063B';
         } else {
           svgElement.style.fill = '#7ed321';
@@ -119,39 +108,60 @@ export class EditPlacesContainerComponent implements OnInit, AfterViewInit {
 
         const svgElementId = svgElement.getAttribute('id').toString();
 
-        let foundFixedPlace = this.findFixedPlaceInServerResponseById(svgElementId)
+        let foundFixedPlace =
+          this.findFixedPlaceInServerResponseById(svgElementId);
 
-
-        svgElement.addEventListener('click', ()=>{
-          let dialogRef =  this.dialog.open(AssignFixedPlaceDialog, {
+        svgElement.addEventListener('click', () => {
+          let dialogRef = this.dialog.open(AssignFixedPlaceDialog, {
             data: {
-              svgElement:svgElement,
-              fixedPlace: foundFixedPlace
+              svgElement: svgElement,
+              fixedPlace: foundFixedPlace,
             },
-          })
-          dialogRef.afterClosed().subscribe((modalResponse:{assigned: boolean, svgElement:any,fixedPlace:FixedPlaceModel }) => {
-            if(!modalResponse){
-              return
-            }
-
-            if(modalResponse.assigned){
-              this.assignUserToFixedPlace(modalResponse.fixedPlace)
-              //remove event listeners
-              this.selectedSvgImage.querySelectorAll('#Bookable_Slots')[0].outerHTML =  this.selectedSvgImage.querySelectorAll('#Bookable_Slots')[0].outerHTML
-              this.addEventListenersToSvgImage();
-            } else {
-              this.unAssignUserFromFixedPlace(modalResponse.fixedPlace)
-              modalResponse.svgElement.removeAttribute('class', this.fixedClass);
-              //remove event listeners
-              this.selectedSvgImage.querySelectorAll('#Bookable_Slots')[0].outerHTML =  this.selectedSvgImage.querySelectorAll('#Bookable_Slots')[0].outerHTML
-              this.addEventListenersToSvgImage();
-            }
           });
-        })
+          dialogRef
+            .afterClosed()
+            .subscribe(
+              (modalResponse: {
+                assigned: boolean;
+                svgElement: any;
+                fixedPlace: FixedPlaceModel;
+              }) => {
+                if (!modalResponse) {
+                  return;
+                }
+
+                if (modalResponse.assigned) {
+                  this.assignUserToFixedPlace(modalResponse.fixedPlace);
+                  //remove event listeners
+                  this.selectedSvgImage.querySelectorAll(
+                    '#Bookable_Slots'
+                  )[0].outerHTML =
+                    this.selectedSvgImage.querySelectorAll(
+                      '#Bookable_Slots'
+                    )[0].outerHTML;
+                  this.addEventListenersToSvgImage();
+                } else {
+                  this.unAssignUserFromFixedPlace(modalResponse.fixedPlace);
+                  modalResponse.svgElement.removeAttribute(
+                    'class',
+                    this.fixedClass
+                  );
+                  //remove event listeners
+                  this.selectedSvgImage.querySelectorAll(
+                    '#Bookable_Slots'
+                  )[0].outerHTML =
+                    this.selectedSvgImage.querySelectorAll(
+                      '#Bookable_Slots'
+                    )[0].outerHTML;
+                  this.addEventListenersToSvgImage();
+                }
+              }
+            );
+        });
 
         svgElement.addEventListener('mouseover', () => {
-          if(!foundFixedPlace){
-            return
+          if (!foundFixedPlace) {
+            return;
           }
           const topPos =
             svgElement.getBoundingClientRect().top + window.scrollY;
@@ -170,23 +180,18 @@ export class EditPlacesContainerComponent implements OnInit, AfterViewInit {
     }
   }
 
-
-  private findFixedPlaceInServerResponseById(placeId: string){
-    return this.fixedPlaces.find(
-      (desk) => desk.placeId === placeId
-    );
+  private findFixedPlaceInServerResponseById(placeId: string) {
+    return this.fixedPlaces.find((desk) => desk.placeId === placeId);
   }
 
-  private assignUserToFixedPlace(fixedPlace: FixedPlaceModel){
+  private assignUserToFixedPlace(fixedPlace: FixedPlaceModel) {
     this.fixedPlaces = Object.assign([], this.fixedPlaces);
     this.fixedPlaces.push(fixedPlace);
   }
 
-  private unAssignUserFromFixedPlace(fixedPlace:FixedPlaceModel){
+  private unAssignUserFromFixedPlace(fixedPlace: FixedPlaceModel) {
     this.fixedPlaces = this.fixedPlaces.filter(
       (place) => place.placeId !== fixedPlace.placeId
     );
   }
-
-
 }
