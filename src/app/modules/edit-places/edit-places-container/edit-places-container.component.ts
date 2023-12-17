@@ -7,7 +7,7 @@ import { tap } from 'rxjs/operators';
 
 import { StateEnum } from 'src/app/enums/state.enum';
 import { ChangePlace, LoadFixedPlaces } from '@actions/admin/admin.actions';
-import { MatDialog } from '@angular/material/dialog';
+import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 
 import { AssignFixedPlaceDialog } from '../modals/assign-fixed-place-dialog';
 import { ToastrService } from 'ngx-toastr';

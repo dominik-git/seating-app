@@ -8,7 +8,7 @@ import { StoreModule } from '@ngrx/store';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatToolbarModule } from '@angular/material/toolbar';
-import { MatButtonModule } from '@angular/material/button';
+import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDividerModule } from '@angular/material/divider';
 // import ngx-translate and the http loader
@@ -19,10 +19,10 @@ import { rootReducer } from './store/reducers';
 import { EffectsModule } from '@ngrx/effects';
 import { LoadingEffects } from '@store/effects/loading.effect';
 import { AppEffects } from '@store/effects/app.effect';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatLegacyProgressSpinnerModule as MatProgressSpinnerModule } from '@angular/material/legacy-progress-spinner';
 
 import { BookingEffects } from '@store/effects/booking';
-import { MatDialogModule } from '@angular/material/dialog';
+import { MatLegacyDialogModule as MatDialogModule } from '@angular/material/legacy-dialog';
 
 import { AdminEffect } from '@store/effects/admin.effect';
 import { ToastrModule } from 'ngx-toastr';

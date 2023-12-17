@@ -7,7 +7,7 @@ import {SharedModule} from "../shared/shared.module";
 import {MaterialModule} from "../material/material.module";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {AssignFixedPlaceDialog} from "./modals/assign-fixed-place-dialog";
-import {MatAutocompleteModule} from "@angular/material/autocomplete";
+import {MatLegacyAutocompleteModule as MatAutocompleteModule} from "@angular/material/legacy-autocomplete";
 
 
 

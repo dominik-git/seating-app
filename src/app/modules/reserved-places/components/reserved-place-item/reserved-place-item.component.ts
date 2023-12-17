@@ -1,5 +1,5 @@
 import {Component, Input, OnInit} from '@angular/core';
-import { MatCheckboxChange } from '@angular/material/checkbox';
+import { MatLegacyCheckboxChange as MatCheckboxChange } from '@angular/material/legacy-checkbox';
 import {BookedItemModel} from "../../../../models/booked-item.model";
 import {BookedItemEnum} from "../../../../enums/booked-item.enum";
 

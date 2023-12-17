@@ -14,7 +14,7 @@ import {
   OPEN_BOOK_DESK_MODAL,
   SELECT_SEAT_DATE_RANGE,
 } from '@actions/booking/booking.action';
-import { MatDialog } from '@angular/material/dialog';
+import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import { SeatBookDialog } from '../../modules/seating/modals/seat-book-dialog';
 import { select, Store } from '@ngrx/store';
 import * as fromRoot from '@store/reducers';

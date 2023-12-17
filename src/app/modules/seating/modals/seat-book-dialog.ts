@@ -1,5 +1,5 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA, MatLegacyDialogRef as MatDialogRef } from '@angular/material/legacy-dialog';
 import { SelectedDay } from '../components/space-book-time-slot/space-book-time-slot.component';
 import { BookingResourceService } from '../../../services/booking/booking-resource.service';
 import { SeatsInRange } from '../../../models/booking.model';

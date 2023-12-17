@@ -5,7 +5,7 @@ import { ReservedPlacesListComponent } from './components/reserved-places-list/r
 import { SharedModule } from '../shared/shared.module';
 import { ReservedPlacesRoutingModule } from './reserved-places-routing.module';
 import { ReservedPlaceItemComponent } from './components/reserved-place-item/reserved-place-item.component';
-import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatLegacyCheckboxModule as MatCheckboxModule } from '@angular/material/legacy-checkbox';
 import { FormsModule } from '@angular/forms';
 import { MaterialModule } from '../material/material.module';
 import { CalendarModule, DateAdapter } from 'angular-calendar';
