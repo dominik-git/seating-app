@@ -12,24 +12,22 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { SeatBookDialog } from './modals/seat-book-dialog';
 import { SpaceBookTimeSlotComponent } from './components/space-book-time-slot/space-book-time-slot.component';
-import { SharedModule } from '../shared/shared.module';
-import { MaterialModule } from '../material/material.module';
+
+
 
 @NgModule({
     imports: [
-        CommonModule,
-        SeatingRoutingModule,
-        FormsModule,
-        SharedModule,
-        MaterialModule,
-        ReactiveFormsModule,
-        SeatingComponent,
-        SeatComponent,
-        SvgComponent,
-        FloorContainerComponent,
-        SeatBookDialog,
-        SpaceBookTimeSlotComponent,
-    ],
+    CommonModule,
+    SeatingRoutingModule,
+    FormsModule,
+    ReactiveFormsModule,
+    SeatingComponent,
+    SeatComponent,
+    SvgComponent,
+    FloorContainerComponent,
+    SeatBookDialog,
+    SpaceBookTimeSlotComponent,
+],
     exports: [SeatBookDialog],
 })
 export class SeatingModule {}

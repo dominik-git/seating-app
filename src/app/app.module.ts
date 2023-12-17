@@ -18,7 +18,7 @@ import { AppEffects } from '@store/effects/app.effect';
 import { BookingEffects } from '@store/effects/booking';
 
 import { AdminEffect } from '@store/effects/admin.effect';
-import { MaterialModule } from './modules/material/material.module';
+import { MatIconModule } from '@angular/material/icon';
 
 @NgModule({
   declarations: [AppComponent],
@@ -35,7 +35,7 @@ import { MaterialModule } from './modules/material/material.module';
     StoreModule.forRoot(rootReducer),
     HttpClientModule,
     StoreDevtoolsModule.instrument({
-      maxAge: 25, // Retains last 25 states
+      maxAge: 25,
       autoPause: true, // Pauses recording actions and state changes when the extension window is not open
     }),
     TranslateModule.forRoot({
@@ -45,7 +45,7 @@ import { MaterialModule } from './modules/material/material.module';
         deps: [HttpClient],
       },
     }),
-    MaterialModule,
+    MatIconModule,
   ],
   providers: [],
   bootstrap: [AppComponent],
