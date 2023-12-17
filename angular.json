@@ -84,10 +84,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "browserTarget": "seatting-plan:build:production"
+              "buildTarget": "seatting-plan:build:production"
             },
             "development": {
-              "browserTarget": "seatting-plan:build:development"
+              "buildTarget": "seatting-plan:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -95,7 +95,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "seatting-plan:build"
+            "buildTarget": "seatting-plan:build"
           }
         },
         "test": {
