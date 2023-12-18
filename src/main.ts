@@ -34,7 +34,7 @@ bootstrapApplication(AppComponent, {
         ]), StoreModule.forRoot(rootReducer), StoreDevtoolsModule.instrument({
             maxAge: 25,
             autoPause: true, // Pauses recording actions and state changes when the extension window is not open
-        }), TranslateModule.forRoot({
+        , connectInZone: true}), TranslateModule.forRoot({
             loader: {
                 provide: TranslateLoader,
                 useFactory: HttpLoaderFactory,
