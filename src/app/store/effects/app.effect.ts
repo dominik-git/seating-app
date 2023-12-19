@@ -11,7 +11,7 @@ import { catchError, map, mergeMap, withLatestFrom } from 'rxjs/operators';
 import { EMPTY } from 'rxjs';
 import { select, Store } from '@ngrx/store';
 import * as fromRoot from '@store/reducers';
-import { BookingResourceService } from '../../services/booking/booking-resource.service';
+import { BookingResourceService } from '../../api/booking/booking-resource.service';
 
 @Injectable()
 export class AppEffects {

@@ -1,8 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { first } from 'rxjs/operators';
-import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
+import {
+  UntypedFormBuilder,
+  UntypedFormGroup,
+  Validators,
+} from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { AuthenticationService } from '../../../../services/authentication/authentication.service';
+import { AuthenticationService } from '../../../../api/authentication/authentication.service';
 
 @Component({
   selector: 'app-login',
@@ -22,7 +26,6 @@ export class LoginComponent implements OnInit {
     private authenticationService: AuthenticationService
   ) {
     // redirect to home if already logged in
-
   }
 
   ngOnInit() {

@@ -1,42 +1,53 @@
 import { Component, Inject, OnInit } from '@angular/core';
 
-import { BookingResourceService } from '../../../services/booking/booking-resource.service';
+import { BookingResourceService } from '../../../api/booking/booking-resource.service';
 import { SeatsInRange } from '../../../models/booking.model';
 import { FixedPlaceModel } from '../../../models/fixedPlace.model';
-import { UntypedFormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import {
+  FormsModule,
+  ReactiveFormsModule,
+  UntypedFormControl,
+} from '@angular/forms';
 import { Observable } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
-import { MAT_DIALOG_DATA, MatDialogRef, MatDialogTitle, MatDialogContent, MatDialogActions, MatDialogClose } from '@angular/material/dialog';
+import {
+  MAT_DIALOG_DATA,
+  MatDialogActions,
+  MatDialogClose,
+  MatDialogContent,
+  MatDialogRef,
+  MatDialogTitle,
+} from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
 import { MatOptionModule } from '@angular/material/core';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { NgIf, NgFor, AsyncPipe } from '@angular/common';
+import { AsyncPipe, NgFor, NgIf } from '@angular/common';
 
 @Component({
-    selector: 'assign-fixed-place-dialog',
-    styleUrls: ['assign-fixed-place-dialog.css'],
-    templateUrl: 'assign-fixed-place-dialog.html',
-    standalone: true,
-    imports: [
-        NgIf,
-        MatProgressSpinnerModule,
-        MatDialogTitle,
-        MatDialogContent,
-        FormsModule,
-        MatFormFieldModule,
-        MatInputModule,
-        MatAutocompleteModule,
-        ReactiveFormsModule,
-        NgFor,
-        MatOptionModule,
-        MatDialogActions,
-        MatButtonModule,
-        MatDialogClose,
-        AsyncPipe,
-    ],
+  selector: 'assign-fixed-place-dialog',
+  styleUrls: ['assign-fixed-place-dialog.css'],
+  templateUrl: 'assign-fixed-place-dialog.html',
+  standalone: true,
+  imports: [
+    NgIf,
+    MatProgressSpinnerModule,
+    MatDialogTitle,
+    MatDialogContent,
+    FormsModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatAutocompleteModule,
+    ReactiveFormsModule,
+    NgFor,
+    MatOptionModule,
+    MatDialogActions,
+    MatButtonModule,
+    MatDialogClose,
+    AsyncPipe,
+  ],
 })
 export class AssignFixedPlaceDialog implements OnInit {
   seatsInWeek: SeatsInRange[];

@@ -10,7 +10,7 @@ import { SeatBookDialog } from '../../modules/seating/modals/seat-book-dialog';
 import { select, Store } from '@ngrx/store';
 import * as fromRoot from '@store/reducers';
 
-import { BookingResourceService } from '../../services/booking/booking-resource.service';
+import { BookingResourceService } from '../../api/booking/booking-resource.service';
 import { MatDialog } from '@angular/material/dialog';
 
 @Injectable()
