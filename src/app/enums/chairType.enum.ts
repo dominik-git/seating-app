@@ -1,6 +1,5 @@
 export enum ChairTypeEnum {
-  fixed ,
-  free ,
+  fixed,
+  free,
   reserved,
-  
 }

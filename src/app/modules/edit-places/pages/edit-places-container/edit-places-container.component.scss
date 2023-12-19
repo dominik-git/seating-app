@@ -4,11 +4,11 @@
 
 .booking-navigation {
   z-index: 5;
-  position: fixed;
+  position: absolute;
   display: flex;
-  justify-content: space-between;
   width: 100%;
   background: white;
+  justify-content: space-between;
   padding: 20px;
   height: 100px;
 }

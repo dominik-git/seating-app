@@ -11,6 +11,7 @@ import { RouterLink, RouterOutlet } from '@angular/router';
 import { MatListModule } from '@angular/material/list';
 import { MatButtonModule } from '@angular/material/button';
 import { NgIf } from '@angular/common';
+import { SideNavMenuListComponent } from './modules/shared/components/side-nav-menu/side-nav-menu-list.component';
 
 @Component({
   selector: 'app-root',
@@ -26,6 +27,7 @@ import { NgIf } from '@angular/common';
     MatListModule,
     MatButtonModule,
     NgIf,
+    SideNavMenuListComponent,
   ],
 })
 export class AppComponent implements AfterViewInit {

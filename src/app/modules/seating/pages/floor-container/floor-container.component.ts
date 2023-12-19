@@ -1,13 +1,9 @@
 import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
 import { select, Store } from '@ngrx/store';
-import * as fromRoot from '../../../../store/reducers';
-import {
-  ChangeBookDate,
-  ChangeState,
-  LoadDesk,
-} from '../../../../store/actions/app/app.action';
+import * as fromRoot from '@store/reducers';
+import { ChangeBookDate, ChangeState, LoadDesk } from '@actions/app/app.action';
 import { StateEnum } from '../../../../enums/state.enum';
-import { Observable, Subscription } from 'rxjs';
+import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { DeskModel } from '../../../../models/desk.model';
 import { ChairTypeEnum } from '../../../../enums/chairType.enum';
@@ -69,7 +65,6 @@ export class FloorContainerComponent implements OnInit, AfterViewInit {
   bookingItemsResponse: any[];
 
   loadedDesks$: Observable<any>;
-  subscription: Subscription;
 
   constructor(private readonly _store: Store<fromRoot.State>) {
     this.selectedState$ = this._store.pipe(

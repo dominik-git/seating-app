@@ -136,36 +136,7 @@
       {{ isExpanded ? 'arrow_back' : 'arrow_forward' }}
     </span>
         </button>
-        <mat-nav-list>
-
-            <a class="nav-link" [routerLink]="['/']">
-                <mat-icon>home</mat-icon>
-                <span *ngIf="isExpanded || isShowing">
-            {{ "demo.title" | translate }}
-          </span>
-            </a>
-
-
-            <a class="nav-link" [routerLink]="['/seating']">
-                <mat-icon>event_seat</mat-icon>
-                <span *ngIf="isExpanded || isShowing">Booking</span>
-            </a>
-
-
-            <a class="nav-link" [routerLink]="['/my-reserved-places']">
-                <mat-icon>lock</mat-icon>
-                <span *ngIf="isExpanded || isShowing"
-                >My Reserved seat & car place</span
-                >
-            </a>
-
-
-            <a class="nav-link" [routerLink]="['/edit-places']">
-                <mat-icon>edit</mat-icon>
-                <span *ngIf="isExpanded || isShowing"> Edit fixed places</span>
-            </a>
-
-        </mat-nav-list>
+        <app-side-nav-menu-list [isExpanded]="isExpanded"/>
     </mat-sidenav>
     <div class="content">
         <router-outlet></router-outlet>

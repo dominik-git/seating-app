@@ -1,18 +1,16 @@
 import { NgModule } from '@angular/core';
-import { Routes, RouterModule } from '@angular/router';
-import {SeatingComponent} from "./components/seating/seating.component";
-import {FloorContainerComponent} from "./components/floor-container/floor-container.component";
-
+import { RouterModule, Routes } from '@angular/router';
+import { FloorContainerComponent } from './pages/floor-container/floor-container.component';
 
 const routes: Routes = [
   {
     path: '',
-    component:FloorContainerComponent
-  }
+    component: FloorContainerComponent,
+  },
 ];
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],
-  exports: [RouterModule]
+  exports: [RouterModule],
 })
-export class SeatingRoutingModule { }
+export class SeatingRoutingModule {}

@@ -6,17 +6,15 @@ import { SeatingRoutingModule } from './seating-routing.module';
 
 import { SvgComponent } from './components/svg/svg.component';
 
-import { FloorContainerComponent } from './components/floor-container/floor-container.component';
+import { FloorContainerComponent } from './pages/floor-container/floor-container.component';
 
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { SeatBookDialog } from './modals/seat-book-dialog';
 import { SpaceBookTimeSlotComponent } from './components/space-book-time-slot/space-book-time-slot.component';
 
-
-
 @NgModule({
-    imports: [
+  imports: [
     CommonModule,
     SeatingRoutingModule,
     FormsModule,
@@ -27,7 +25,7 @@ import { SpaceBookTimeSlotComponent } from './components/space-book-time-slot/sp
     FloorContainerComponent,
     SeatBookDialog,
     SpaceBookTimeSlotComponent,
-],
-    exports: [SeatBookDialog],
+  ],
+  exports: [SeatBookDialog],
 })
 export class SeatingModule {}

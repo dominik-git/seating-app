@@ -1,46 +1,48 @@
 import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
-import { SeatTooltipComponent } from '../../shared/components/seat-tooltip/seat-tooltip.component';
-import { Observable, Subscription } from 'rxjs';
-import { select, Store } from '@ngrx/store';
-import * as fromRoot from '@store/reducers';
-import { tap } from 'rxjs/operators';
+import { SeatTooltipComponent } from '../../../shared/components/seat-tooltip/seat-tooltip.component';
+import { Subscription } from 'rxjs';
 
-import { StateEnum } from 'src/app/enums/state.enum';
-import { ChangePlace, LoadFixedPlaces } from '@actions/admin/admin.actions';
+import { StateEnum } from '../../../../enums/state.enum';
 
-import { AssignFixedPlaceDialog } from '../modals/assign-fixed-place-dialog';
-import { FixedPlaceModel } from '../../../models/fixedPlace.model';
+import { AssignFixedPlaceDialog } from '../../modals/assign-fixed-place-dialog';
+import { FixedPlaceModel } from '../../../../models/fixedPlace.model';
 import { MatDialog } from '@angular/material/dialog';
-import { ParkingPlaceSvgComponent } from '../../shared/components/parking-place-svg/parking-place-svg.component';
-import { FloorSevenSvgComponent } from '../../shared/components/floor-seven-svg/floor-seven-svg.component';
-import { FloorFiveSvgComponent } from '../../shared/components/floor-five-svg/floor-five-svg.component';
-import { NgIf, AsyncPipe } from '@angular/common';
+import { ParkingPlaceSvgComponent } from '../../../shared/components/parking-place-svg/parking-place-svg.component';
+import { FloorSevenSvgComponent } from '../../../shared/components/floor-seven-svg/floor-seven-svg.component';
+import { FloorFiveSvgComponent } from '../../../shared/components/floor-five-svg/floor-five-svg.component';
+import { AsyncPipe, NgIf } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatOptionModule } from '@angular/material/core';
 import { FormsModule } from '@angular/forms';
 import { MatSelectModule } from '@angular/material/select';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { SpinnerComponent } from '../../shared/components/spinner/spinner.component';
+import { SpinnerComponent } from '../../../shared/components/spinner/spinner.component';
+import { PlaceSelectorComponent } from '../../../shared/components/place-selector/place-selector.component';
+import { EditPlacesContainerStore } from './edit-places-container.store';
+import { GenericSvgComponent } from '../../../shared/components/generic-svg/generic-svg.component';
 
 @Component({
-    selector: 'app-edit-places-container',
-    templateUrl: './edit-places-container.component.html',
-    styleUrls: ['./edit-places-container.component.scss'],
-    standalone: true,
-    imports: [
-        SpinnerComponent,
-        MatFormFieldModule,
-        MatSelectModule,
-        FormsModule,
-        MatOptionModule,
-        MatButtonModule,
-        NgIf,
-        FloorFiveSvgComponent,
-        FloorSevenSvgComponent,
-        ParkingPlaceSvgComponent,
-        SeatTooltipComponent,
-        AsyncPipe,
-    ],
+  selector: 'app-edit-places-container',
+  templateUrl: './edit-places-container.component.html',
+  styleUrls: ['./edit-places-container.component.scss'],
+  standalone: true,
+  imports: [
+    SpinnerComponent,
+    MatFormFieldModule,
+    MatSelectModule,
+    FormsModule,
+    MatOptionModule,
+    MatButtonModule,
+    NgIf,
+    FloorFiveSvgComponent,
+    FloorSevenSvgComponent,
+    ParkingPlaceSvgComponent,
+    SeatTooltipComponent,
+    AsyncPipe,
+    PlaceSelectorComponent,
+    GenericSvgComponent,
+  ],
+  providers: [EditPlacesContainerStore],
 })
 export class EditPlacesContainerComponent implements OnInit, AfterViewInit {
   private readonly fixedClass = 'fixedPlace';
@@ -49,44 +51,29 @@ export class EditPlacesContainerComponent implements OnInit, AfterViewInit {
 
   StateEnum = StateEnum;
 
-  isLoading$: Observable<any>;
-
   selectedOption: StateEnum;
   selectedDate: Date;
 
   desks: any[];
   selectedSvgImage: any;
-
-  selectedPlace$: Observable<any>;
-  fixedPlaces$: any;
   assignedUsersToPlace = [];
   fixedPlaces: any[] = [];
   subscription: Subscription;
   copy: any;
 
-  dialogRef: any;
-
-  clickHandler: any;
+  selectedPlace$ = this.editPlacesContainerStore.selectedPlace$;
+  isLoading$ = this.editPlacesContainerStore.selectIsLoading$;
+  fixedPlaces$ = this.editPlacesContainerStore.selectFixedPlaces$;
 
   constructor(
-    private readonly _store: Store<fromRoot.State>,
-    public dialog: MatDialog
-  ) {
-    this.selectedPlace$ = this._store.pipe(
-      select(fromRoot.getSelectedPlace),
-      tap((state) => {
-        this.selectedOption = state;
-      })
-    );
-    this.isLoading$ = this._store.pipe(select(fromRoot.getSpinner));
-
-    this.fixedPlaces$ = this._store.pipe(select(fromRoot.getFixedPlaces));
-  }
+    public dialog: MatDialog,
+    private readonly editPlacesContainerStore: EditPlacesContainerStore
+  ) {}
 
   ngOnInit(): void {}
 
   ngAfterViewInit(): void {
-    this._store.dispatch(LoadFixedPlaces());
+    this.editPlacesContainerStore.loadFixedPlace$();
   }
 
   saveFixedPlaces() {
@@ -94,11 +81,12 @@ export class EditPlacesContainerComponent implements OnInit, AfterViewInit {
   }
 
   optionChanged(state: StateEnum) {
-    this._store.dispatch(ChangePlace({ payload: state }));
+    this.editPlacesContainerStore.changePlace$(state);
   }
 
   placeSelected($event: any) {
     this.fixedPlaces$.subscribe((places: any) => {
+      console.log(places);
       this.fixedPlaces = places;
       this.selectedSvgImage = $event;
       this.addEventListenersToSvgImage();
