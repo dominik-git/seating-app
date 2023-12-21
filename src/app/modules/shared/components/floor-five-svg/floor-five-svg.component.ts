@@ -4,7 +4,6 @@ import {
   EventEmitter,
   OnInit,
   Output,
-
   ViewChildren,
 } from '@angular/core';
 import panzoom, { PanZoom } from 'panzoom';
@@ -12,12 +11,11 @@ import panzoom, { PanZoom } from 'panzoom';
 import { Store } from '@ngrx/store';
 import * as fromRoot from '@store/reducers';
 
-
 @Component({
-    selector: 'app-floor-five-svg',
-    templateUrl: './floor-five-svg.component.html',
-    styleUrls: ['./floor-five-svg.component.scss'],
-    standalone: true,
+  selector: 'app-floor-five-svg',
+  templateUrl: './floor-five-svg.component.html',
+  styleUrls: ['./floor-five-svg.component.scss'],
+  standalone: true,
 })
 export class FloorFiveSvgComponent implements OnInit, AfterViewInit {
   @ViewChildren('scene') scene: any;
@@ -75,5 +73,6 @@ export class FloorFiveSvgComponent implements OnInit, AfterViewInit {
     const objElm = this.scene.first.nativeElement;
     this.panZoomController = panzoom(objElm);
     this.elementReference.emit(objElm);
+    console.log('component', objElm);
   }
 }

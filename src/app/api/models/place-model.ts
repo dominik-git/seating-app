@@ -1,4 +1,4 @@
-import { ChairTypeEnum } from '../enums/chairType.enum';
+import { ChairTypeEnum } from '../../enums/chairType.enum';
 
 export interface PlaceModel {
   placeId: string;
@@ -8,3 +8,5 @@ export interface PlaceModel {
   position: string;
   userId?: number;
 }
+
+export interface PlaceSelect {}

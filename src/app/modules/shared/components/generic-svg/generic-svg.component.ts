@@ -8,19 +8,19 @@ import {
 } from '@angular/core';
 import { SafeHtmlPipe } from '../../pipes/safe-html.pipe';
 import panzoom, { PanZoom } from 'panzoom';
+import { SanitizeSvgPipe } from '../../pipes/sanitize-svg.pipe';
 
 @Component({
   selector: 'app-generic-svg',
   standalone: true,
-  imports: [SafeHtmlPipe],
+  imports: [SafeHtmlPipe, SanitizeSvgPipe],
   templateUrl: './generic-svg.component.html',
   styleUrl: './generic-svg.component.scss',
 })
 export class GenericSvgComponent implements AfterViewInit {
-  @Input() svgPath;
+  @Input() svgData: string;
 
   @ViewChildren('scene') scene: any;
-  svgData: string;
 
   @Output() elementReference = new EventEmitter<any>();
 
@@ -68,9 +68,13 @@ export class GenericSvgComponent implements AfterViewInit {
   }
 
   ngAfterViewInit() {
-    const objElm = this.scene.first.nativeElement;
-    console.log(objElm);
-    this.panZoomController = panzoom(objElm);
-    this.elementReference.emit(objElm);
+    const sceneElement = this.scene.first.nativeElement;
+
+    this.panZoomController = panzoom(sceneElement);
+    const svgElement = sceneElement.querySelector('svg');
+    if (svgElement) {
+      console.log(svgElement);
+      this.elementReference.emit(svgElement);
+    }
   }
 }

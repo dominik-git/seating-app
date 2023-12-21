@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
 import { BreakpointObserver } from '@angular/cdk/layout';
 import { MatSidenav, MatSidenavModule } from '@angular/material/sidenav';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
@@ -12,6 +12,7 @@ import { MatListModule } from '@angular/material/list';
 import { MatButtonModule } from '@angular/material/button';
 import { NgIf } from '@angular/common';
 import { SideNavMenuListComponent } from './modules/shared/components/side-nav-menu/side-nav-menu-list.component';
+import { PlacesStore } from './services/places/places.store';
 
 @Component({
   selector: 'app-root',
@@ -30,7 +31,7 @@ import { SideNavMenuListComponent } from './modules/shared/components/side-nav-m
     SideNavMenuListComponent,
   ],
 })
-export class AppComponent implements AfterViewInit {
+export class AppComponent implements OnInit, AfterViewInit {
   @ViewChild('sidenav') sidenav: MatSidenav;
   isExpanded = true;
   showSubmenu: boolean = false;
@@ -40,9 +41,14 @@ export class AppComponent implements AfterViewInit {
   constructor(
     private readonly observer: BreakpointObserver,
     private readonly translate: TranslateService,
-    private readonly _store: Store<fromRoot.State>
+    private readonly _store: Store<fromRoot.State>,
+    private readonly placesStore: PlacesStore
   ) {
     translate.setDefaultLang('en');
+  }
+
+  ngOnInit(): void {
+    this.placesStore.loadSvgPlaces$();
   }
 
   ngAfterViewInit() {}

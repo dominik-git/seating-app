@@ -1,78 +1,90 @@
 import { Injectable } from '@angular/core';
 import { ComponentStore, tapResponse } from '@ngrx/component-store';
 import { EMPTY, Observable } from 'rxjs';
-import { catchError, switchMap, tap, withLatestFrom } from 'rxjs/operators';
-import { BookingResourceService } from '../../../../api/booking/booking-resource.service';
-import { StateEnum } from '../../../../enums/state.enum';
-import { PlaceModel } from '../../../../api/place-model';
+// import { StateEnum } from '../../../../enums/state.enum';
+// import { PlaceModel } from '../../../../api/place-model';
+import {
+  SvgFileModel,
+  SvgFileModelResponse,
+  SvgFileSelectorModel,
+} from '../../api/models/svg-file-model';
+import { PlacesResourceService } from '../../api/places/places-resource.service';
+import { catchError, switchMap, tap } from 'rxjs/operators';
 
-export interface PlacesState {
-  placesSvg: string[];
-  places: string[];
+export interface PlacesStoreState {
+  placesSvg: SvgFileModel[];
+  placesName: SvgFileSelectorModel[];
   isLoading: boolean;
+  selectedPlace: string;
 }
 
 @Injectable()
-export class PlacesStore extends ComponentStore<PlacesState> {
-  constructor(private bookingResourceService: BookingResourceService) {
+export class PlacesStore extends ComponentStore<PlacesStoreState> {
+  constructor(private placesResourceService: PlacesResourceService) {
     super({
       placesSvg: [],
-      places: [],
+      placesName: [],
       isLoading: false,
+      selectedPlace: '',
     });
   }
 
   // SELECTORS
-
   readonly selectIsLoading$: Observable<boolean> = this.select(
     (state) => state.isLoading
   );
 
+  readonly selectPlaceSvgById = this.select((state) => state.placesName);
+
+  readonly selectPlacesName$: Observable<SvgFileSelectorModel[]> = this.select(
+    (state) => state.placesName
+  );
+
+  readonly selectPlaceById$ = (
+    id: string
+  ): Observable<SvgFileModel | undefined> =>
+    this.select((state) => {
+      return state.placesSvg.find((svg) => svg.id === id);
+    });
+
   // ACTIONS
-  readonly loadFixedPlace$ = this.effect((trigger$: Observable<void>) =>
+  readonly loadSvgPlaces$ = this.effect((trigger$: Observable<void>) =>
     trigger$.pipe(
       tap(() => this.setLoading(true)),
-      withLatestFrom(this.select((state) => state.selectedPlace)),
-      switchMap(([_, selectedPlace]) => this.fetchFixedPlaces(selectedPlace))
+      switchMap(() => {
+        return this.placesResourceService.getSvgFiles().pipe(
+          tapResponse(
+            (places) => {
+              this.processSvgFilesResponse(places);
+            },
+            (error) => {
+              this.setLoading(false);
+              return EMPTY;
+            }
+          ),
+          catchError(() => EMPTY)
+        );
+      })
     )
   );
 
   // REDUCERS
-  readonly setFixedPlaces = this.updater(
-    (state, fixedPlaces: PlaceModel[]) => ({
-      ...state,
-      fixedPlaces,
-      isLoading: false,
-    })
-  );
+  readonly processSvgFilesResponse = this.updater(
+    (state, response: SvgFileModelResponse[]) => {
+      const placesSvg = response.map(({ id, svgFile }) => ({ id, svgFile }));
+      const placesName = response.map(({ id, name }) => ({ id, name }));
 
-  readonly setSelectedPlace = this.updater(
-    (state, selectedPlace: StateEnum) => ({
-      ...state,
-      selectedPlace,
-      isLoading: true,
-    })
+      return {
+        ...state,
+        placesSvg,
+        placesName,
+        isLoading: false,
+      };
+    }
   );
 
   readonly setLoading = this.updater((state, isLoading: boolean) => ({
     ...state,
     isLoading,
   }));
-
-  // Private method to handle fetching of fixed places
-  private fetchFixedPlaces(selectedPlace: StateEnum): Observable<PlaceModel[]> {
-    return this.bookingResourceService.getFixedPlaces(selectedPlace).pipe(
-      tapResponse(
-        (places) => {
-          console.log(places);
-          this.setFixedPlaces(places);
-        },
-        (error) => {
-          this.setLoading(false);
-          return EMPTY;
-        }
-      ),
-      catchError(() => EMPTY)
-    );
-  }
 }

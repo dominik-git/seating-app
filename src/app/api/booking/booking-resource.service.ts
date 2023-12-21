@@ -10,7 +10,7 @@ import {
 import { StateEnum } from '../../enums/state.enum';
 import { ChairTypeEnum } from '../../enums/chairType.enum';
 import { BookedItemEnum } from '../../enums/booked-item.enum';
-import { PlaceModel } from '../place-model';
+import { PlaceModel } from '../models/place-model';
 
 @Injectable({
   providedIn: 'root',
@@ -42,14 +42,14 @@ export class BookingResourceService {
     return obs;
   }
 
-  getFixedPlaces(place: StateEnum): Observable<PlaceModel[]> {
+  getFixedPlaces(place: string): Observable<PlaceModel[]> {
     console.log(place);
     let response: any = [];
-    if (place == StateEnum.parking) {
+    if (place == 'Parking') {
       response = getParkingData();
-    } else if (place == StateEnum.floor5) {
+    } else if (place == 'Floor 5') {
       response = generateFixedDesk(501, 532);
-    } else if (place == StateEnum.floor7) {
+    } else if (place == 'Floor 7') {
       response = generateFixedDesk(701, 730);
     }
 

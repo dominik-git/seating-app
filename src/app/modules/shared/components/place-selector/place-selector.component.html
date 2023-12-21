@@ -1,11 +1,6 @@
-<mat-form-field appearance="fill">
-    <mat-label>Favorite food</mat-label>
-    <mat-select
-            (selectionChange)="optionChanged($event.value)"
-            [(ngModel)]="selectedOption"
-    >
-        <mat-option [value]="StateEnum.floor5"> 5 floor</mat-option>
-        <mat-option [value]="StateEnum.floor7">7 floor</mat-option>
-        <mat-option [value]="StateEnum.parking">Parking</mat-option>
-    </mat-select>
+<mat-form-field>
+  <mat-label>Select place</mat-label>
+  <mat-select (selectionChange)="optionChanged($event.value)" [(ngModel)]="selectedOption">
+    <mat-option *ngFor="let place of selectOptions" [value]="place">{{ place.name }}</mat-option>
+  </mat-select>
 </mat-form-field>

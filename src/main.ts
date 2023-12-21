@@ -17,13 +17,42 @@ import { EffectsModule } from '@ngrx/effects';
 import { AppRoutingModule } from './app/app-routing.module';
 import { bootstrapApplication, BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { PlacesStore } from './app/services/places/places.store';
 
 if (environment.production) {
   enableProdMode();
 }
 
+// app-init.ts or in your main module file
+// export function initializeApp(
+//   placesStore: PlacesStore,
+//   placesResourceService: PlacesResourceService
+// ): () => Observable<any> {
+//   return () => {
+//     return placesResourceService.getSvgFiles().pipe(
+//       tapResponse(
+//         (places) => {
+//           placesStore.processSvgFilesResponse(places);
+//           placesStore.setLoading(false);
+//         },
+//         (error) => {
+//           console.error(error);
+//           placesStore.setLoading(false);
+//           return EMPTY;
+//         }
+//       ),
+//       catchError(() => {
+//         placesStore.setLoading(false);
+//         return EMPTY;
+//       }),
+//       take(1)
+//     );
+//   };
+// }
+
 bootstrapApplication(AppComponent, {
   providers: [
+    PlacesStore,
     importProvidersFrom(
       BrowserModule,
       AppRoutingModule,
