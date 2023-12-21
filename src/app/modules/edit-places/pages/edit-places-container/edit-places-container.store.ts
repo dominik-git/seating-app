@@ -62,13 +62,6 @@ export class EditPlacesContainerStore extends ComponentStore<EditPlacesState> {
   );
 
   // ACTIONS
-  // readonly loadFixedPlace$ = this.effect((trigger$: Observable<void>) =>
-  //   trigger$.pipe(
-  //     tap(() => this.setLoading(true)),
-  //     withLatestFrom(this.select((state) => state.selectedPlace)),
-  //     switchMap(([_, selectedPlace]) => this.fetchFixedPlaces(selectedPlace.id))
-  //   )
-  // );
 
   // Effect for changing the place and loading its fixed places
   readonly changePlace$ = this.effect(

@@ -67,6 +67,10 @@ export class GenericSvgComponent implements AfterViewInit {
     }
   }
 
+  getSvgElement(): SVGElement {
+    return this.scene.first.nativeElement;
+  }
+
   ngAfterViewInit() {
     const sceneElement = this.scene.first.nativeElement;
 

@@ -1,4 +1,11 @@
-import { AfterViewInit, Component, Input, ViewChild } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  EventEmitter,
+  Input,
+  Output,
+  ViewChild,
+} from '@angular/core';
 import { GenericSvgComponent } from '../../../shared/components/generic-svg/generic-svg.component';
 import { SvgFileModel } from '../../../../api/models/svg-file-model';
 import { FixedPlaceModel } from '../../../../models/fixedPlace.model';
@@ -6,6 +13,7 @@ import { SeatTooltipComponent } from '../../../shared/components/seat-tooltip/se
 import { FloorFiveSvgComponent } from '../../../shared/components/floor-five-svg/floor-five-svg.component';
 import { AssignFixedPlaceDialog } from '../../modals/assign-fixed-place-dialog';
 import { MatDialog } from '@angular/material/dialog';
+import { PlaceModel } from '../../../../api/models/place-model';
 
 @Component({
   selector: 'app-edit-place',
@@ -18,215 +26,118 @@ export class EditPlaceComponent implements AfterViewInit {
   private readonly fixedClass = 'fixedPlace';
   @ViewChild(GenericSvgComponent) genericSvgComponent: GenericSvgComponent;
   @ViewChild(SeatTooltipComponent, { static: false })
-  hello: SeatTooltipComponent;
+  seatTooltip: SeatTooltipComponent;
   @Input() svgData: SvgFileModel;
-  @Input() fixedPlaces: any[];
+  @Input() fixedPlaces: PlaceModel[];
+
+  @Output() placeClicked = new EventEmitter<any>();
   selectedSvgImage: any;
-  desks: any[];
 
-  constructor(public dialog: MatDialog) {}
+  // Maps to store references to listener functions for each SVG element
+  private clickListeners = new Map<HTMLElement, () => void>();
+  private mouseoverListeners = new Map<HTMLElement, () => void>();
+  private mouseleaveListeners = new Map<HTMLElement, () => void>();
 
-  ngAfterViewInit(): void {}
+  constructor(private dialog: MatDialog) {}
 
-  placeSelected($event: any) {
-    this.selectedSvgImage = $event;
-
-    this.addEventListenersToSvgImage();
+  ngAfterViewInit(): void {
+    this.selectedSvgImage = this.genericSvgComponent.getSvgElement();
+    this.initializeSvgElements();
   }
 
-  // addEventListenersToSvgImage() {
-  //   if (this.selectedSvgImage) {
-  //     //if place is fixed , add class fixedPlace
-  //     const svgPlacesContainer =
-  //       this.selectedSvgImage.querySelectorAll('#Bookable_Slots')[0];
-  //     this.fixedPlaces.forEach((fixedPlace) => {
-  //       const svgElement = svgPlacesContainer.querySelector(
-  //         '#' + fixedPlace.placeId
-  //       );
-  //       svgElement.setAttribute('class', this.fixedClass);
-  //     });
-  //
-  //     this.desks = Array.from(svgPlacesContainer.childNodes).filter(
-  //       (node: any) => node.nodeType === Node.ELEMENT_NODE
-  //     );
-  //
-  //     this.desks.forEach((svgElement) => {
-  //       const svgClass = svgElement.getAttribute('class');
-  //       // if svg element has class fixedPlace then fill color red
-  //       if (svgClass == this.fixedClass) {
-  //         svgElement.style.fill = '#D7063B';
-  //       } else {
-  //         svgElement.style.fill = '#7ed321';
-  //       }
-  //
-  //       const svgElementId = svgElement.getAttribute('id').toString();
-  //
-  //       let foundFixedPlace =
-  //         this.findFixedPlaceInServerResponseById(svgElementId);
-  //
-  //       svgElement.addEventListener('click', () => {
-  //         console.log('click');
-  //
-  //
-  //       });
-  //
-  //       svgElement.addEventListener('mouseover', () => {
-  //         if (!foundFixedPlace) {
-  //           return;
-  //         }
-  //         const topPos =
-  //           svgElement.getBoundingClientRect().top + window.scrollY;
-  //         const rightPos =
-  //           svgElement.getBoundingClientRect().right + window.scrollX;
-  //         this.hello.left = rightPos;
-  //         this.hello.top = topPos - 50;
-  //         this.hello.person = foundFixedPlace;
-  //         this.hello.display = 'block';
-  //       });
-  //       svgElement.addEventListener('mouseleave', () => {
-  //         svgElement.style.position = '';
-  //         this.hello.display = 'none';
-  //       });
-  //     });
-  //   }
-  // }
-
-  addEventListenersToSvgImage() {
-    if (!this.selectedSvgImage) {
-      return;
-    }
-
-    this.updateFixedPlaces();
-
-    this.addEventListenersToPlaces();
+  private initializeSvgElements(): void {
+    this.updateSvgElements();
   }
 
-  updateFixedPlaces() {
-    const svgPlacesContainer: Element =
+  private updateSvgElements(): void {
+    const svgPlacesContainer =
       this.selectedSvgImage.querySelector('#Bookable_Slots');
-    if (!svgPlacesContainer) {
-      return;
-    }
-    this.fixedPlaces.forEach((fixedPlace) => {
-      const svgElement = svgPlacesContainer.querySelector(
-        `#${fixedPlace.placeId}`
-      );
-      if (svgElement) {
-        svgElement.classList.add(this.fixedClass);
-      }
+
+    if (!svgPlacesContainer) return;
+
+    // Clone the container to remove all event listeners
+    const clone = svgPlacesContainer.cloneNode(true);
+    svgPlacesContainer.parentNode.replaceChild(clone, svgPlacesContainer);
+
+    // Update the state of each element and re-attach event listeners
+    Array.from(clone.children).forEach((element: HTMLElement) => {
+      this.updateElementState(element);
+      this.addEventListeners(element);
     });
   }
 
-  addEventListenersToPlaces() {
-    const svgPlacesContainer: Element =
-      this.selectedSvgImage.querySelector('#Bookable_Slots');
-    if (!svgPlacesContainer) {
-      return;
-    }
+  private addEventListeners(element: HTMLElement): void {
+    const fixedPlace = this.findFixedPlaceById(element.id);
 
-    const placeElements = Array.from(
-      svgPlacesContainer.children
-    ) as HTMLElement[];
-
-    placeElements.forEach((svgElement) => {
-      this.setPlaceColor(svgElement);
-      this.addClickListener(svgElement);
-      this.addHoverListeners(svgElement);
-    });
-  }
-
-  setPlaceColor(svgElement: HTMLElement) {
-    svgElement.style.fill = svgElement.classList.contains(this.fixedClass)
-      ? '#D7063B'
-      : '#7ed321';
-  }
-
-  addClickListener(svgElement: HTMLElement) {
-    const foundFixedPlace = this.findFixedPlaceInServerResponseById(
-      svgElement.id
+    element.addEventListener('click', () =>
+      this.onPlaceClick(element, fixedPlace)
     );
-
-    svgElement.addEventListener('click', () => {
-      console.log('click');
-      let dialogRef = this.dialog.open(AssignFixedPlaceDialog, {
-        data: {
-          svgElement: svgElement,
-          fixedPlace: foundFixedPlace,
-        },
-      });
-      dialogRef
-        .afterClosed()
-        .subscribe(
-          (modalResponse: {
-            assigned: boolean;
-            svgElement: any;
-            fixedPlace: FixedPlaceModel;
-          }) => {
-            if (!modalResponse) {
-              return;
-            }
-
-            if (modalResponse.assigned) {
-              this.assignUserToFixedPlace(modalResponse.fixedPlace);
-              //remove event listeners
-              this.selectedSvgImage.querySelectorAll(
-                '#Bookable_Slots'
-              )[0].outerHTML =
-                this.selectedSvgImage.querySelectorAll(
-                  '#Bookable_Slots'
-                )[0].outerHTML;
-              this.addEventListenersToSvgImage();
-            } else {
-              this.unAssignUserFromFixedPlace(modalResponse.fixedPlace);
-              modalResponse.svgElement.removeAttribute(
-                'class',
-                this.fixedClass
-              );
-              //remove event listeners
-              this.selectedSvgImage.querySelectorAll(
-                '#Bookable_Slots'
-              )[0].outerHTML =
-                this.selectedSvgImage.querySelectorAll(
-                  '#Bookable_Slots'
-                )[0].outerHTML;
-              this.addEventListenersToSvgImage();
-            }
-          }
-        );
-    });
-  }
-
-  addHoverListeners(svgElement: HTMLElement) {
-    const foundFixedPlace = this.findFixedPlaceInServerResponseById(
-      svgElement.id
+    element.addEventListener('mouseover', () =>
+      this.onPlaceMouseover(element, fixedPlace)
     );
-
-    svgElement.addEventListener('mouseover', () => {
-      if (!foundFixedPlace) {
-        return;
-      }
-      const { top, right } = svgElement.getBoundingClientRect();
-      this.hello.left = right + window.scrollX;
-      this.hello.top = top + window.scrollY - 50;
-      this.hello.person = foundFixedPlace;
-      this.hello.display = 'block';
-    });
-
-    svgElement.addEventListener('mouseleave', () => {
-      this.hello.display = 'none';
-    });
+    element.addEventListener('mouseleave', () => this.onPlaceMouseleave());
   }
 
-  private findFixedPlaceInServerResponseById(placeId: string) {
-    return this.fixedPlaces.find((desk) => desk.placeId === placeId);
+  private updateElementState(element: HTMLElement): void {
+    const isFixed = this.fixedPlaces.some(
+      (place) => place.placeId === element.id
+    );
+    element.classList.toggle(this.fixedClass, isFixed);
+    element.style.fill = isFixed ? '#D7063B' : '#7ed321';
   }
 
-  private assignUserToFixedPlace(fixedPlace: FixedPlaceModel) {
-    this.fixedPlaces = Object.assign([], this.fixedPlaces);
-    this.fixedPlaces.push(fixedPlace);
+  private onPlaceClick(element: HTMLElement, fixedPlace: PlaceModel): void {
+    this.dialog
+      .open(AssignFixedPlaceDialog, {
+        data: { svgElement: element, fixedPlace: fixedPlace },
+      })
+      .afterClosed()
+      .subscribe((response) => this.handleDialogResponse(response, element));
   }
 
-  private unAssignUserFromFixedPlace(fixedPlace: FixedPlaceModel) {
+  private onPlaceMouseover(element: HTMLElement, fixedPlace: PlaceModel): void {
+    if (!fixedPlace) return;
+    const { top, right } = element.getBoundingClientRect();
+    this.seatTooltip.showTooltip(
+      right + window.scrollX,
+      top + window.scrollY - 50,
+      fixedPlace
+    );
+  }
+
+  private onPlaceMouseleave(): void {
+    this.seatTooltip.hideTooltip();
+  }
+
+  private handleDialogResponse(
+    response: {
+      assigned: boolean;
+      fixedPlace: FixedPlaceModel;
+    },
+    element: HTMLElement
+  ): void {
+    if (!response) return;
+    if (response.assigned) {
+      this.assignUserToFixedPlace(response.fixedPlace);
+    } else {
+      this.unAssignUserFromFixedPlace(response.fixedPlace);
+    }
+    this.initializeSvgElements();
+  }
+
+  private findFixedPlaceById(id: string): PlaceModel {
+    return this.fixedPlaces.find((place) => place.placeId === id);
+  }
+
+  private assignUserToFixedPlace(fixedPlace: FixedPlaceModel): void {
+    if (
+      !this.fixedPlaces.some((place) => place.placeId === fixedPlace.placeId)
+    ) {
+      this.fixedPlaces.push(fixedPlace);
+    }
+  }
+
+  private unAssignUserFromFixedPlace(fixedPlace: FixedPlaceModel): void {
     this.fixedPlaces = this.fixedPlaces.filter(
       (place) => place.placeId !== fixedPlace.placeId
     );

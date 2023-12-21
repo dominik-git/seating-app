@@ -6,7 +6,7 @@ import { SeatingRoutingModule } from './seating-routing.module';
 
 import { SvgComponent } from './components/svg/svg.component';
 
-import { FloorContainerComponent } from './pages/floor-container/floor-container.component';
+import { ReservePlaceContainerComponent } from './pages/reserve-place-container/reserve-place-container.component';
 
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
@@ -22,7 +22,7 @@ import { SpaceBookTimeSlotComponent } from './components/space-book-time-slot/sp
     SeatingComponent,
     SeatComponent,
     SvgComponent,
-    FloorContainerComponent,
+    ReservePlaceContainerComponent,
     SeatBookDialog,
     SpaceBookTimeSlotComponent,
   ],

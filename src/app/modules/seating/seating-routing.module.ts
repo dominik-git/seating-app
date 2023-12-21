@@ -1,11 +1,11 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { FloorContainerComponent } from './pages/floor-container/floor-container.component';
+import { ReservePlaceContainerComponent } from './pages/reserve-place-container/reserve-place-container.component';
 
 const routes: Routes = [
   {
     path: '',
-    component: FloorContainerComponent,
+    component: ReservePlaceContainerComponent,
   },
 ];
 

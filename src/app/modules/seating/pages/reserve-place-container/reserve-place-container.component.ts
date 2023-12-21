@@ -26,9 +26,9 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { SpinnerComponent } from '../../../shared/components/spinner/spinner.component';
 
 @Component({
-  selector: 'app-floor-container',
-  templateUrl: './floor-container.component.html',
-  styleUrls: ['./floor-container.component.scss'],
+  selector: 'app-reserve-place-container',
+  templateUrl: './reserve-place-container.component.html',
+  styleUrls: ['./reserve-place-container.component.scss'],
   standalone: true,
   imports: [
     SpinnerComponent,
@@ -48,7 +48,7 @@ import { SpinnerComponent } from '../../../shared/components/spinner/spinner.com
     MatNativeDateModule,
   ],
 })
-export class FloorContainerComponent implements OnInit, AfterViewInit {
+export class ReservePlaceContainerComponent implements OnInit, AfterViewInit {
   @ViewChild(SeatTooltipComponent, { static: false })
   hello: SeatTooltipComponent;
 

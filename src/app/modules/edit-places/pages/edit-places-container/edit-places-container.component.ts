@@ -1,6 +1,5 @@
-import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { SeatTooltipComponent } from '../../../shared/components/seat-tooltip/seat-tooltip.component';
-import { Subscription } from 'rxjs';
 
 import { StateEnum } from '../../../../enums/state.enum';
 import { MatDialog } from '@angular/material/dialog';
@@ -20,7 +19,6 @@ import { GenericSvgComponent } from '../../../shared/components/generic-svg/gene
 import { SvgFileSelectorModel } from '../../../../api/models/svg-file-model';
 import { PlacesStore } from '../../../../services/places/places.store';
 import { EditPlaceComponent } from '../../components/edit-place/edit-place.component';
-import { tap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-edit-places-container',
@@ -46,24 +44,13 @@ import { tap } from 'rxjs/operators';
   ],
   providers: [EditPlacesContainerStore],
 })
-export class EditPlacesContainerComponent implements OnInit, AfterViewInit {
+export class EditPlacesContainerComponent {
   @ViewChild(SeatTooltipComponent, { static: false })
   StateEnum = StateEnum;
-
-  selectedOption: StateEnum;
-  selectedDate: Date;
-
-  assignedUsersToPlace = [];
   fixedPlaces: any[] = [];
-  subscription: Subscription;
   copy: any;
-
   isLoading$ = this.editPlacesContainerStore.isLoadingCombined$;
-  fixedPlaces$ = this.editPlacesContainerStore.selectFixedPlaces$.pipe(
-    tap((data) => {
-      console.log(data);
-    })
-  );
+  fixedPlaces$ = this.editPlacesContainerStore.selectFixedPlaces$;
   selectedPlaceSvg$ = this.editPlacesContainerStore.selectSelectedPlaceSvg$;
   selectPlacesName$ = this.placesStore.selectPlacesName$;
 
@@ -72,12 +59,6 @@ export class EditPlacesContainerComponent implements OnInit, AfterViewInit {
     private readonly editPlacesContainerStore: EditPlacesContainerStore,
     private readonly placesStore: PlacesStore
   ) {}
-
-  ngOnInit(): void {}
-
-  ngAfterViewInit(): void {
-    // this.editPlacesContainerStore.loadFixedPlace$();
-  }
 
   saveFixedPlaces() {
     console.log(this.fixedPlaces);
