@@ -1,7 +1,5 @@
 import { Component, ViewChild } from '@angular/core';
 import { SeatTooltipComponent } from '../../../shared/components/seat-tooltip/seat-tooltip.component';
-
-import { StateEnum } from '../../../../enums/state.enum';
 import { MatDialog } from '@angular/material/dialog';
 import { ParkingPlaceSvgComponent } from '../../../shared/components/parking-place-svg/parking-place-svg.component';
 import { FloorSevenSvgComponent } from '../../../shared/components/floor-seven-svg/floor-seven-svg.component';
@@ -17,8 +15,8 @@ import { PlaceSelectorComponent } from '../../../shared/components/place-selecto
 import { EditPlacesContainerStore } from './edit-places-container.store';
 import { GenericSvgComponent } from '../../../shared/components/generic-svg/generic-svg.component';
 import { SvgFileSelectorModel } from '../../../../api/models/svg-file-model';
-import { PlacesStore } from '../../../../services/places/places.store';
 import { EditPlaceComponent } from '../../components/edit-place/edit-place.component';
+import { PlaceModel } from '../../../../api/models/place-model';
 
 @Component({
   selector: 'app-edit-places-container',
@@ -46,18 +44,16 @@ import { EditPlaceComponent } from '../../components/edit-place/edit-place.compo
 })
 export class EditPlacesContainerComponent {
   @ViewChild(SeatTooltipComponent, { static: false })
-  StateEnum = StateEnum;
   fixedPlaces: any[] = [];
   copy: any;
   isLoading$ = this.editPlacesContainerStore.isLoadingCombined$;
   fixedPlaces$ = this.editPlacesContainerStore.selectFixedPlaces$;
   selectedPlaceSvg$ = this.editPlacesContainerStore.selectSelectedPlaceSvg$;
-  selectPlacesName$ = this.placesStore.selectPlacesName$;
+  selectPlacesName$ = this.editPlacesContainerStore.selectPlacesName$;
 
   constructor(
     public dialog: MatDialog,
-    private readonly editPlacesContainerStore: EditPlacesContainerStore,
-    private readonly placesStore: PlacesStore
+    private readonly editPlacesContainerStore: EditPlacesContainerStore
   ) {}
 
   saveFixedPlaces() {
@@ -66,5 +62,12 @@ export class EditPlacesContainerComponent {
 
   optionChanged(state: SvgFileSelectorModel) {
     this.editPlacesContainerStore.changePlace$(state);
+  }
+
+  onPlaceSelected(data: {
+    placeId: string;
+    fixedPlace: PlaceModel | null;
+  }): void {
+    this.editPlacesContainerStore.handlePlaceSelection(data);
   }
 }

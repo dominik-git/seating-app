@@ -1,13 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import {
-  generateDeskData,
-  generateFixedDesk,
-  getParkingData,
-  getParkingData2,
-} from '../../MockedData/data';
-import { StateEnum } from '../../enums/state.enum';
+import { generateFixedDesk, getParkingData } from '../../MockedData/data';
 import { ChairTypeEnum } from '../../enums/chairType.enum';
 import { BookedItemEnum } from '../../enums/booked-item.enum';
 import { PlaceModel } from '../models/place-model';
@@ -18,22 +12,18 @@ import { PlaceModel } from '../models/place-model';
 export class BookingResourceService {
   constructor(private http: HttpClient) {}
 
-  getDesks(date: any, state: StateEnum) {
-    console.log('date:' + date, 'state: ' + state);
-    const dataFloor7 = generateDeskData(701, 759);
-    const dataFloor5 = generateDeskData(501, 564);
-    const parking = getParkingData2(1, 20);
-
+  getDesks(date: any, place: string): Observable<PlaceModel[]> {
+    console.log(place);
     let response: any = [];
-    if (state === StateEnum.floor7) {
-      response = dataFloor7;
-    } else if (state === StateEnum.floor5) {
-      response = dataFloor5;
-    } else if (state === StateEnum.parking) {
-      response = parking;
+    if (place == 'Parking') {
+      response = getParkingData();
+    } else if (place == 'Floor 5') {
+      response = generateFixedDesk(501, 532);
+    } else if (place == 'Floor 7') {
+      response = generateFixedDesk(701, 730);
     }
 
-    let obs = new Observable((subscriber) => {
+    let obs = new Observable<PlaceModel[]>((subscriber) => {
       setTimeout(() => {
         subscriber.next(response);
         subscriber.complete();

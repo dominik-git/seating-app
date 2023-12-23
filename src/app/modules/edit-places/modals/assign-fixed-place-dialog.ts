@@ -25,6 +25,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { AsyncPipe, NgFor, NgIf } from '@angular/common';
+import { ChairTypeEnum } from '../../../enums/chairType.enum';
 
 @Component({
   selector: 'assign-fixed-place-dialog',
@@ -64,7 +65,7 @@ export class AssignFixedPlaceDialog implements OnInit {
   constructor(
     public dialogRef: MatDialogRef<AssignFixedPlaceDialog>,
     @Inject(MAT_DIALOG_DATA)
-    public data: { svgElement: any; fixedPlace: FixedPlaceModel },
+    public data: { placeId: string; fixedPlace: FixedPlaceModel },
     private bookingResourceService: BookingResourceService
   ) {}
 
@@ -89,25 +90,30 @@ export class AssignFixedPlaceDialog implements OnInit {
   }
 
   assignPlace() {
-    const placeId = this.data.svgElement.getAttribute('id').toString();
-    const fixedPlace = { ...this.myControl.value, placeId };
     // const fixedPlaceMock = {
     //     placeId: svgElementId,
     //     fullName: 'Roman Klimcik',
     //     position: 'software engineer',
     //     userId: 1
     // }
+    const fixedPlaceMock = {
+      placeId: this.data.placeId,
+      state: ChairTypeEnum.fixed,
+      type: 0,
+      fullName: this.myControl.value.fullName,
+      position: this.myControl.value.position,
+      userId: this.myControl.value.userId,
+    };
+
     this.dialogRef.close({
       assigned: true,
-      svgElement: this.data.svgElement,
-      fixedPlace: fixedPlace,
+      fixedPlace: fixedPlaceMock,
     });
   }
 
   unAssignPlace() {
     this.dialogRef.close({
       assigned: false,
-      svgElement: this.data.svgElement,
       fixedPlace: this.data.fixedPlace,
     });
   }

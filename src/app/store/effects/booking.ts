@@ -6,7 +6,7 @@ import {
   CloseBookDeskModal,
   OPEN_BOOK_DESK_MODAL,
 } from '@actions/booking/booking.action';
-import { SeatBookDialog } from '../../modules/seating/modals/seat-book-dialog';
+import { SeatBookDialog } from '../../modules/reserve-places/modals/seat-book-dialog';
 import { select, Store } from '@ngrx/store';
 import * as fromRoot from '@store/reducers';
 

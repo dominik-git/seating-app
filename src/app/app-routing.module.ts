@@ -10,7 +10,9 @@ const routes: Routes = [
   {
     path: 'seating',
     loadChildren: () =>
-      import('./modules/seating/seating.module').then((m) => m.SeatingModule),
+      import('./modules/reserve-places/reserve-places.module').then(
+        (m) => m.ReservePlacesModule
+      ),
   },
   {
     path: 'my-reserved-places',

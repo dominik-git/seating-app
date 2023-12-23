@@ -8,11 +8,8 @@ import {
 } from '@angular/core';
 import { GenericSvgComponent } from '../../../shared/components/generic-svg/generic-svg.component';
 import { SvgFileModel } from '../../../../api/models/svg-file-model';
-import { FixedPlaceModel } from '../../../../models/fixedPlace.model';
 import { SeatTooltipComponent } from '../../../shared/components/seat-tooltip/seat-tooltip.component';
 import { FloorFiveSvgComponent } from '../../../shared/components/floor-five-svg/floor-five-svg.component';
-import { AssignFixedPlaceDialog } from '../../modals/assign-fixed-place-dialog';
-import { MatDialog } from '@angular/material/dialog';
 import { PlaceModel } from '../../../../api/models/place-model';
 
 @Component({
@@ -30,15 +27,12 @@ export class EditPlaceComponent implements AfterViewInit {
   @Input() svgData: SvgFileModel;
   @Input() fixedPlaces: PlaceModel[];
 
-  @Output() placeClicked = new EventEmitter<any>();
+  @Output() placeAction = new EventEmitter<{
+    placeId: string;
+    fixedPlace: PlaceModel | null;
+  }>();
+
   selectedSvgImage: any;
-
-  // Maps to store references to listener functions for each SVG element
-  private clickListeners = new Map<HTMLElement, () => void>();
-  private mouseoverListeners = new Map<HTMLElement, () => void>();
-  private mouseleaveListeners = new Map<HTMLElement, () => void>();
-
-  constructor(private dialog: MatDialog) {}
 
   ngAfterViewInit(): void {
     this.selectedSvgImage = this.genericSvgComponent.getSvgElement();
@@ -87,12 +81,7 @@ export class EditPlaceComponent implements AfterViewInit {
   }
 
   private onPlaceClick(element: HTMLElement, fixedPlace: PlaceModel): void {
-    this.dialog
-      .open(AssignFixedPlaceDialog, {
-        data: { svgElement: element, fixedPlace: fixedPlace },
-      })
-      .afterClosed()
-      .subscribe((response) => this.handleDialogResponse(response, element));
+    this.placeAction.emit({ placeId: element.id, fixedPlace });
   }
 
   private onPlaceMouseover(element: HTMLElement, fixedPlace: PlaceModel): void {
@@ -109,37 +98,7 @@ export class EditPlaceComponent implements AfterViewInit {
     this.seatTooltip.hideTooltip();
   }
 
-  private handleDialogResponse(
-    response: {
-      assigned: boolean;
-      fixedPlace: FixedPlaceModel;
-    },
-    element: HTMLElement
-  ): void {
-    if (!response) return;
-    if (response.assigned) {
-      this.assignUserToFixedPlace(response.fixedPlace);
-    } else {
-      this.unAssignUserFromFixedPlace(response.fixedPlace);
-    }
-    this.initializeSvgElements();
-  }
-
   private findFixedPlaceById(id: string): PlaceModel {
     return this.fixedPlaces.find((place) => place.placeId === id);
-  }
-
-  private assignUserToFixedPlace(fixedPlace: FixedPlaceModel): void {
-    if (
-      !this.fixedPlaces.some((place) => place.placeId === fixedPlace.placeId)
-    ) {
-      this.fixedPlaces.push(fixedPlace);
-    }
-  }
-
-  private unAssignUserFromFixedPlace(fixedPlace: FixedPlaceModel): void {
-    this.fixedPlaces = this.fixedPlaces.filter(
-      (place) => place.placeId !== fixedPlace.placeId
-    );
   }
 }

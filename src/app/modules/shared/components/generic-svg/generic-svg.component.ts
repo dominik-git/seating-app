@@ -77,7 +77,6 @@ export class GenericSvgComponent implements AfterViewInit {
     this.panZoomController = panzoom(sceneElement);
     const svgElement = sceneElement.querySelector('svg');
     if (svgElement) {
-      console.log(svgElement);
       this.elementReference.emit(svgElement);
     }
   }

@@ -6,6 +6,8 @@ import { BookingResourceService } from '../../../../api/booking/booking-resource
 import { PlaceModel } from '../../../../api/models/place-model';
 import { PlacesStore } from '../../../../services/places/places.store';
 import { SvgFileSelectorModel } from '../../../../api/models/svg-file-model';
+import { MatDialog } from '@angular/material/dialog';
+import { AssignFixedPlaceDialog } from '../../modals/assign-fixed-place-dialog';
 
 export interface EditPlacesState {
   fixedPlaces: PlaceModel[];
@@ -17,7 +19,8 @@ export interface EditPlacesState {
 export class EditPlacesContainerStore extends ComponentStore<EditPlacesState> {
   constructor(
     private bookingResourceService: BookingResourceService,
-    private readonly placesStore: PlacesStore
+    private readonly placesStore: PlacesStore,
+    private readonly dialog: MatDialog
   ) {
     super({
       fixedPlaces: [],
@@ -72,6 +75,31 @@ export class EditPlacesContainerStore extends ComponentStore<EditPlacesState> {
       )
   );
 
+  readonly handlePlaceSelection = this.effect<{
+    placeId: string;
+    fixedPlace: PlaceModel | null;
+  }>((placeSelection$) =>
+    placeSelection$.pipe(
+      tap(({ placeId, fixedPlace }) => {
+        this.setLoading(true); // Set loading to true immediately
+        const dialogRef = this.dialog.open(AssignFixedPlaceDialog, {
+          data: { placeId, fixedPlace },
+        });
+
+        dialogRef.afterClosed().subscribe((response) => {
+          if (response) {
+            if (response.assigned) {
+              this.assignFixedPlace(response.fixedPlace);
+            } else {
+              this.unAssignFixedPlace(response.fixedPlace);
+            }
+          }
+          this.setLoading(false); // Reset loading to false after processing
+        });
+      })
+    )
+  );
+
   // REDUCERS
   readonly setFixedPlaces = this.updater(
     (state, fixedPlaces: PlaceModel[]) => ({
@@ -93,6 +121,30 @@ export class EditPlacesContainerStore extends ComponentStore<EditPlacesState> {
     ...state,
     isLoading,
   }));
+
+  readonly assignFixedPlace = this.updater((state, fixedPlace: PlaceModel) => {
+    const exists = state.fixedPlaces.some(
+      (place) => place.placeId === fixedPlace.placeId
+    );
+    if (!exists) {
+      return {
+        ...state,
+        isLoading: false,
+        fixedPlaces: [...state.fixedPlaces, fixedPlace],
+      };
+    }
+    return state;
+  });
+
+  readonly unAssignFixedPlace = this.updater(
+    (state, fixedPlace: PlaceModel) => ({
+      ...state,
+      isLoading: false,
+      fixedPlaces: state.fixedPlaces.filter(
+        (place) => place.placeId !== fixedPlace.placeId
+      ),
+    })
+  );
 
   // Private method to handle fetching of fixed places
   private fetchFixedPlaces(selectedPlace: string): Observable<PlaceModel[]> {

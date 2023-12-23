@@ -1,18 +1,16 @@
 import { NgModule } from '@angular/core';
-import { Routes, RouterModule } from '@angular/router';
-import {ReservedPlacesListComponent} from "./components/reserved-places-list/reserved-places-list.component";
-
-
+import { RouterModule, Routes } from '@angular/router';
+import { ReservePlaceContainerComponent } from '../reserve-places/pages/reserve-place-container/reserve-place-container.component';
 
 const routes: Routes = [
   {
     path: '',
-    component:ReservedPlacesListComponent
-  }
+    component: ReservePlaceContainerComponent,
+  },
 ];
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],
-  exports: [RouterModule]
+  exports: [RouterModule],
 })
-export class ReservedPlacesRoutingModule { }
+export class ReservedPlacesRoutingModule {}
