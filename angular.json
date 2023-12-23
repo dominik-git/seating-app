@@ -34,10 +34,8 @@
               "src/assets"
             ],
             "styles": [
-              "./node_modules/bootstrap/dist/css/bootstrap.css",
               "./node_modules/@angular/material/prebuilt-themes/indigo-pink.css",
               "./node_modules/animate.css/animate.css",
-              "./node_modules/ngx-toastr/toastr.css",
               "src/styles.scss"
             ],
             "scripts": [
@@ -84,10 +82,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "browserTarget": "seatting-plan:build:production"
+              "buildTarget": "seatting-plan:build:production"
             },
             "development": {
-              "browserTarget": "seatting-plan:build:development"
+              "buildTarget": "seatting-plan:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -95,7 +93,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "seatting-plan:build"
+            "buildTarget": "seatting-plan:build"
           }
         },
         "test": {
@@ -120,6 +118,5 @@
         }
       }
     }
-  },
-  "defaultProject": "seatting-plan"
+  }
 }

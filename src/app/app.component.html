@@ -33,49 +33,112 @@
 <!--</div>-->
 
 <!--Navbar-->
-<nav class="navbar navbar-expand-sm navbar-dark bg-primary">
-  <button
-    class="navbar-toggler"
-    (click)="collapse = !collapse"
-    type="button"
-    aria-expanded="false"
-    aria-label="Toggle navigation"
-  >
-    <span class="navbar-toggler-icon"></span>
-  </button>
+<!--<nav class="navbar navbar-expand-sm navbar-dark bg-primary">-->
+<!--    <button-->
+<!--            class="navbar-toggler"-->
+<!--            (click)="collapse = !collapse"-->
+<!--            type="button"-->
+<!--            aria-expanded="false"-->
+<!--            aria-label="Toggle navigation"-->
+<!--    >-->
+<!--        <span class="navbar-toggler-icon"></span>-->
+<!--    </button>-->
 
-  <div class="navbar-collapse" (click)="collapse = true" [hidden]="collapse">
-    <ul class="navbar-nav mr-auto">
-      <li class="nav-item">
-        <a class="nav-link" [routerLink]="['/']"
-          ><mat-icon>home</mat-icon>{{ "demo.title" | translate }}
-        </a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" [routerLink]="['/seating']">
-          <mat-icon>event_seat</mat-icon>Booking</a
-        >
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" [routerLink]="['/my-reserved-places']">
-          <mat-icon>lock</mat-icon>My Reserved seat & car place</a
-        >
-      </li>
+<!--    <div class="navbar-collapse" (click)="collapse = true" [hidden]="collapse">-->
+<!--        <ul class="navbar-nav mr-auto">-->
+<!--            <li class="nav-item">-->
+<!--                <a class="nav-link" [routerLink]="['/']"-->
+<!--                >-->
+<!--                    <mat-icon>home</mat-icon>-->
+<!--                    {{ "demo.title" | translate }}-->
+<!--                </a>-->
+<!--            </li>-->
+<!--            <li class="nav-item">-->
+<!--                <a class="nav-link" [routerLink]="['/seating']">-->
+<!--                    <mat-icon>event_seat</mat-icon>-->
+<!--                    Booking</a-->
+<!--                >-->
+<!--            </li>-->
+<!--            <li class="nav-item">-->
+<!--                <a class="nav-link" [routerLink]="['/my-reserved-places']">-->
+<!--                    <mat-icon>lock</mat-icon>-->
+<!--                    My Reserved seat & car place</a-->
+<!--                >-->
+<!--            </li>-->
 
-      <li class="nav-item">
-        <a class="nav-link" [routerLink]="['/edit-places']">
-          <mat-icon>edit</mat-icon>Edit fixed places</a
-        >
-      </li>
-    </ul>
+<!--            <li class="nav-item">-->
+<!--                <a class="nav-link" [routerLink]="['/edit-places']">-->
+<!--                    <mat-icon>edit</mat-icon>-->
+<!--                    Edit fixed places</a-->
+<!--                >-->
+<!--            </li>-->
+<!--        </ul>-->
 
-    <div class="language-selector">
-      <button mat-button (click)="useLanguage('en')">En</button>
-      <button mat-button (click)="useLanguage('sk')">Sk</button>
+<!--        <div class="language-selector">-->
+<!--            <button mat-button (click)="useLanguage('en')">En</button>-->
+<!--            <button mat-button (click)="useLanguage('sk')">Sk</button>-->
+<!--        </div>-->
+<!--    </div>-->
+<!--</nav>-->
+
+<!--<mat-sidenav-container class="sidenav-container">-->
+<!--<mat-sidenav #sidenav mode="side" opened="true">-->
+<!--    <mat-nav-list>-->
+<!--        <a class="nav-link" [routerLink]="['/']">-->
+<!--            <mat-icon>home</mat-icon>-->
+<!--            {{ "demo.title" | translate }}-->
+<!--        </a>-->
+<!--        <a class="nav-link" [routerLink]="['/seating']">-->
+<!--            <mat-icon>event_seat</mat-icon>-->
+<!--            Booking</a-->
+<!--        >-->
+<!--        <a class="nav-link" [routerLink]="['/my-reserved-places']">-->
+<!--            <mat-icon>lock</mat-icon>-->
+<!--            My Reserved seat & car place</a-->
+<!--        >-->
+<!--        <a class="nav-link" [routerLink]="['/edit-places']">-->
+<!--            <mat-icon>edit</mat-icon>-->
+<!--            Edit fixed places</a-->
+<!--        >-->
+<!--        &lt;!&ndash; more links &ndash;&gt;-->
+<!--    </mat-nav-list>-->
+<!--    <button class="" (click)="sidenav.toggle()">Toggle2</button>-->
+
+<!--</mat-sidenav>-->
+
+<!--    <mat-sidenav-content>-->
+<!--        &lt;!&ndash; Main content &ndash;&gt;-->
+<!--        <div class="content">-->
+<!--            <router-outlet></router-outlet>-->
+<!--        </div>-->
+<!--    </mat-sidenav-content>-->
+
+<!--    &lt;!&ndash; Toggle button outside of mat-sidenav &ndash;&gt;-->
+<!--    <button mat-icon-button class="toggle-button" (click)="sidenav.toggle()">-->
+<!--        <span class="material-icons">-->
+<!--            {{ sidenav.opened ? 'arrow_back' : 'arrow_forward' }}-->
+<!--        </span>-->
+<!--        Toggle23-->
+<!--    </button>-->
+<!--    <button mat-icon-button class="" (click)="sidenav.toggle()">-->
+<!--        <span class="material-icons">-->
+<!--            {{ sidenav.opened ? 'arrow_back' : 'arrow_forward' }}-->
+<!--        </span>-->
+<!--        Toggle23-->
+<!--    </button>-->
+
+<!--</mat-sidenav-container>-->
+
+<mat-sidenav-container class="example-container" autosize>
+    <mat-sidenav #sidenav class="example-sidenav" mode="side" opened="true">
+        <button mat-icon-button class="toggle-button" (click)="isExpanded = !isExpanded">
+    <span class="material-icons">
+      {{ isExpanded ? 'arrow_back' : 'arrow_forward' }}
+    </span>
+        </button>
+        <app-side-nav-menu-list [isExpanded]="isExpanded"/>
+    </mat-sidenav>
+    <div class="content">
+        <router-outlet></router-outlet>
     </div>
-  </div>
-</nav>
-<!--/.Navbar-->
-<div class="content">
-  <router-outlet></router-outlet>
-</div>
+</mat-sidenav-container>

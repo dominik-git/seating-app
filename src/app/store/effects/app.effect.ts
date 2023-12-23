@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
-import { Actions, createEffect, Effect, ofType } from '@ngrx/effects';
+import { Actions, createEffect, ofType } from '@ngrx/effects';
+
 import {
   CHANGE_BOOK_DATE,
   CHANGE_STATE,
@@ -10,7 +11,7 @@ import { catchError, map, mergeMap, withLatestFrom } from 'rxjs/operators';
 import { EMPTY } from 'rxjs';
 import { select, Store } from '@ngrx/store';
 import * as fromRoot from '@store/reducers';
-import {BookingResourceService} from "../../services/booking/booking-resource.service";
+import { BookingResourceService } from '../../api/booking/booking-resource.service';
 
 @Injectable()
 export class AppEffects {
@@ -20,22 +21,22 @@ export class AppEffects {
     private readonly _store: Store<fromRoot.State>
   ) {}
 
-  @Effect() specialEffect$ = this.actions$.pipe(
-    ofType(...[CHANGE_STATE, CHANGE_BOOK_DATE, LOAD_DESKS]),
-    withLatestFrom(
-      this._store.pipe(select(fromRoot.getSelectedDate)),
-      this._store.pipe(select(fromRoot.getState))
-    ),
-    mergeMap(([action, date, state]) =>
-      this.bookingResourceService.getDesks(date, state).pipe(
-        map((movies) => ({
-          type: LOAD_DESKS_SUCCESSFUL,
-          payload: movies,
-        })),
-        catchError(() => EMPTY)
+  specialEffect$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(CHANGE_STATE, CHANGE_BOOK_DATE, LOAD_DESKS),
+      withLatestFrom(
+        this._store.pipe(select(fromRoot.getSelectedDate)),
+        this._store.pipe(select(fromRoot.getState))
+      ),
+      mergeMap(([action, date, state]) =>
+        this.bookingResourceService.getDesks(date, state).pipe(
+          map((movies) => ({
+            type: LOAD_DESKS_SUCCESSFUL,
+            payload: movies,
+          })),
+          catchError(() => EMPTY)
+        )
       )
     )
   );
-
-
 }

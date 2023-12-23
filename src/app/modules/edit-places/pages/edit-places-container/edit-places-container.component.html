@@ -1,0 +1,13 @@
+<app-spinner [isLoading]="(isLoading$ | async) === true"></app-spinner>
+<div class="booking-navigation">
+  <app-place-selector (placeSelected)="optionChanged($event)"
+                      [selectOptions]="selectPlacesName$ | async"/>
+  <button mat-raised-button color="primary" (click)="saveFixedPlaces()">Save</button>
+</div>
+
+
+<div class="state-wrapper" *ngIf="(isLoading$ | async) == false ">
+  <ng-container *ngIf="(selectedPlaceSvg$ |async) as svgData">
+    <app-edit-place [svgData]="svgData" [fixedPlaces]="fixedPlaces$ | async" (placeAction)="onPlaceSelected($event)"/>
+  </ng-container>
+</div>

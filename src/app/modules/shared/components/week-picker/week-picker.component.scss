@@ -1,4 +1,4 @@
-@import '../../../../../../../../fenix-fe/fenix-fe/src/assets/styles/colors';
+//@import '../../../../../../../../fenix-fe/fenix-fe/src/assets/styles/colors';
 .month-picker {
   display: flex;
   justify-content: center;
@@ -6,7 +6,7 @@
 }
 
 .month-picker-text {
-  color: $primary-brand-blue;
+  //color: $primary-brand-blue;
   width: 280px;
   display: flex;
   justify-content: center;
@@ -19,7 +19,9 @@
 
 .time-worked {
 }
+
 .home-office {
 }
+
 .overtime {
 }

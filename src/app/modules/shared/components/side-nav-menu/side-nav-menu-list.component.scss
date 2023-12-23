@@ -1,0 +1,22 @@
+.example-sidenav {
+  user-select: none;
+}
+
+.full-width {
+  width: 100%;
+}
+
+.toggle-button {
+  position: absolute;
+  top: 50%;
+  right: 0;
+  z-index: 1000;
+}
+
+.nav-link {
+  padding: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: start;
+  gap: 1rem
+}

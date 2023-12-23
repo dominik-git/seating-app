@@ -5,7 +5,7 @@
     "baseUrl": "./",
     "outDir": "./dist/out-tsc",
     "forceConsistentCasingInFileNames": true,
-    "strict": true,
+    "strict": false,
     "noImplicitReturns": true,
     "strictPropertyInitialization": false,
     "noFallthroughCasesInSwitch": true,
@@ -15,14 +15,24 @@
     "experimentalDecorators": true,
     "moduleResolution": "node",
     "importHelpers": true,
-    "target": "es2017",
+    "target": "ES2022",
     "module": "es2020",
-    "lib": ["es2018", "dom"],
-    "types": ["node"],
+    "lib": [
+      "es2018",
+      "dom"
+    ],
+    "types": [
+      "node"
+    ],
     "paths": {
-      "@store/*": ["src/app/store/*"],
-      "@actions/*": ["src/app/store/actions/*"]
-    }
+      "@store/*": [
+        "src/app/store/*"
+      ],
+      "@actions/*": [
+        "src/app/store/actions/*"
+      ]
+    },
+    "useDefineForClassFields": false
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,

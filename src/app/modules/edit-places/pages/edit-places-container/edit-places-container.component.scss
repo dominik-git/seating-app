@@ -1,0 +1,18 @@
+.state-wrapper {
+  z-index: -1;
+}
+
+.booking-navigation {
+  z-index: 5;
+  position: absolute;
+  display: flex;
+  width: 100%;
+  background: white;
+  justify-content: space-between;
+  padding: 20px;
+  height: 100px;
+}
+
+
+
+

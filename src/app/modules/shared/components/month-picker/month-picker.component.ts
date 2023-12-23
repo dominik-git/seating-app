@@ -1,9 +1,12 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
-  selector: 'app-month-picker',
-  templateUrl: './month-picker.component.html',
-  styleUrls: ['./month-picker.component.scss']
+    selector: 'app-month-picker',
+    templateUrl: './month-picker.component.html',
+    styleUrls: ['./month-picker.component.scss'],
+    standalone: true,
+    imports: [MatIconModule]
 })
 export class MonthPickerComponent implements OnInit {
   currentMonth: number;

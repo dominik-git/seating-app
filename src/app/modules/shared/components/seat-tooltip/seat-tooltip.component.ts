@@ -1,26 +1,25 @@
-import {Component, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core';
+import { Component, Input } from '@angular/core';
 
 @Component({
   selector: 'app-seat-tooltip',
   templateUrl: './seat-tooltip.component.html',
-  styleUrls: ['./seat-tooltip.component.scss']
+  styleUrls: ['./seat-tooltip.component.scss'],
+  standalone: true,
 })
-export class SeatTooltipComponent implements OnChanges {
-  person:any;
-  top: any;
-  right: any;
-  bottom: any;
-  left: any;
-  display: any ='none';
+export class SeatTooltipComponent {
+  @Input() display: string = 'none';
+  @Input() left: number = 0;
+  @Input() top: number = 0;
+  @Input() person = null;
 
-  constructor() { }
-
-  ngOnInit(): void {
-    console.log()
+  showTooltip(x: number, y: number, person: any): void {
+    this.left = x;
+    this.top = y;
+    this.person = person;
+    this.display = 'block';
   }
 
-  ngOnChanges(changes: SimpleChanges): void {
-    console.log(this.person);
+  hideTooltip(): void {
+    this.display = 'none';
   }
-
 }

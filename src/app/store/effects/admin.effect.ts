@@ -1,20 +1,22 @@
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import {catchError, exhaustMap, map, mergeMap, tap, withLatestFrom} from 'rxjs/operators';
+import {
+  catchError,
+  exhaustMap,
+  map,
+  tap,
+  withLatestFrom,
+} from 'rxjs/operators';
 import { Injectable } from '@angular/core';
 import {
   CHANGE_PLACE,
   LOAD_FIXED_PLACES,
   LOAD_FIXED_PLACES_SUCCESSFUL,
-  OPEN_ASSIGN_PLACE_MODAL
 } from '@actions/admin/admin.actions';
 import { select, Store } from '@ngrx/store';
 import * as fromRoot from '@store/reducers';
 
-import { BookingResourceService } from '../../services/booking/booking-resource.service';
-import {LOAD_DESKS_SUCCESSFUL} from "@actions/app/app.action";
-import {EMPTY} from "rxjs";
-import {CloseBookDeskModal, OPEN_BOOK_DESK_MODAL} from "@actions/booking/booking.action";
-import {SeatBookDialog} from "../../modules/seating/modals/seat-book-dialog";
+import { BookingResourceService } from '../../api/booking/booking-resource.service';
+import { EMPTY } from 'rxjs';
 
 @Injectable()
 export class AdminEffect {
@@ -26,18 +28,18 @@ export class AdminEffect {
 
   loadFixedPlaces = createEffect(() => {
     return this.actions$.pipe(
-      ofType(LOAD_FIXED_PLACES,CHANGE_PLACE),
+      ofType(LOAD_FIXED_PLACES, CHANGE_PLACE),
       withLatestFrom(this._store.pipe(select(fromRoot.getSelectedPlace))),
       exhaustMap(([action, state]) => {
         return this.bookingResourceService.getFixedPlaces(state).pipe(
-          tap((places)=>console.log(places)),
+          tap((places) => console.log(places)),
           map((places) => ({
             type: LOAD_FIXED_PLACES_SUCCESSFUL,
             payload: places,
           })),
           catchError(() => EMPTY)
         );
-      }),
+      })
     );
   });
 
@@ -68,5 +70,4 @@ export class AdminEffect {
   //     })
   //   );
   // });
-
 }

@@ -1,32 +1,23 @@
 import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import {
-  catchError,
-  exhaustMap,
-  map,
-  mergeMap, tap,
-  withLatestFrom,
-} from 'rxjs/operators';
+import { exhaustMap, map, withLatestFrom } from 'rxjs/operators';
 import {
   BookingAction,
-  CloseBookDeskModal, LOAD_SEATS_IN_DATE_RANGE_SUCCESSFUL,
-  LoadSeatsInDateRangeSuccessful,
+  CloseBookDeskModal,
   OPEN_BOOK_DESK_MODAL,
-  SELECT_SEAT_DATE_RANGE,
 } from '@actions/booking/booking.action';
-import { MatDialog } from '@angular/material/dialog';
-import { SeatBookDialog } from '../../modules/seating/modals/seat-book-dialog';
+import { SeatBookDialog } from '../../modules/reserve-places/modals/seat-book-dialog';
 import { select, Store } from '@ngrx/store';
 import * as fromRoot from '@store/reducers';
-import { LOAD_DESKS_SUCCESSFUL } from '@actions/app/app.action';
-import { EMPTY } from 'rxjs';
-import { BookingResourceService } from '../../services/booking/booking-resource.service';
+
+import { BookingResourceService } from '../../api/booking/booking-resource.service';
+import { MatDialog } from '@angular/material/dialog';
 
 @Injectable()
 export class BookingEffects {
   constructor(
     private readonly _store: Store<fromRoot.State>,
-    private actions$: Actions <BookingAction>,
+    private actions$: Actions<BookingAction>,
     public dialog: MatDialog,
     private bookingResourceService: BookingResourceService
   ) {}
@@ -39,7 +30,7 @@ export class BookingEffects {
         this._store.pipe(select(fromRoot.getSelectedDesk))
       ),
       exhaustMap(([action, date, selectedDesk]) => {
-        console.log(action, "selected date", date)
+        console.log(action, 'selected date', date);
         let dialogRef = this.dialog.open(SeatBookDialog, {
           data: {
             selectedDate: date,
