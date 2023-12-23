@@ -13,6 +13,10 @@ import { MatButtonModule } from '@angular/material/button';
 import { NgIf } from '@angular/common';
 import { SideNavMenuListComponent } from './modules/shared/components/side-nav-menu/side-nav-menu-list.component';
 import { PlacesStore } from './services/places/places.store';
+import {
+  GoogleSigninButtonModule,
+  SocialAuthService,
+} from '@abacritt/angularx-social-login';
 
 @Component({
   selector: 'app-root',
@@ -29,6 +33,7 @@ import { PlacesStore } from './services/places/places.store';
     MatButtonModule,
     NgIf,
     SideNavMenuListComponent,
+    GoogleSigninButtonModule,
   ],
 })
 export class AppComponent implements OnInit, AfterViewInit {
@@ -42,13 +47,17 @@ export class AppComponent implements OnInit, AfterViewInit {
     private readonly observer: BreakpointObserver,
     private readonly translate: TranslateService,
     private readonly _store: Store<fromRoot.State>,
-    private readonly placesStore: PlacesStore
+    private readonly placesStore: PlacesStore,
+    private authService: SocialAuthService
   ) {
     translate.setDefaultLang('en');
   }
 
   ngOnInit(): void {
     this.placesStore.loadSvgPlaces$();
+    this.authService.authState.subscribe((user) => {
+      console.log(user);
+    });
   }
 
   ngAfterViewInit() {}

@@ -18,41 +18,35 @@ import { AppRoutingModule } from './app/app-routing.module';
 import { bootstrapApplication, BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { PlacesStore } from './app/services/places/places.store';
+import {
+  GoogleLoginProvider,
+  SocialAuthServiceConfig,
+} from '@abacritt/angularx-social-login';
 
 if (environment.production) {
   enableProdMode();
 }
 
-// app-init.ts or in your main module file
-// export function initializeApp(
-//   placesStore: PlacesStore,
-//   placesResourceService: PlacesResourceService
-// ): () => Observable<any> {
-//   return () => {
-//     return placesResourceService.getSvgFiles().pipe(
-//       tapResponse(
-//         (places) => {
-//           placesStore.processSvgFilesResponse(places);
-//           placesStore.setLoading(false);
-//         },
-//         (error) => {
-//           console.error(error);
-//           placesStore.setLoading(false);
-//           return EMPTY;
-//         }
-//       ),
-//       catchError(() => {
-//         placesStore.setLoading(false);
-//         return EMPTY;
-//       }),
-//       take(1)
-//     );
-//   };
-// }
-
 bootstrapApplication(AppComponent, {
   providers: [
     PlacesStore,
+    {
+      provide: 'SocialAuthServiceConfig',
+      useValue: {
+        autoLogin: false,
+        providers: [
+          {
+            id: GoogleLoginProvider.PROVIDER_ID,
+            provider: new GoogleLoginProvider(
+              '818996218209-1dh1sn96ures4lu7jtgka2p0ttv4gjnf.apps.googleusercontent.com'
+            ),
+          },
+        ],
+        onError: (err) => {
+          console.error(err);
+        },
+      } as SocialAuthServiceConfig,
+    },
     importProvidersFrom(
       BrowserModule,
       AppRoutingModule,
