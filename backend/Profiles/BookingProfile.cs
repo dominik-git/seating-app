@@ -8,5 +8,6 @@ public class AutoMapperProfile : Profile
     {
         CreateMap<BookingPlaceDao, BookingPlaceViewModel>();
         CreateMap<BookingPlaceViewModel, BookingPlaceDao>();
+        CreateMap<BookingDao, BookingViewModel>();
     }
 }

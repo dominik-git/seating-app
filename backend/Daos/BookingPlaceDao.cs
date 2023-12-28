@@ -27,6 +27,9 @@ namespace BookingApp.Daos
         public string ReservedFor { get; set; }
 
         public DateTime? ModifiedDate { get; set; }
+        public bool AvailableForBooking { get; set; }
+        public DateTime? AvailableFrom { get; set; }
+        public DateTime? AvailableTo { get; set; }
 
         public int? GroupId { get; set; }
         public virtual GroupDao? Group { get; set; }

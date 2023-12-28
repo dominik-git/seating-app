@@ -3,6 +3,7 @@ using BookingApp.Database;
 using BookingApp.Enums;
 using BookingApp.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace BookingApp.Repositories
 {
@@ -155,12 +156,12 @@ namespace BookingApp.Repositories
         }
         public async Task<BookingDao> GetBookingByIdAndBookingDateAsync(int id, DateTime bookingDate)
         {
-            return await _context.Bookings.FirstOrDefaultAsync(item => item.Id == id && item.BookingDate == bookingDate);
+            return await _context.Bookings.FirstOrDefaultAsync(item => item.Id == id && item.BookingDate.Date == bookingDate.Date);
         }
 
-        public async Task<BookingDao> GetBookingByBookingPlaceIdAsync(int bookingPlaceId)
+        public async Task<List<BookingDao>> GetBookingByBookingPlaceIdAsync(int bookingPlaceId)
         {
-            return await _context.Bookings.FirstOrDefaultAsync(item => item.BookingPlaceId == bookingPlaceId);
+            return await _context.Bookings.Where(item => item.BookingPlaceId == bookingPlaceId).ToListAsync();
         }
 
         public async Task<BookingDao> CreateBookingAsync(BookingDao booking)

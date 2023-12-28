@@ -28,7 +28,7 @@ public class BookingController : ControllerBase
     }
 
     // GET: api/Booking/5
-    [HttpGet("/BookingPlace/{id}")]
+    [HttpGet("BookingPlace/{id}")]
     public async Task<ActionResult<BookingPlaceViewModel>> GetBookingPlace(int id)
     {
         var bookingPlaceDao = await _repository.GetBookingPlaceAsync(id);
@@ -41,8 +41,28 @@ public class BookingController : ControllerBase
         return _mapper.Map<BookingPlaceViewModel>(bookingPlaceDao);
     }
 
+    [HttpGet("GetBookingById/{id}")]
+    public async Task<ActionResult<BookingViewModel>> GetBooking(int id)
+    {
+        var bookingDao = await _repository.GetBookingAsync(id);
+
+        if (bookingDao == null)
+        {
+            return NotFound();
+        }
+
+        return _mapper.Map<BookingViewModel>(bookingDao);
+    }
+
+    [HttpGet("GetByBookingPlaceId/{id}")]
+    public async Task<ActionResult<List<BookingViewModel>>> GetByBookingPlaceId(int id)
+    {
+        var bookingDaos = await _repository.GetBookingByBookingPlaceIdAsync(id);    
+
+        return _mapper.Map<List<BookingViewModel>>(bookingDaos);
+    }
+
     // PUT: api/Booking/5
-    [Authorize(Policy = IdentityData.AdminUserPolicyName)]
     [HttpPut("{id}")]
     public async Task<IActionResult> Put(int id, BookingPlaceViewModel bookingPlaceViewModel)
     {
@@ -50,12 +70,19 @@ public class BookingController : ControllerBase
         {
             return BadRequest();
         }
+
+        var userEmail = this.User.FindFirstValue(ClaimTypes.Email) ?? "";
+        var admin = this.User.FindFirstValue("admin") ?? "false";
+        bool isAdmin = bool.Parse(admin);
         var bookingItem = await _repository.GetBookingPlaceAsync(id);
         if (bookingItem == null)
         {
             return NotFound();
         }
-        var userEmail = this.User.Claims.FirstOrDefault(item => item.Type == "email")?.Value;
+        if (!isAdmin || userEmail != bookingItem.ReservedFor)
+        {
+            return BadRequest("You are not allowed to udate this entity");
+        }
         var bookingDao = _mapper.Map<BookingPlaceDao>(bookingPlaceViewModel);
         bookingDao.ModifiedDate = DateTime.UtcNow;
         await _repository.UpdateBookingPlaceAsync(bookingDao);
@@ -72,23 +99,50 @@ public class BookingController : ControllerBase
 
         foreach (var bookingVm in request.Bookings)
         {
-            var existingBooking = await _repository.GetBookingAsync(bookingVm.Id);
+            var existingBooking = await _repository.GetBookingByIdAndBookingDateAsync(bookingVm.Id, bookingVm.BookingDate);
             var bookingRequest = new BookingRequest
             {
                 Id = bookingVm.Id,
                 State = bookingVm.State,
-                BookingDate = bookingVm.BookingDate,
+                BookingDate = bookingVm.BookingDate.ToUniversalTime(),
                 BookedBy = userEmail,
                 IsAdmin = isAdmin,
                 BookingPlaceId = bookingVm.BookingPlaceId
             };
-            try
+            if (existingBooking != null)
             {
-                await _repository.UpdateStateAsync(bookingRequest);
+                if (existingBooking.BookedBy != userEmail)
+                {
+                    return BadRequest("Already reserved by another user");
+                }
+                try
+                {
+                    await _repository.UpdateStateAsync(bookingRequest);
+                }
+                catch (Exception)
+                {
+                    throw;
+                }
             }
-            catch (Exception ex)
+            else
             {
-                throw ex;
+                var newBooking = new BookingDao
+                {
+                    BookingPlaceId = bookingVm.BookingPlaceId,
+                    State = bookingVm.State,
+                    CreatedDate = DateTime.UtcNow,
+                    CreatedBy = userEmail,
+                    BookingDate = bookingVm.BookingDate.ToUniversalTime(),
+                    BookedBy = userEmail
+                };
+                try
+                {
+                    await _repository.CreateBookingAsync(newBooking);
+                }
+                catch (Exception)
+                {
+                    throw;
+                }
             }
         }
 
@@ -100,18 +154,33 @@ public class BookingController : ControllerBase
     public async Task<IActionResult> CreateOrUpdateBooking(BookingViewModel bookingVm)
     {
         var userEmail = this.User.FindFirstValue(ClaimTypes.Email) ?? "";
-        var admin = this.User.FindFirstValue("admin");
+        var admin = this.User.FindFirstValue("admin") ?? "false";
         bool isAdmin = bool.Parse(admin);
 
+        if (bookingVm.BookingDate < DateTime.UtcNow)
+        {
+            return BadRequest("Booking time cannot be in the past");
+        }
 
-        var existingBooking = await _repository.GetBookingByIdAndBookingDateAsync(bookingVm.Id, bookingVm.BookingDate);
         var bookingPlace = await _repository.GetBookingPlaceAsync(bookingVm.BookingPlaceId);
-        if (bookingPlace.Type == BookingPlaceTypeEnum.Fixed &&
+        if (bookingPlace.Type == BookingPlaceTypeEnum.Fixed)
+        {
+            if (!bookingPlace.AvailableForBooking &&
             !string.IsNullOrEmpty(bookingPlace.ReservedFor) &&
             bookingPlace.ReservedFor != userEmail)
-        {
-            return BadRequest("This booking place is reserved for " + bookingPlace.ReservedFor);
+            {
+                return BadRequest("This booking place is reserved for " + bookingPlace.ReservedFor);
+            }
+
+            if (bookingPlace.AvailableForBooking &&
+                bookingVm.BookingDate < bookingPlace.AvailableFrom &&
+                bookingVm.BookingDate > bookingPlace.AvailableTo)
+            {
+                return BadRequest("This booking place is reserved for day you choosed.");
+            }
         }
+
+        var existingBooking = await _repository.GetBookingByIdAndBookingDateAsync(bookingVm.Id, bookingVm.BookingDate);
         var bookingRequest = new BookingRequest
         {
             Id = bookingVm.Id,
@@ -125,19 +194,19 @@ public class BookingController : ControllerBase
         {
             if (existingBooking.BookedBy != userEmail)
             {
-                return BadRequest("Already reserved for this day");
+                return BadRequest("Already reserved by another user");
             }
             try
             {
                 await _repository.UpdateStateAsync(bookingRequest);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                throw ex;
+                throw;
             }
         }
         else
-        {            
+        {
             var newBooking = new BookingDao
             {
                 BookingPlaceId = bookingVm.BookingPlaceId,
@@ -151,9 +220,9 @@ public class BookingController : ControllerBase
             {
                 await _repository.CreateBookingAsync(newBooking);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                throw ex;
+                throw;
             }
         }
         return Ok();

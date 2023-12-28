@@ -7,7 +7,7 @@ public interface IBookingRepository
     Task<IEnumerable<BookingPlaceDao>> GetBookingPlacesAsync();
     Task<IEnumerable<BookingDao>> GetBookingsAsync();
     Task<BookingPlaceDao> GetBookingPlaceAsync(int id);
-    Task<BookingDao> GetBookingByBookingPlaceIdAsync(int bookingPlaceId);
+    Task<List<BookingDao>> GetBookingByBookingPlaceIdAsync(int bookingPlaceId);
     Task<BookingDao> GetBookingAsync(int id);
     Task<BookingPlaceDao> CreateBookingPlaceAsync(BookingPlaceDao booking);
     Task<BookingPlaceDao> UpdateBookingPlaceAsync(BookingPlaceDao booking);
