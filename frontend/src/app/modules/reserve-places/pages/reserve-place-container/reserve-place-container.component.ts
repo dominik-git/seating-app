@@ -18,6 +18,9 @@ import { ReservePlacesContainerStore } from './reserve-places-container.store';
 import { SvgFileSelectorModel } from '../../../../api/models/svg-file-model';
 import { PlaceModel } from '../../../../api/models/place-model';
 import { MatDialog } from '@angular/material/dialog';
+import {DatePlaceSelectorComponent} from "../../components/date-place-selector/date-place-selector.component";
+import {NgxSkeletonLoaderModule} from "ngx-skeleton-loader";
+import {provideComponentStore} from "@ngrx/component-store";
 
 @Component({
   selector: 'app-reserve-place-container',
@@ -43,37 +46,35 @@ import { MatDialog } from '@angular/material/dialog';
     EditPlaceComponent,
     MatButtonModule,
     PlaceSelectorComponent,
+    DatePlaceSelectorComponent,
+    NgxSkeletonLoaderModule,
   ],
-  providers: [ReservePlacesContainerStore],
+  providers: [ provideComponentStore(ReservePlacesContainerStore)],
 })
-export class ReservePlaceContainerComponent implements OnInit {
+export class ReservePlaceContainerComponent {
   @ViewChild(SeatTooltipComponent, { static: false })
   hello: SeatTooltipComponent;
-  selectedDate: Date | null = null;
   desks: any[];
-  isLoading$ = this.reservePlacesContainerStore.isLoadingCombined$;
+  isLoadingCombined$ = this.reservePlacesContainerStore.isLoadingCombined$;
+  isLoadingFloors$ =  this.reservePlacesContainerStore.selectIsLoadingFloors;
   fixedReservedPlaces$ =
     this.reservePlacesContainerStore.selectFixedReservedPlaces$;
   selectedPlaceSvg$ = this.reservePlacesContainerStore.selectSelectedPlaceSvg$;
   selectPlacesName$ = this.reservePlacesContainerStore.selectPlacesName$;
+  selectedDate$ =  this.reservePlacesContainerStore.selectSelectedDate$
+  selectedPlaceFilter$ =  this.reservePlacesContainerStore.selectSelectedPlaceFilter$
 
   constructor(
     private readonly reservePlacesContainerStore: ReservePlacesContainerStore,
-    private readonly dialog: MatDialog
   ) {}
 
-  ngOnInit() {
-    this.reservePlacesContainerStore.selectSelectedDate$.subscribe(
-      (date) => (this.selectedDate = date)
-    );
-  }
 
   optionChanged(state: SvgFileSelectorModel) {
     this.reservePlacesContainerStore.changePlace$(state);
   }
 
-  dateChanged() {
-    this.reservePlacesContainerStore.changeDate$(this.selectedDate);
+  dateChanged(date:Date) {
+    this.reservePlacesContainerStore.changeDate$(date);
   }
 
   onPlaceSelected(data: {

@@ -4,7 +4,6 @@ import { SeatingComponent } from '../reserve-places/components/seating/seating.c
 import { SeatComponent } from '../reserve-places/components/seat/seat.component';
 import { ReservePlacesRoutingModule } from './reserve-places-routing.module';
 
-import { SvgComponent } from '../reserve-places/components/svg/svg.component';
 
 import { ReservePlaceContainerComponent } from '../reserve-places/pages/reserve-place-container/reserve-place-container.component';
 
@@ -21,7 +20,6 @@ import { SpaceBookTimeSlotComponent } from '../reserve-places/components/space-b
     ReactiveFormsModule,
     SeatingComponent,
     SeatComponent,
-    SvgComponent,
     ReservePlaceContainerComponent,
     SeatBookDialog,
     SpaceBookTimeSlotComponent,

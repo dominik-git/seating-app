@@ -5,9 +5,7 @@
       {{ isExpanded ? 'arrow_back' : 'arrow_forward' }}
     </span>
         </button>
-
         <app-side-nav-menu-list [isExpanded]="isExpanded"/>
-        <asl-google-signin-button type='icon' size='medium'></asl-google-signin-button>
         <div class="language-selector">
             <button mat-button (click)="useLanguage('en')">En</button>
             <button mat-button (click)="useLanguage('sk')">Sk</button>
