@@ -1,13 +1,33 @@
-<app-spinner [isLoading]="(isLoading$ | async) === true"></app-spinner>
 <div class="booking-navigation">
-  <app-place-selector (placeSelected)="optionChanged($event)"
-                      [selectOptions]="selectPlacesName$ | async"/>
-  <button mat-raised-button color="primary" (click)="saveFixedPlaces()">Save</button>
-</div>
-
-
-<div class="state-wrapper" *ngIf="(isLoading$ | async) == false ">
-  <ng-container *ngIf="(selectedPlaceSvg$ |async) as svgData">
-    <app-edit-place [svgData]="svgData" [fixedPlaces]="fixedPlaces$ | async" (placeAction)="onPlaceSelected($event)"/>
+  <ng-container *ngIf="(isLoadingFloors$ | async) == false; else showSkeletonFloor">
+    <app-place-selector (placeSelected)="optionChanged($event)"
+                        [selectOptions]="selectPlacesName$ | async"/>
+    <button mat-raised-button color="primary" (click)="saveFixedPlaces()">Save</button>
   </ng-container>
 </div>
+
+
+<ng-container *ngIf="(isLoadingCombined$ | async) == false; else showSkeleton">
+  <ng-container *ngIf="(selectedPlaceSvg$ |async) as svgData">
+    <div class="floor-content">
+
+      <app-edit-place [svgData]="svgData" [fixedPlaces]="fixedPlaces$ | async"
+                      (placeAction)="onPlaceSelected($event)"/>
+    </div>
+
+  </ng-container>
+</ng-container>
+
+
+<ng-template #showSkeletonFloor>
+  <ngx-skeleton-loader [theme]="{height: '56px', width:'230px'}"></ngx-skeleton-loader>
+
+</ng-template>
+
+
+<ng-template #showSkeleton>
+  <div class="svg-skeleton">
+    <ngx-skeleton-loader [theme]="{height: '500px', width:'700px'}"></ngx-skeleton-loader>
+
+  </div>
+</ng-template>

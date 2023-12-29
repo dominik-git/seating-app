@@ -39,9 +39,12 @@ export class EditPlacesContainerStore extends ComponentStore<EditPlacesState> {
     (state) => state.isLoading
   );
 
+  readonly selectIsLoadingFloors: Observable<boolean> =
+    this.placesStore.selectIsLoading$;
+
   readonly isLoadingCombined$: Observable<boolean> = combineLatest([
     this.selectIsLoadingEditingPage$,
-    this.placesStore.selectIsLoading$,
+    this.selectIsLoadingFloors,
   ]).pipe(
     map(
       ([isLoadingEditing, isLoadingPlaces]) =>
