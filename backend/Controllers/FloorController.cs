@@ -16,11 +16,13 @@ namespace BookingApp.Controllers
     public class FloorController : ControllerBase
     {
         private readonly IFloorRepository _repository;
+        private readonly IBookingRepository _bookingRepository;
         private readonly IMapper _mapper;
-        public FloorController(IFloorRepository repository, IMapper mapper)
+        public FloorController(IFloorRepository repository, IMapper mapper, IBookingRepository bookingRepository)
         {
             _repository = repository;
             _mapper = mapper;
+            _bookingRepository = bookingRepository;
         }
         [HttpGet]
         public async Task<ActionResult<FloorSimpleViewModel>> Get(int id)
@@ -44,6 +46,41 @@ namespace BookingApp.Controllers
         }
 
         [Authorize(Policy = IdentityData.AdminUserPolicyName)]
+        [HttpPost]
+        public async Task<ActionResult<FloorViewModel>> CreateWithBookingPlaces(CreateFloorWithBookingPlacesRequest request)
+        {
+            try
+            {
+                var floorDao = new FloorDao
+                {
+                    Name = request.Name,
+                    Description = request.Description,
+                    Svg = request.Svg
+                };
+                var createdFloor = await _repository.CreateAsync(floorDao);
+                var createdBookingPlaces = new List<BookingPlaceDao>();
+                foreach (var bookingPlace in request.BookingPlaces)
+                {
+                    bookingPlace.FloorId = createdFloor.Id;
+                    createdBookingPlaces.Add(await _bookingRepository.CreateBookingPlaceAsync(_mapper.Map<BookingPlaceDao>(bookingPlace)));
+                }
+                var result = new FloorViewModel
+                {
+                    FloorId = createdFloor.Id,
+                    FloorName = createdFloor.Name,
+                    FloorDescription = createdFloor.Description,
+                    Svg = createdFloor.Svg,
+                    BookingPlaces = createdBookingPlaces.Select(item => _mapper.Map<BookingPlaceWithBookingsViewModel>(item)).ToList()
+                };
+                return _mapper.Map<FloorViewModel>(createdFloor);
+            }
+            catch (Exception)
+            {
+                throw;
+            }            
+        }
+
+        [Authorize(Policy = IdentityData.AdminUserPolicyName)]
         [HttpPut]
         public async Task<ActionResult<FloorSimpleViewModel>> Update(FloorSimpleViewModel floor)
         {
@@ -55,7 +92,8 @@ namespace BookingApp.Controllers
             var updated = await _repository.UpdateAsync(_mapper.Map<FloorDao>(floor));
             return _mapper.Map<FloorSimpleViewModel>(updated);
         }
-        
+        [Authorize(Policy = IdentityData.AdminUserPolicyName)]
+        [HttpDelete]
         public async Task<ActionResult> Delete(int id)
         {
             var floorDao = await _repository.GetAsync(id);

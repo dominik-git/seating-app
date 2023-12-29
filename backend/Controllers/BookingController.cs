@@ -29,7 +29,7 @@ public class BookingController : ControllerBase
     }
 
     [HttpGet("GetAllByFloorAndDate")]
-    public async Task<ActionResult<FloorViewModel>> GetAllByFloorAndDate([FromBody] int floorId, [FromBody] DateTime? bookingDate)
+    public async Task<ActionResult<FloorViewModel>> GetAllByFloorAndDate([FromQuery]int floorId, [FromQuery]DateTime? bookingDate)
     {
         var bookingPlaceDaos = await _repository.GetBookingPlacesWithBookingsByFloorIdAsync(floorId, bookingDate);
         var result = new FloorViewModel
