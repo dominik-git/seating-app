@@ -12,12 +12,14 @@ public interface IBookingRepository
     Task<BookingPlaceDao> CreateBookingPlaceAsync(BookingPlaceDao booking);
     Task<BookingPlaceDao> UpdateBookingPlaceAsync(BookingPlaceDao booking);
     Task<BookingDao> CreateBookingAsync(BookingDao booking);
-    Task CreateOrUpdateStatesAsync(BookingsRequest request);
+    Task CreateOrUpdateStatesAsync(BookingsModel request);
     Task UpdateTypeAsync(List<int> ids, BookingPlaceTypeEnum type);
-    Task UpdateStateAsync(BookingRequest request);
+    Task UpdateStateAsync(BookingModel request);
     Task UpdateTypeAsync(int id, BookingPlaceTypeEnum type);
     Task DeleteBookingAsync(int id);
 
     Task DeleteBookingPlaceAsync(int id);
     Task<BookingDao> GetBookingByIdAndBookingDateAsync(int id, DateTime bookingDate);
+    Task<List<BookingPlaceDao>> GetBookingPlacesWithBookingsByFloorIdAsync(int floorId, DateTime? bookingDate);
+    Task<List<BookingDao>> GetBookingByBookingPlaceIdWithDateAsync(int bookingPlaceId);
 }

@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 
 [Route("api/[controller]")]
+[Authorize]
 [ApiController]
 public class BookingController : ControllerBase
 {
@@ -20,11 +21,23 @@ public class BookingController : ControllerBase
     }
 
     // GET: api/Booking
-    [HttpGet("/GetAllBookingPlaces")]
+    [HttpGet("GetAllBookingPlaces")]
     public async Task<ActionResult<IEnumerable<BookingPlaceViewModel>>> GetAllBookingPlaces()
     {
         var bookingPlaceDaos = await _repository.GetBookingsAsync();
         return Ok(_mapper.Map<IEnumerable<BookingPlaceViewModel>>(bookingPlaceDaos));
+    }
+
+    [HttpGet("GetAllByFloorAndDate")]
+    public async Task<ActionResult<FloorViewModel>> GetAllByFloorAndDate([FromQuery]int floorId, [FromQuery]DateTime? bookingDate)
+    {
+        var bookingPlaceDaos = await _repository.GetBookingPlacesWithBookingsByFloorIdAsync(floorId, bookingDate);
+        var result = new FloorViewModel
+        {
+            FloorId = floorId,
+            BookingPlaces = _mapper.Map<List<BookingPlaceWithBookingsViewModel>>(bookingPlaceDaos)
+        };
+        return Ok(result);
     }
 
     // GET: api/Booking/5
@@ -54,12 +67,24 @@ public class BookingController : ControllerBase
         return _mapper.Map<BookingViewModel>(bookingDao);
     }
 
-    [HttpGet("GetByBookingPlaceId/{id}")]
-    public async Task<ActionResult<List<BookingViewModel>>> GetByBookingPlaceId(int id)
+    [HttpGet("GetByBookingPlaceIdWithDate/{id}")]
+    public async Task<ActionResult<BookingPlaceWithBookingsViewModel>> GetByBookingPlaceIdWithDate(int id)
     {
-        var bookingDaos = await _repository.GetBookingByBookingPlaceIdAsync(id);    
+        var bookingDaos = await _repository.GetBookingByBookingPlaceIdWithDateAsync(id);
+        var bookingPlace = await _repository.GetBookingPlaceAsync(id);        
+        var result = new BookingPlaceWithBookingsViewModel
+        {
+            Id = id,
+            Name = bookingPlace.Name,
+            Type = bookingPlace.Type,
+            ItemType = bookingPlace.ItemType,
+            AvailableForBooking = bookingPlace.AvailableForBooking,
+            FloorId = bookingPlace.FloorId,
+            
+            Bookings = _mapper.Map<List<BookingViewModel>>(bookingDaos)
+        };
 
-        return _mapper.Map<List<BookingViewModel>>(bookingDaos);
+        return result;
     }
 
     // PUT: api/Booking/5
@@ -91,7 +116,7 @@ public class BookingController : ControllerBase
     }
 
     [Authorize(Policy = IdentityData.AdminUserPolicyName)]
-    [HttpPut("/Admin/CreateOrUpdate")]
+    [HttpPut("Admin/CreateOrUpdate")]
     public async Task<IActionResult> CreateOrUpdateBookings(BookingsViewModel request)
     {
         var userEmail = this.User.Claims.FirstOrDefault(item => item.Type == "email")?.Value;
@@ -99,10 +124,10 @@ public class BookingController : ControllerBase
 
         foreach (var bookingVm in request.Bookings)
         {
-            var existingBooking = await _repository.GetBookingByIdAndBookingDateAsync(bookingVm.Id, bookingVm.BookingDate);
-            var bookingRequest = new BookingRequest
+            var existingBooking = await _repository.GetBookingByIdAndBookingDateAsync(bookingVm.BookingId, bookingVm.BookingDate);
+            var bookingRequest = new BookingModel
             {
-                Id = bookingVm.Id,
+                Id = bookingVm.BookingId,
                 State = bookingVm.State,
                 BookingDate = bookingVm.BookingDate.ToUniversalTime(),
                 BookedBy = userEmail,
@@ -180,10 +205,10 @@ public class BookingController : ControllerBase
             }
         }
 
-        var existingBooking = await _repository.GetBookingByIdAndBookingDateAsync(bookingVm.Id, bookingVm.BookingDate);
-        var bookingRequest = new BookingRequest
+        var existingBooking = await _repository.GetBookingByIdAndBookingDateAsync(bookingVm.BookingId, bookingVm.BookingDate);
+        var bookingRequest = new BookingModel
         {
-            Id = bookingVm.Id,
+            Id = bookingVm.BookingId,
             State = bookingVm.State,
             BookingDate = bookingVm.BookingDate.ToUniversalTime(),
             BookedBy = userEmail,
@@ -229,7 +254,7 @@ public class BookingController : ControllerBase
     }
 
     // PUT: api/Booking/ChangeState
-    [HttpPut("/ChangeTypes")]
+    [HttpPut("ChangeTypes")]
     public async Task<IActionResult> ChangeTypes(MultipleBookingsTypeRequest request)
     {
         try
@@ -244,7 +269,7 @@ public class BookingController : ControllerBase
         return Ok();
     }
 
-    [HttpPut("/ChangeType")]
+    [HttpPut("ChangeType")]
     public async Task<IActionResult> ChangeType(BookingTypeRequest request)
     {
         try
@@ -284,7 +309,7 @@ public class BookingController : ControllerBase
 
     // DELETE: api/Booking/5
     [Authorize(Policy = IdentityData.AdminUserPolicyName)]
-    [HttpDelete("/BookingPlace/{id}")]
+    [HttpDelete("BookingPlace/{id}")]
     public async Task<IActionResult> DeleteBookingPlace(int id)
     {
         var BookingPlaceViewModel = await _repository.GetBookingPlaceAsync(id);

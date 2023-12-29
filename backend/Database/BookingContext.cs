@@ -16,5 +16,6 @@ namespace BookingApp.Database
         public DbSet<BookingPlaceDao> BookingPlaces { get; set; }
         public DbSet<BookingDao> Bookings { get; set; }
         public DbSet<GroupDao> Groups { get; set; }
+        public DbSet<FloorDao> Floors { get; set; }
     }
 }

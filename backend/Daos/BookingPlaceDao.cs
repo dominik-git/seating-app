@@ -22,7 +22,7 @@ namespace BookingApp.Daos
         [Required]
         public string CreatedBy { get; set; }
         [Required]
-        public string Floor { get; set; }
+        public int FloorId { get; set; }
 
         public string ReservedFor { get; set; }
 
@@ -33,6 +33,7 @@ namespace BookingApp.Daos
 
         public int? GroupId { get; set; }
         public virtual GroupDao? Group { get; set; }
-        public List<BookingDao>? BookingDaos { get; set; }
+        public FloorDao Floor { get; set; } = null!;
+        public ICollection<BookingDao> Bookings { get; } = new List<BookingDao>();
     }
 }
