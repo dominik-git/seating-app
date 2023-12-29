@@ -45,7 +45,7 @@ namespace BookingApp.Controllers
                                    issuer,
                                    audience,
                                    claims,
-                                   expires: DateTime.Now.AddMinutes(30),
+                                   expires: DateTime.Now.AddDays(30),
                                    signingCredentials: signingCredentials);
             return Ok(new JwtSecurityTokenHandler().WriteToken(token));
         }

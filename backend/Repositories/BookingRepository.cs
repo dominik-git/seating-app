@@ -10,6 +10,7 @@ namespace BookingApp.Repositories
     public class BookingRepository : IBookingRepository
     {
         private readonly BookingContext _context;
+        private const int DefaultDaysForBooking = 7;
 
         public BookingRepository(BookingContext context)
         {
@@ -68,7 +69,7 @@ namespace BookingApp.Repositories
             return await _context.BookingPlaces.Where(item => item.GroupId == groupId).ToListAsync();
         }
 
-        public async Task CreateOrUpdateStatesAsync(BookingsRequest request)
+        public async Task CreateOrUpdateStatesAsync(BookingsModel request)
         {
             List<BookingDao> entitiesForUpdate = new List<BookingDao>();
             List<BookingDao> entitiesForCreate = new List<BookingDao>();
@@ -118,7 +119,7 @@ namespace BookingApp.Repositories
             }
         }
 
-        public async Task UpdateStateAsync(BookingRequest request)
+        public async Task UpdateStateAsync(BookingModel request)
         {            
             var entity = _context.Bookings.FirstOrDefault(item => item.Id == request.Id);
             if (entity != null)
@@ -164,6 +165,15 @@ namespace BookingApp.Repositories
             return await _context.Bookings.Where(item => item.BookingPlaceId == bookingPlaceId).ToListAsync();
         }
 
+        public async Task<List<BookingDao>> GetBookingByBookingPlaceIdWithDateAsync(int bookingPlaceId)
+        {
+            var todaysDate = DateTime.UtcNow.Date;
+            var endDate = todaysDate.AddDays(DefaultDaysForBooking);
+            return await _context.Bookings
+                .Include(item => item.BookingPlace)
+                .Where(item => item.BookingPlaceId == bookingPlaceId && item.BookingDate.Date > todaysDate && item.BookingDate.Date < endDate).ToListAsync();
+        }
+
         public async Task<BookingDao> CreateBookingAsync(BookingDao booking)
         {
             booking.CreatedDate = DateTime.UtcNow;         
@@ -182,7 +192,7 @@ namespace BookingApp.Repositories
                 await _context.SaveChangesAsync();
             }
         }
-        private static bool CanUpdateBooking(BookingDao booking, BookingRequest request)
+        private static bool CanUpdateBooking(BookingDao booking, BookingModel request)
         {
             if(request.IsAdmin)
             {
@@ -197,6 +207,21 @@ namespace BookingApp.Repositories
                 return false;
             }
             return true;
-        }        
+        }
+
+        public async Task<List<BookingPlaceDao>> GetBookingPlacesWithBookingsByFloorIdAsync(int floorId, DateTime? bookingDate)
+        {
+            if (floorId == default)
+            {
+                throw new Exception("Floor Id is required");
+            }
+            var query = await _context.BookingPlaces
+                .Include(item => item.Bookings
+                    .Where(y => !bookingDate.HasValue || y.BookingDate.Date == bookingDate.Value.Date))
+                .Where(item => item.FloorId == floorId)
+                .ToListAsync();
+
+            return query;
+        }
     }
 }
