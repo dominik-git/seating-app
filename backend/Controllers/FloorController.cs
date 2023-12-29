@@ -46,7 +46,7 @@ namespace BookingApp.Controllers
         }
 
         [Authorize(Policy = IdentityData.AdminUserPolicyName)]
-        [HttpPost]
+        [HttpPost("CreateWithBookingPlaces")]
         public async Task<ActionResult<FloorViewModel>> CreateWithBookingPlaces(CreateFloorWithBookingPlacesRequest request)
         {
             try
