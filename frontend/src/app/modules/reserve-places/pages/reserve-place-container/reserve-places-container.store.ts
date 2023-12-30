@@ -61,7 +61,6 @@ export class ReservePlacesContainerStore
   }
 
   ngrxOnStoreInit() {
-    console.log('load');
     this.setDefaultPlace$();
   }
 

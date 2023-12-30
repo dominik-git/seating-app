@@ -1,6 +1,7 @@
 <div class="booking-navigation">
   <ng-container *ngIf="(isLoadingFloors$ | async) == false; else showSkeletonFloor">
     <app-place-selector (placeSelected)="optionChanged($event)"
+                        [selectedOption]="selectedPlace$ | async"
                         [selectOptions]="selectPlacesName$ | async"/>
     <button mat-raised-button color="primary" (click)="saveFixedPlaces()">Save</button>
   </ng-container>

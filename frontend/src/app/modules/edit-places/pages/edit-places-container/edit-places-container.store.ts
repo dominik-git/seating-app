@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ComponentStore, tapResponse } from '@ngrx/component-store';
+import {ComponentStore, OnStoreInit, tapResponse} from '@ngrx/component-store';
 import { combineLatest, EMPTY, Observable } from 'rxjs';
 import { catchError, filter, map, switchMap, tap } from 'rxjs/operators';
 import { BookingResourceService } from '../../../../api/booking/booking-resource.service';
@@ -16,7 +16,7 @@ export interface EditPlacesState {
 }
 
 @Injectable()
-export class EditPlacesContainerStore extends ComponentStore<EditPlacesState> {
+export class EditPlacesContainerStore extends ComponentStore<EditPlacesState>  implements OnStoreInit {
   constructor(
     private bookingResourceService: BookingResourceService,
     private readonly placesStore: PlacesStore,
@@ -29,6 +29,13 @@ export class EditPlacesContainerStore extends ComponentStore<EditPlacesState> {
     });
   }
 
+
+  ngrxOnStoreInit() {
+    this.setDefaultPlace$();
+  }
+
+
+
   // SELECTORS
 
   readonly selectFixedPlaces$: Observable<PlaceModel[]> = this.select(
@@ -37,6 +44,10 @@ export class EditPlacesContainerStore extends ComponentStore<EditPlacesState> {
 
   readonly selectIsLoadingEditingPage$: Observable<boolean> = this.select(
     (state) => state.isLoading
+  );
+
+  readonly selectSelectedPlace$: Observable<SvgFileSelectorModel> = this.select(
+    (state) => state.selectedPlace
   );
 
   readonly selectIsLoadingFloors: Observable<boolean> =
@@ -99,6 +110,36 @@ export class EditPlacesContainerStore extends ComponentStore<EditPlacesState> {
           }
           this.setLoading(false); // Reset loading to false after processing
         });
+      })
+    )
+  );
+
+  readonly setDefaultPlace$ = this.effect<void>((trigger$) =>
+    trigger$.pipe(
+      // Trigger this effect, ignoring the emitted values of trigger$
+      switchMap(() =>
+        combineLatest([
+          this.selectIsLoadingFloors,
+          this.placesStore.selectPlacesName$,
+        ])
+      ),
+      // Proceed only when isLoading is false and places are available
+      filter(
+        ([isLoading, places]) => !isLoading && places && places.length > 0
+      ),
+      // Set the selected place to the first item in places
+      tap(([isLoading, places]) => {
+        this.setSelectedPlace(places[0]);
+      }),
+      // Continue with additional actions if necessary
+      switchMap(([isLoading, places]) => {
+        // Fetch more data based on the selected place
+        return this.fetchFixedPlaces(places[0].name,);
+      }),
+      // Handle any errors
+      catchError((error) => {
+        console.error('Error in setDefaultPlace$:', error);
+        return EMPTY;
       })
     )
   );

@@ -18,6 +18,7 @@ import { SvgFileSelectorModel } from '../../../../api/models/svg-file-model';
 import { EditPlaceComponent } from '../../components/edit-place/edit-place.component';
 import { PlaceModel } from '../../../../api/models/place-model';
 import { NgxSkeletonLoaderModule } from 'ngx-skeleton-loader';
+import {provideComponentStore} from "@ngrx/component-store";
 
 @Component({
   selector: 'app-edit-places-container',
@@ -42,7 +43,7 @@ import { NgxSkeletonLoaderModule } from 'ngx-skeleton-loader';
     EditPlaceComponent,
     NgxSkeletonLoaderModule,
   ],
-  providers: [EditPlacesContainerStore],
+  providers: [ provideComponentStore(EditPlacesContainerStore)],
 })
 export class EditPlacesContainerComponent {
   @ViewChild(SeatTooltipComponent, { static: false })
@@ -51,6 +52,7 @@ export class EditPlacesContainerComponent {
   isLoadingCombined$ = this.editPlacesContainerStore.isLoadingCombined$;
   isLoadingFloors$ = this.editPlacesContainerStore.selectIsLoadingFloors;
   fixedPlaces$ = this.editPlacesContainerStore.selectFixedPlaces$;
+  selectedPlace$ = this.editPlacesContainerStore.selectSelectedPlace$;
   selectedPlaceSvg$ = this.editPlacesContainerStore.selectSelectedPlaceSvg$;
   selectPlacesName$ = this.editPlacesContainerStore.selectPlacesName$;
 
