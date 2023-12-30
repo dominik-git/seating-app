@@ -36,6 +36,18 @@ namespace BookingApp.Controllers
             return _mapper.Map<FloorSimpleViewModel>(floor);
         }
 
+        [HttpGet]
+        public async Task<ActionResult<List<FloorSimpleViewModel>>> GetAll()
+        {
+            var floors = await _repository.GetAllAsync();
+            if (floors == null || !floors.Any())
+            {
+                return NotFound();
+            }
+
+            return _mapper.Map<List<FloorSimpleViewModel>>(floors);
+        }
+
         [Authorize(Policy = IdentityData.AdminUserPolicyName)]
         [HttpPost]
         public async Task<ActionResult<FloorSimpleViewModel>> Create(FloorSimpleViewModel floor)
