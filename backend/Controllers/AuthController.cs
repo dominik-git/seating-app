@@ -1,4 +1,7 @@
-﻿using BookingApp.Models;
+﻿using BookingApp.Common;
+using BookingApp.Interfaces;
+using BookingApp.Models;
+using BookingApp.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
@@ -8,15 +11,18 @@ using System.Text;
 
 namespace BookingApp.Controllers
 {
-    [Route("api/[controller]")]
+    
     [ApiController]
+    [Route("api/[controller]/[action]")]
 
-    public class AuthController : ControllerBase
+    public class AuthController : BaseController
     {
         private readonly IConfiguration _config;
-        public AuthController(IConfiguration config)
+        private readonly IAuthService _authService;
+        public AuthController(IConfiguration config, IAuthService authService)
         {
             _config = config;
+            _authService = authService;
         }
         [AllowAnonymous]
         [HttpPut()]
@@ -48,6 +54,20 @@ namespace BookingApp.Controllers
                                    expires: DateTime.Now.AddDays(30),
                                    signingCredentials: signingCredentials);
             return Ok(new JwtSecurityTokenHandler().WriteToken(token));
+        }
+
+        [HttpPost]
+        [ProducesResponseType(typeof(BaseResponse<bool>), 200)]
+        public async Task<IActionResult> GoogleSignIn(GoogleSignInViewModel model)
+        {
+            try
+            {
+                return ReturnResponse(await _authService.SignInWithGoogle(model));
+            }
+            catch (Exception ex)
+            {
+                return HandleError(ex);
+            }
         }
     }
 }

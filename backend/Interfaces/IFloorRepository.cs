@@ -1,6 +1,6 @@
 ﻿using BookingApp.Daos;
 
-namespace BookingApp.Repositories
+namespace BookingApp.Interfaces
 {
     public interface IFloorRepository
     {

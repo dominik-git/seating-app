@@ -1,6 +1,6 @@
 ﻿using BookingApp.Enums;
 
-namespace BookingApp.Models
+namespace BookingApp.ViewModels
 {
     public class BookingsViewModel
     {

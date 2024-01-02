@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using BookingApp.Daos;
-using BookingApp.Models;
+using BookingApp.ViewModels;
 
 public class AutoMapperProfile : Profile
 {

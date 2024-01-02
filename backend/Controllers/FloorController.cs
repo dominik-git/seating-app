@@ -1,8 +1,9 @@
 ﻿using AutoMapper;
 using BookingApp.Daos;
 using BookingApp.Identity;
+using BookingApp.Interfaces;
 using BookingApp.Models;
-using BookingApp.Repositories;
+using BookingApp.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -10,7 +11,7 @@ using System.Drawing;
 
 namespace BookingApp.Controllers
 {
-    
+
     [Route("api/[controller]")]
     [ApiController]
     public class FloorController : ControllerBase
@@ -36,7 +37,7 @@ namespace BookingApp.Controllers
             return _mapper.Map<FloorSimpleViewModel>(floor);
         }
 
-        [HttpGet]
+        [HttpGet("GetAll")]
         public async Task<ActionResult<List<FloorSimpleViewModel>>> GetAll()
         {
             var floors = await _repository.GetAllAsync();

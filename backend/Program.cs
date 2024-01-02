@@ -1,10 +1,20 @@
 using AutoMapper;
+using BookingApp.Configuration;
 using BookingApp.Database;
 using BookingApp.Identity;
+using BookingApp.Interfaces;
+using BookingApp.Models;
 using BookingApp.Repositories;
+using BookingApp.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Org.BouncyCastle.Crypto;
+using Org.BouncyCastle.Crypto.Parameters;
+using Org.BouncyCastle.OpenSsl;
+using Org.BouncyCastle.Security;
+using System.Security.Cryptography;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -12,7 +22,35 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 // DB Context
 var connectionString = builder.Configuration.GetConnectionString("Default");
-builder.Services.AddDbContext<BookingContext>(options => options.UseNpgsql(connectionString));
+builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseNpgsql(connectionString));
+builder.Services.AddTransient<DbContext, ApplicationDbContext>();
+
+//services 
+builder.Services.AddScoped<IGoogleAuthService, GoogleAuthService>();
+builder.Services.AddScoped<IAuthService, AuthService>();
+
+//configuration
+builder.Services.Configure<GoogleAuthConfig>(builder.Configuration.GetSection("Google"));
+var jwtSection = builder.Configuration.GetSection("JwtSettings");
+builder.Services.Configure<Jwt>(jwtSection);
+var appSettings = jwtSection.Get<Jwt>();
+var secret = Encoding.ASCII.GetBytes(appSettings.Secret);
+// user identity
+builder.Services.AddIdentity<User, Role>(options =>
+{
+    options.Password.RequiredLength = 8;
+
+    options.Lockout.AllowedForNewUsers = true;
+    options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(10);
+    options.Lockout.MaxFailedAccessAttempts = 3;
+    options.User.RequireUniqueEmail = true;
+}).AddEntityFrameworkStores<ApplicationDbContext>()
+  .AddDefaultTokenProviders();
+
+builder.Services.Configure<DataProtectionTokenProviderOptions>(options =>
+{
+    options.TokenLifespan = TimeSpan.FromHours(24);
+});
 
 builder.Services.AddAuthentication(x =>
 {
@@ -25,14 +63,15 @@ builder.Services.AddAuthentication(x =>
     x.SaveToken = true;
     x.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
     {
-        ValidIssuer = builder.Configuration["JwtSettings:Issuer"],
-        ValidAudience = builder.Configuration["JwtSettings:Audience"],
-        
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JwtSettings:Key"]!)),
+        ValidateIssuer = true,
+        ValidIssuer = appSettings.ValidIssuer,
+        ValidAudience = appSettings.ValidAudience,
         ValidateIssuerSigningKey = true,
-        ValidateIssuer = false,
-        ValidateAudience = false,
+        ValidateAudience = true,
         ValidateLifetime = true,
+        ClockSkew = TimeSpan.Zero,
+        RequireExpirationTime = true,
+        IssuerSigningKey = new SymmetricSecurityKey(secret)
     };
     x.Events = new JwtBearerEvents
     {
@@ -43,6 +82,7 @@ builder.Services.AddAuthentication(x =>
         },
     };
 });
+
 
 builder.Services.AddAuthorization(options =>
 {
@@ -67,11 +107,12 @@ IMapper mapper = mappingConfig.CreateMapper();
 builder.Services.AddSingleton(mapper);
 
 var app = builder.Build();
+AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 
 // DB Migration
 using (var scope = app.Services.CreateScope())
 {
-    var db = scope.ServiceProvider.GetRequiredService<BookingContext>();
+    var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
     db.Database.Migrate();
 }
 

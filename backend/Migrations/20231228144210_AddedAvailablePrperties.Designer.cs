@@ -11,7 +11,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace BookingApp.Migrations
 {
-    [DbContext(typeof(BookingContext))]
+    [DbContext(typeof(ApplicationDbContext))]
     [Migration("20231228144210_AddedAvailablePrperties")]
     partial class AddedAvailablePrperties
     {

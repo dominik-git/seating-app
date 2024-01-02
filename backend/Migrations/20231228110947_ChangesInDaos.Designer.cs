@@ -11,7 +11,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace BookingApp.Migrations
 {
-    [DbContext(typeof(BookingContext))]
+    [DbContext(typeof(ApplicationDbContext))]
     [Migration("20231228110947_ChangesInDaos")]
     partial class ChangesInDaos
     {

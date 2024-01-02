@@ -3,6 +3,7 @@ using BookingApp.Daos;
 using BookingApp.Enums;
 using BookingApp.Identity;
 using BookingApp.Models;
+using BookingApp.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;

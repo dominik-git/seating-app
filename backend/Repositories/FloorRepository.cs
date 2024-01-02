@@ -1,5 +1,6 @@
 ﻿using BookingApp.Daos;
 using BookingApp.Database;
+using BookingApp.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 namespace BookingApp.Repositories
@@ -7,9 +8,9 @@ namespace BookingApp.Repositories
     public class FloorRepository : IFloorRepository
     {
 
-        private readonly BookingContext _context;
+        private readonly ApplicationDbContext _context;
 
-        public FloorRepository(BookingContext context)
+        public FloorRepository(ApplicationDbContext context)
         {
             _context = context;
         }

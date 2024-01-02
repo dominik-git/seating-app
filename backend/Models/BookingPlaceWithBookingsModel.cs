@@ -1,4 +1,5 @@
 ﻿using BookingApp.Enums;
+using BookingApp.ViewModels;
 
 namespace BookingApp.Models
 {

@@ -9,10 +9,10 @@ namespace BookingApp.Repositories
 {
     public class BookingRepository : IBookingRepository
     {
-        private readonly BookingContext _context;
+        private readonly ApplicationDbContext _context;
         private const int DefaultDaysForBooking = 7;
 
-        public BookingRepository(BookingContext context)
+        public BookingRepository(ApplicationDbContext context)
         {
             _context = context;
         }
