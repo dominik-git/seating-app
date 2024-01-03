@@ -18,13 +18,13 @@ namespace BookingApp.Daos
         [Required]
         public BookingPlaceItemTypeEnum ItemType { get; set; }
         [Required]
-        public DateTime CreatedDate { get; set; }
+        public DateTime CreatedDate { get; set; }        
         [Required]
-        public string CreatedBy { get; set; }
+        public int CreatedById { get; set; }
         [Required]
         public int FloorId { get; set; }
-
-        public string ReservedFor { get; set; }
+        
+        public int? ReservedForId { get; set; }
 
         public DateTime? ModifiedDate { get; set; }
         public bool AvailableForBooking { get; set; }

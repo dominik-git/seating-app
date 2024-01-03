@@ -79,7 +79,7 @@ namespace BookingApp.Repositories
                 if (entity != null)
                 {
                     entity.State = booking.State;
-                    entity.BookedBy = booking.BookedBy;
+                    entity.BookedById = booking.BookedBy;
                     entity.ModifiedDate = DateTime.UtcNow;
                     entitiesForUpdate.Add(entity);
                 } else
@@ -89,8 +89,8 @@ namespace BookingApp.Repositories
                         BookingPlaceId = booking.BookingPlaceId,
                         State = booking.State,
                         CreatedDate = DateTime.UtcNow,
-                        CreatedBy = booking.BookedBy,
-                        BookedBy = booking.State == BookingStateEnum.Booked || booking.State == BookingStateEnum.Blocked ? booking.BookedBy : "",
+                        CreatedById = booking.BookedBy,
+                        BookedById = booking.BookedBy,
                         BookingDate = booking.BookingDate.Value
                     };
                 }
@@ -129,7 +129,7 @@ namespace BookingApp.Repositories
 
                 }
                 entity.State = request.State;
-                entity.BookedBy = request.State == BookingStateEnum.Booked || request.State == BookingStateEnum.Blocked ? request.BookedBy : "";
+                entity.BookedById = request.BookedBy;
                 entity.ModifiedDate = DateTime.UtcNow;                
                 await _context.SaveChangesAsync();
             }
@@ -198,7 +198,7 @@ namespace BookingApp.Repositories
             {
                   return true;
             }
-            if(booking.BookedBy != request.BookedBy)
+            if(booking.BookedById != request.BookedBy)
             {
                 return false;
             }

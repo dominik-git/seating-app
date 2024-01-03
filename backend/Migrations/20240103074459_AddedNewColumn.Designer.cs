@@ -3,6 +3,7 @@ using System;
 using BookingApp.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace BookingApp.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240103074459_AddedNewColumn")]
+    partial class AddedNewColumn
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -30,6 +33,10 @@ namespace BookingApp.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("BookedBy")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<int>("BookedById")
                         .HasColumnType("integer");
 
@@ -38,6 +45,10 @@ namespace BookingApp.Migrations
 
                     b.Property<int>("BookingPlaceId")
                         .HasColumnType("integer");
+
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<int>("CreatedById")
                         .HasColumnType("integer");
@@ -75,6 +86,10 @@ namespace BookingApp.Migrations
                     b.Property<DateTime?>("AvailableTo")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<int>("CreatedById")
                         .HasColumnType("integer");
 
@@ -94,6 +109,10 @@ namespace BookingApp.Migrations
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("ReservedFor")
                         .IsRequired()
                         .HasColumnType("text");
 

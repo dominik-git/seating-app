@@ -7,7 +7,6 @@ namespace BookingApp.ViewModels
         public int BookingId { get; set; }
         public int BookingPlaceId { get; set; }
         public BookingStateEnum State { get; set; }
-        public DateTime BookingDate { get; set; }
-        public string BookedBy { get; set; }
+        public DateTime BookingDate { get; set; }        
     }
 }

@@ -9,6 +9,7 @@ using IdentityModel;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using Org.BouncyCastle.Asn1.Ocsp;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -78,10 +79,17 @@ namespace BookingApp.Services
                 new Claim(JwtClaimTypes.Email, user.Email),
                 new Claim(JwtClaimTypes.GivenName, user.FirstName),
                 new Claim(JwtClaimTypes.FamilyName, user.LastName),
+                new Claim("admin", IsUserAdmin(user), ClaimValueTypes.Boolean),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
             };
 
             return userClaims;
+        }
+
+        private string IsUserAdmin(User user)
+        {
+            List<string> admins = new List<string> { "peter.domonkos@visma.com", "dominik.kolesar@visma.com", "matej.vysokai@visma.com" };
+            return admins.Contains(user.Email).ToString();
         }
 
     }

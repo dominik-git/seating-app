@@ -8,7 +8,7 @@ namespace BookingApp.Models
         public int Id { get; set; }
         public BookingStateEnum State { get; set; }
         public DateTime? BookingDate { get; set; }        
-        public string BookedBy { get; set; }
+        public int BookedBy { get; set; }
         public bool IsAdmin { get; set; }
 
     }

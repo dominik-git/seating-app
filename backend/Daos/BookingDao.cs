@@ -16,10 +16,10 @@ namespace BookingApp.Daos
         [Required]
         public BookingStateEnum State { get; set; }        
         [Required]
-        public DateTime CreatedDate { get; set; }
+        public DateTime CreatedDate { get; set; }        
         [Required]
-        public string CreatedBy { get; set; }
-        public string BookedBy { get; set; }
+        public int CreatedById { get; set; }       
+        public int BookedById { get; set; }
         public DateTime BookingDate { get; set; }
         public DateTime? ModifiedDate { get; set; }
         public BookingPlaceDao BookingPlace { get; set; } = null!;
