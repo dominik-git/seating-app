@@ -27,6 +27,13 @@ export const APP_ROUTES: Routes = [
             '../../../edit-places/pages/edit-places-container/edit-places-container.component'
           ).then(m => m.EditPlacesContainerComponent),
       },
+      {
+        path: 'floor-form',
+        loadComponent: () =>
+          import(
+            '../../../administration/pages/floor-form/floor-form.component'
+          ).then(m => m.FloorFormComponent),
+      },
     ],
   },
 ];

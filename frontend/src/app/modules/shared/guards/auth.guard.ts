@@ -11,8 +11,8 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import {map, take} from "rxjs/operators";
 
 @Injectable()
-export class AuthService {
-  public user: SocialUser;
+export class AuthGuardService {
+  public token: string;
   public signedIn: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(
     false
   );
@@ -23,7 +23,7 @@ export class AuthService {
   providedIn: 'root',
 })
 export class AuthGuard implements CanActivate {
-  constructor(private authService: AuthService, private router: Router) {}
+  constructor(private authService: AuthGuardService, private router: Router) {}
 
   canActivate(): Observable<boolean> {
     return this.authService.signedIn.pipe(

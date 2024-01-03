@@ -6,7 +6,7 @@ import { AppComponent } from './app/app.component';
 import { MatIconModule } from '@angular/material/icon';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
-import { HttpClient, HttpClientModule } from '@angular/common/http';
+import {HTTP_INTERCEPTORS, HttpClient, HttpClientModule} from '@angular/common/http';
 import { AppRoutingModule } from './app/app-routing.module';
 import { bootstrapApplication, BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -15,7 +15,8 @@ import {
   GoogleLoginProvider,
   SocialAuthServiceConfig,
 } from '@abacritt/angularx-social-login';
-import { AuthService } from './app/modules/shared/guards/auth.guard';
+import { AuthGuardService } from './app/modules/shared/guards/auth.guard';
+import {AuthInterceptor} from "./app/modules/shared/interceptors/AuthInterceptor";
 
 if (environment.production) {
   enableProdMode();
@@ -24,7 +25,12 @@ if (environment.production) {
 
 bootstrapApplication(AppComponent, {
   providers: [
-    AuthService,
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: AuthInterceptor,
+      multi: true
+    },
+    AuthGuardService,
     PlacesStore,
     {
       provide: 'SocialAuthServiceConfig',

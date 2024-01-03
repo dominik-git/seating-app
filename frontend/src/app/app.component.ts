@@ -1,11 +1,10 @@
-import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { BreakpointObserver } from '@angular/cdk/layout';
-import { MatSidenav, MatSidenavModule } from '@angular/material/sidenav';
+import { MatSidenavModule } from '@angular/material/sidenav';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
-import { Store } from '@ngrx/store';
 
 import { MatIconModule } from '@angular/material/icon';
-import {Router, RouterLink, RouterOutlet} from '@angular/router';
+import { Router, RouterLink, RouterOutlet } from '@angular/router';
 import { MatListModule } from '@angular/material/list';
 import { MatButtonModule } from '@angular/material/button';
 import { NgIf } from '@angular/common';
@@ -15,7 +14,10 @@ import {
   GoogleSigninButtonModule,
   SocialAuthService,
 } from '@abacritt/angularx-social-login';
-import {AuthService} from "./modules/shared/guards/auth.guard";
+import { AuthGuardService } from './modules/shared/guards/auth.guard';
+import { AuthService } from './api-generated/services/auth.service';
+import { switchMap } from 'rxjs/operators';
+import { BookingService } from './api-generated/services/booking.service';
 
 @Component({
   selector: 'app-root',
@@ -36,37 +38,45 @@ import {AuthService} from "./modules/shared/guards/auth.guard";
   ],
 })
 export class AppComponent implements OnInit {
-  @ViewChild('sidenav') sidenav: MatSidenav;
-  isExpanded = true;
-  showSubmenu: boolean = false;
-  isShowing = false;
-  showSubSubMenu: boolean = false;
-
-
-
-
   constructor(
     private readonly observer: BreakpointObserver,
     private readonly translate: TranslateService,
     private readonly placesStore: PlacesStore,
     private socialAuthService: SocialAuthService,
     private router: Router,
-    private authService:AuthService
+    private authGuardService: AuthGuardService,
+    private authService: AuthService,
+    private bookingService: BookingService
   ) {
-    this.socialAuthService.authState.subscribe(user => {
-      console.log(user);
-      this.authService.user = user
-      this.authService.signedIn.next(user !== null);
-      if(user){
-        this.router.navigate(['/app/seating']);
-      }
-    });
+    this.socialAuthService.authState
+      .pipe(
+        switchMap(user => {
+          return this.authService.apiAuthGoogleSignInPost$Json({
+            body: {
+              idToken: user.idToken,
+            },
+          });
+        })
+      )
+      .subscribe(response => {
+        console.log(response);
+        this.authGuardService.token = response.data['token'];
+        this.authGuardService.signedIn.next(response.data['token'] !== null);
+        if (response.data['token']) {
+          this.bookingService
+            .apiBookingGetAllBookingPlacesGet$Json$Response()
+            .subscribe(data => {
+              console.log(data);
+            });
+          this.router.navigate(['/app/seating']);
+        }
+      });
+
     translate.setDefaultLang('en');
   }
 
   ngOnInit(): void {
     this.placesStore.loadSvgPlaces$();
-
   }
 
   useLanguage(language: string): void {
