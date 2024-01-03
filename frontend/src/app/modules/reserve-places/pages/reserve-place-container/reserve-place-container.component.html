@@ -1,5 +1,3 @@
-
-
 <div class="booking-navigation">
   <app-date-place-selector
     [isLoading]="isLoadingFloors$| async"
@@ -13,16 +11,12 @@
 
 
 <ng-container *ngIf="(isLoadingCombined$ | async) == false; else showSkeleton">
-    <ng-container *ngIf="(selectedPlaceSvg$ |async) as svgData">
-      <div class="floor-content">
-        <app-edit-place [svgData]="svgData" [fixedPlaces]="fixedReservedPlaces$ | async"
-                        (placeAction)="onPlaceSelected($event)"/>
-      </div>
-
-
-
-
-    </ng-container>
+  <ng-container *ngIf="(selectedPlaceSvg$ |async) as svgData">
+    <div class="floor-content">
+      <app-edit-place [svgData]="svgData" [fixedPlaces]="fixedReservedPlaces$ | async"
+                      (placeAction)="onPlaceSelected($event)"/>
+    </div>
+  </ng-container>
 </ng-container>
 
 <ng-template #showSkeleton>
