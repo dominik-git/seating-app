@@ -39,7 +39,8 @@ namespace BookingApp.Identity
             {
                 payload = await ValidateAsync(model.IdToken, new ValidationSettings
                 {
-                    Audience = new[] { _googleAuthConfig.ClientId }
+                    Audience = new[] { _googleAuthConfig.ClientId },
+                    HostedDomain = _googleAuthConfig.HostedDomain
                 });
 
             }

@@ -37,9 +37,7 @@ var appSettings = jwtSection.Get<Jwt>();
 var secret = Encoding.ASCII.GetBytes(appSettings.Secret);
 // user identity
 builder.Services.AddIdentity<User, Role>(options =>
-{
-    options.Password.RequiredLength = 8;
-
+{    
     options.Lockout.AllowedForNewUsers = true;
     options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(10);
     options.Lockout.MaxFailedAccessAttempts = 3;
