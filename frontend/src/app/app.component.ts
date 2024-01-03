@@ -4,8 +4,6 @@ import { MatSidenav, MatSidenavModule } from '@angular/material/sidenav';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { Store } from '@ngrx/store';
 
-import * as fromRoot from '../app/store/reducers/index';
-import { ChangeLanguage } from './store/actions/app/app.action';
 import { MatIconModule } from '@angular/material/icon';
 import { RouterLink, RouterOutlet } from '@angular/router';
 import { MatListModule } from '@angular/material/list';
@@ -36,7 +34,7 @@ import {
     GoogleSigninButtonModule,
   ],
 })
-export class AppComponent implements OnInit, AfterViewInit {
+export class AppComponent implements OnInit {
   @ViewChild('sidenav') sidenav: MatSidenav;
   isExpanded = true;
   showSubmenu: boolean = false;
@@ -46,7 +44,6 @@ export class AppComponent implements OnInit, AfterViewInit {
   constructor(
     private readonly observer: BreakpointObserver,
     private readonly translate: TranslateService,
-    private readonly _store: Store<fromRoot.State>,
     private readonly placesStore: PlacesStore,
     private authService: SocialAuthService
   ) {
@@ -60,10 +57,7 @@ export class AppComponent implements OnInit, AfterViewInit {
     });
   }
 
-  ngAfterViewInit() {}
-
   useLanguage(language: string): void {
-    this._store.dispatch(ChangeLanguage({ payload: language }));
     this.translate.use(language);
   }
 }

@@ -28,3 +28,4 @@ Thumbs.db
 obj/
 [Rr]elease*/
 
+.idea/workspace.xml

@@ -7,12 +7,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
-import { rootReducer } from './app/store/reducers';
 import { StoreModule } from '@ngrx/store';
-import { AdminEffect } from '@store/effects/admin.effect';
-import { BookingEffects } from '@store/effects/booking';
-import { LoadingEffects } from '@store/effects/loading.effect';
-import { AppEffects } from '@store/effects/app.effect';
+
 import { EffectsModule } from '@ngrx/effects';
 import { AppRoutingModule } from './app/app-routing.module';
 import { bootstrapApplication, BrowserModule } from '@angular/platform-browser';
@@ -52,13 +48,6 @@ bootstrapApplication(AppComponent, {
       AppRoutingModule,
       HttpClientModule,
       BrowserAnimationsModule,
-      EffectsModule.forRoot([
-        AppEffects,
-        LoadingEffects,
-        BookingEffects,
-        AdminEffect,
-      ]),
-      StoreModule.forRoot(rootReducer),
       StoreDevtoolsModule.instrument({
         maxAge: 25,
         autoPause: true,

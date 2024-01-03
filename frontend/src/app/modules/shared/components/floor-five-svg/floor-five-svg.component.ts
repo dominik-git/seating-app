@@ -9,7 +9,7 @@ import {
 import panzoom, { PanZoom } from 'panzoom';
 
 import { Store } from '@ngrx/store';
-import * as fromRoot from '@store/reducers';
+
 
 @Component({
   selector: 'app-floor-five-svg',
@@ -27,7 +27,6 @@ export class FloorFiveSvgComponent implements OnInit, AfterViewInit {
   currentZoomLevel: number;
   desks: any[];
 
-  constructor(private readonly _store: Store<fromRoot.State>) {}
 
   zoom() {
     const isSmooth = false;

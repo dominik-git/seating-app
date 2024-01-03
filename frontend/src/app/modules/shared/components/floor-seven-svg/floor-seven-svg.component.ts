@@ -9,12 +9,7 @@ import {
 } from '@angular/core';
 import panzoom, { PanZoom } from 'panzoom';
 import { select, Store } from '@ngrx/store';
-import * as fromRoot from '@store/reducers';
-import { Observable, Subscription } from 'rxjs';
-import { DeskModel } from '../../../../models/desk.model';
-import { ChairTypeEnum } from '../../../../enums/chairType.enum';
-import { SeatTooltipComponent } from '../seat-tooltip/seat-tooltip.component';
-import { OpenBookDeskModal } from '@actions/booking/booking.action';
+
 
 @Component({
     selector: 'app-floor-seven-svg',
@@ -35,9 +30,6 @@ export class FloorSevenSvgComponent
 
   currentZoomLevel: number;
 
-
-  constructor(private readonly _store: Store<fromRoot.State>) {
-  }
 
   zoom() {
     const isSmooth = false;
