@@ -1,0 +1,18 @@
+<mat-sidenav-container class="example-container" autosize>
+  <mat-sidenav #sidenav class="example-sidenav" mode="side" opened="true">
+    <button mat-icon-button class="toggle-button" (click)="isExpanded = !isExpanded">
+    <span class="material-icons">
+      {{ isExpanded ? 'arrow_back' : 'arrow_forward' }}
+    </span>
+    </button>
+    <app-side-nav-menu-list [isExpanded]="isExpanded"/>
+    <div class="language-selector">
+      <button mat-button (click)="useLanguage('en')">En</button>
+      <button mat-button (click)="useLanguage('sk')">Sk</button>
+    </div>
+
+  </mat-sidenav>
+  <div class="content">
+    <router-outlet></router-outlet>
+  </div>
+</mat-sidenav-container>

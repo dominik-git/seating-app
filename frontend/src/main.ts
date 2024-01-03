@@ -7,9 +7,6 @@ import { MatIconModule } from '@angular/material/icon';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
-import { StoreModule } from '@ngrx/store';
-
-import { EffectsModule } from '@ngrx/effects';
 import { AppRoutingModule } from './app/app-routing.module';
 import { bootstrapApplication, BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -18,13 +15,16 @@ import {
   GoogleLoginProvider,
   SocialAuthServiceConfig,
 } from '@abacritt/angularx-social-login';
+import { AuthService } from './app/modules/shared/guards/auth.guard';
 
 if (environment.production) {
   enableProdMode();
 }
 
+
 bootstrapApplication(AppComponent, {
   providers: [
+    AuthService,
     PlacesStore,
     {
       provide: 'SocialAuthServiceConfig',
@@ -38,7 +38,7 @@ bootstrapApplication(AppComponent, {
             ),
           },
         ],
-        onError: (err) => {
+        onError: err => {
           console.error(err);
         },
       } as SocialAuthServiceConfig,
@@ -63,4 +63,4 @@ bootstrapApplication(AppComponent, {
       MatIconModule
     ),
   ],
-}).catch((err) => console.error(err));
+}).catch(err => console.error(err));

@@ -5,7 +5,7 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { Store } from '@ngrx/store';
 
 import { MatIconModule } from '@angular/material/icon';
-import { RouterLink, RouterOutlet } from '@angular/router';
+import {Router, RouterLink, RouterOutlet} from '@angular/router';
 import { MatListModule } from '@angular/material/list';
 import { MatButtonModule } from '@angular/material/button';
 import { NgIf } from '@angular/common';
@@ -15,6 +15,7 @@ import {
   GoogleSigninButtonModule,
   SocialAuthService,
 } from '@abacritt/angularx-social-login';
+import {AuthService} from "./modules/shared/guards/auth.guard";
 
 @Component({
   selector: 'app-root',
@@ -41,20 +42,31 @@ export class AppComponent implements OnInit {
   isShowing = false;
   showSubSubMenu: boolean = false;
 
+
+
+
   constructor(
     private readonly observer: BreakpointObserver,
     private readonly translate: TranslateService,
     private readonly placesStore: PlacesStore,
-    private authService: SocialAuthService
+    private socialAuthService: SocialAuthService,
+    private router: Router,
+    private authService:AuthService
   ) {
+    this.socialAuthService.authState.subscribe(user => {
+      console.log(user);
+      this.authService.user = user
+      this.authService.signedIn.next(user !== null);
+      if(user){
+        this.router.navigate(['/app/seating']);
+      }
+    });
     translate.setDefaultLang('en');
   }
 
   ngOnInit(): void {
     this.placesStore.loadSvgPlaces$();
-    this.authService.authState.subscribe((user) => {
-      console.log(user);
-    });
+
   }
 
   useLanguage(language: string): void {

@@ -1,0 +1,36 @@
+:host {
+  display: block;
+  height: 100%;
+}
+
+mat-toolbar {
+  color: white;
+}
+
+.example-container {
+  height: 100%;
+  border: 1px solid rgba(0, 0, 0, 0.5);
+  position: relative;
+}
+
+.example-sidenav-content {
+  display: flex;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
+}
+
+.example-sidenav {
+  user-select: none;
+}
+
+.full-width {
+  width: 100%;
+}
+
+.toggle-button {
+  position: absolute;
+  top: 50%;
+  right: 0;
+  z-index: 1000;
+}
