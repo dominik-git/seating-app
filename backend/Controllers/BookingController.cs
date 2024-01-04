@@ -38,7 +38,7 @@ public class BookingController : ControllerBase
         var bookingPlaceDaos = await _repository.GetBookingPlacesWithBookingsByFloorIdAsync(floorId, bookingDate);
         var result = new FloorViewModel
         {
-            FloorId = floorId,
+            Id = floorId,
             BookingPlaces = _mapper.Map<List<BookingPlaceWithBookingsViewModel>>(bookingPlaceDaos)
         };
         return Ok(result);

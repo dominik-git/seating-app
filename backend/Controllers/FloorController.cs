@@ -79,9 +79,9 @@ namespace BookingApp.Controllers
                 }
                 var result = new FloorViewModel
                 {
-                    FloorId = createdFloor.Id,
-                    FloorName = createdFloor.Name,
-                    FloorDescription = createdFloor.Description,
+                    Id = createdFloor.Id,
+                    Name = createdFloor.Name,
+                    Description = createdFloor.Description,
                     Svg = createdFloor.Svg,
                     BookingPlaces = createdBookingPlaces.Select(item => _mapper.Map<BookingPlaceWithBookingsViewModel>(item)).ToList()
                 };
@@ -97,7 +97,7 @@ namespace BookingApp.Controllers
         [HttpPut]
         public async Task<ActionResult<FloorSimpleViewModel>> Update(FloorSimpleViewModel floor)
         {
-            var floorDao = await _repository.GetAsync(floor.FloorId);
+            var floorDao = await _repository.GetAsync(floor.Id);
             if (floorDao == null)
             {
                 return NotFound();
