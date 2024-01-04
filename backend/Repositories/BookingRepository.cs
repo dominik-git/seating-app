@@ -3,7 +3,6 @@ using BookingApp.Database;
 using BookingApp.Enums;
 using BookingApp.Models;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace BookingApp.Repositories
 {
@@ -25,7 +24,7 @@ namespace BookingApp.Repositories
         public async Task<BookingPlaceDao> GetBookingPlaceAsync(int id)
         {
             var bookingPlace = await _context.BookingPlaces.FindAsync(id);
-            if(bookingPlace == null)
+            if (bookingPlace == null)
             {
                 throw new Exception("Entity not found");
             }
@@ -82,7 +81,8 @@ namespace BookingApp.Repositories
                     entity.BookedById = booking.BookedBy;
                     entity.ModifiedDate = DateTime.UtcNow;
                     entitiesForUpdate.Add(entity);
-                } else
+                }
+                else
                 {
                     var newEntity = new BookingDao
                     {
@@ -120,7 +120,7 @@ namespace BookingApp.Repositories
         }
 
         public async Task UpdateStateAsync(BookingModel request)
-        {            
+        {
             var entity = _context.Bookings.FirstOrDefault(item => item.Id == request.Id);
             if (entity != null)
             {
@@ -130,7 +130,7 @@ namespace BookingApp.Repositories
                 }
                 entity.State = request.State;
                 entity.BookedById = request.BookedBy;
-                entity.ModifiedDate = DateTime.UtcNow;                
+                entity.ModifiedDate = DateTime.UtcNow;
                 await _context.SaveChangesAsync();
             }
         }
@@ -176,7 +176,7 @@ namespace BookingApp.Repositories
 
         public async Task<BookingDao> CreateBookingAsync(BookingDao booking)
         {
-            booking.CreatedDate = DateTime.UtcNow;         
+            booking.CreatedDate = DateTime.UtcNow;
             var createdItem = _context.Bookings.Add(booking);
             await _context.SaveChangesAsync();
             return createdItem.Entity;
@@ -194,15 +194,15 @@ namespace BookingApp.Repositories
         }
         private static bool CanUpdateBooking(BookingDao booking, BookingModel request)
         {
-            if(request.IsAdmin)
+            if (request.IsAdmin)
             {
-                  return true;
+                return true;
             }
-            if(booking.BookedById != request.BookedBy)
+            if (booking.BookedById != request.BookedBy)
             {
                 return false;
             }
-            if(booking.BookingDate == request.BookingDate)
+            if (booking.BookingDate == request.BookingDate)
             {
                 return false;
             }
