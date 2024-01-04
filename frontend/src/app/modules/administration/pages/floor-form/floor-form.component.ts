@@ -6,7 +6,6 @@ import { FloorFormStore } from './floor-form.store';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { MaterialFileInputModule } from 'ngx-material-file-input';
 import { NgIf } from '@angular/common';
 
 @Component({
@@ -17,7 +16,7 @@ import { NgIf } from '@angular/common';
     MatInputModule,
     MatButtonModule,
     MatIconModule,
-    MaterialFileInputModule,
+
     NgIf,
   ],
   templateUrl: './floor-form.component.html',
