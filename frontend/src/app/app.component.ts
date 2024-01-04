@@ -60,14 +60,10 @@ export class AppComponent implements OnInit {
       )
       .subscribe(response => {
         console.log(response);
-        this.authGuardService.token = response.data['token'];
-        this.authGuardService.signedIn.next(response.data['token'] !== null);
         if (response.data['token']) {
-          this.bookingService
-            .apiBookingGetAllBookingPlacesGet$Json$Response()
-            .subscribe(data => {
-              console.log(data);
-            });
+          localStorage.setItem('authToken', response.data['token']); // Store token
+          this.authGuardService.token = response.data['token'];
+          this.authGuardService.signedIn.next(true);
           this.router.navigate(['/app/seating']);
         }
       });
@@ -76,6 +72,12 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    const authToken = localStorage.getItem('authToken');
+    if (authToken) {
+      this.authGuardService.token = authToken;
+      this.authGuardService.signedIn.next(true);
+      // Optionally, validate the token with your backend here
+    }
     this.placesStore.loadSvgPlaces$();
   }
 
