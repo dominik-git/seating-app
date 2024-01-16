@@ -1,20 +1,19 @@
 ﻿using AutoMapper;
+using BookingApp.Common;
 using BookingApp.Daos;
 using BookingApp.Identity;
 using BookingApp.Interfaces;
 using BookingApp.Models;
 using BookingApp.ViewModels;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System.Drawing;
 
 namespace BookingApp.Controllers
 {
 
     [Route("api/[controller]")]
     [ApiController]
-    public class FloorController : ControllerBase
+    public class FloorController : BaseController
     {
         private readonly IFloorRepository _repository;
         private readonly IBookingRepository _bookingRepository;
@@ -26,7 +25,8 @@ namespace BookingApp.Controllers
             _bookingRepository = bookingRepository;
         }
         [HttpGet]
-        public async Task<ActionResult<FloorSimpleViewModel>> Get(int id)
+        [ProducesResponseType(typeof(BaseResponse<FloorSimpleViewModel>), 200)]
+        public async Task<IActionResult> Get(int id)
         {
             var floor = await _repository.GetAsync(id);
             if (floor == null)
@@ -34,11 +34,12 @@ namespace BookingApp.Controllers
                 return NotFound();
             }
 
-            return _mapper.Map<FloorSimpleViewModel>(floor);
+            return ReturnResponse(new BaseResponse<FloorSimpleViewModel>(_mapper.Map<FloorSimpleViewModel>(floor)));
         }
 
         [HttpGet("GetAll")]
-        public async Task<ActionResult<List<FloorSimpleViewModel>>> GetAll()
+        [ProducesResponseType(typeof(BaseResponse<List<FloorSimpleViewModel>>), 200)]
+        public async Task<IActionResult> GetAll()
         {
             var floors = await _repository.GetAllAsync();
             if (floors == null || !floors.Any())
@@ -46,21 +47,31 @@ namespace BookingApp.Controllers
                 return NotFound();
             }
 
-            return _mapper.Map<List<FloorSimpleViewModel>>(floors);
+            return ReturnResponse(new BaseResponse<List<FloorSimpleViewModel>>(_mapper.Map<List<FloorSimpleViewModel>>(floors)));
         }
 
         [Authorize(Policy = IdentityData.AdminUserPolicyName)]
         [HttpPost]
-        public async Task<ActionResult<FloorSimpleViewModel>> Create(FloorSimpleViewModel floor)
+        [ProducesResponseType(typeof(BaseResponse<FloorSimpleViewModel>), 200)]
+        public async Task<IActionResult> Create(FloorSimpleViewModel floor)
         {
             var floorDao = _mapper.Map<FloorDao>(floor);
-            var createdFloor = await _repository.CreateAsync(floorDao);
-            return _mapper.Map<FloorSimpleViewModel>(createdFloor);
+            try
+            {
+                var createdFloor = await _repository.CreateAsync(floorDao);
+                return ReturnResponse(new BaseResponse<FloorSimpleViewModel>(_mapper.Map<FloorSimpleViewModel>(createdFloor)));
+            }
+            catch (Exception ex)
+            {
+
+                return HandleError(ex);
+            }
         }
 
         [Authorize(Policy = IdentityData.AdminUserPolicyName)]
         [HttpPost("CreateWithBookingPlaces")]
-        public async Task<ActionResult<FloorViewModel>> CreateWithBookingPlaces(CreateFloorWithBookingPlacesRequest request)
+        [ProducesResponseType(typeof(BaseResponse<FloorViewModel>), 200)]
+        public async Task<IActionResult> CreateWithBookingPlaces(CreateFloorWithBookingPlacesRequest request)
         {
             try
             {
@@ -79,25 +90,27 @@ namespace BookingApp.Controllers
                 }
                 var result = new FloorViewModel
                 {
-                    FloorId = createdFloor.Id,
-                    FloorName = createdFloor.Name,
-                    FloorDescription = createdFloor.Description,
+                    Id = createdFloor.Id,
+                    Name = createdFloor.Name,
+                    Description = createdFloor.Description,
                     Svg = createdFloor.Svg,
                     BookingPlaces = createdBookingPlaces.Select(item => _mapper.Map<BookingPlaceWithBookingsViewModel>(item)).ToList()
                 };
-                return _mapper.Map<FloorViewModel>(createdFloor);
+
+                return ReturnResponse(new BaseResponse<FloorViewModel>(result));
+
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                throw;
-            }            
+                return HandleError(ex);
+            }
         }
 
         [Authorize(Policy = IdentityData.AdminUserPolicyName)]
         [HttpPut]
         public async Task<ActionResult<FloorSimpleViewModel>> Update(FloorSimpleViewModel floor)
         {
-            var floorDao = await _repository.GetAsync(floor.FloorId);
+            var floorDao = await _repository.GetAsync(floor.Id);
             if (floorDao == null)
             {
                 return NotFound();

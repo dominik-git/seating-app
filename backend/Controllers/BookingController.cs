@@ -1,4 +1,6 @@
 using AutoMapper;
+using BookingApp.Common;
+using BookingApp.Controllers;
 using BookingApp.Daos;
 using BookingApp.Enums;
 using BookingApp.Identity;
@@ -12,7 +14,7 @@ using System.Security.Claims;
 [Route("api/[controller]")]
 [Authorize]
 [ApiController]
-public class BookingController : ControllerBase
+public class BookingController : BaseController
 {
     private readonly IBookingRepository _repository;
     private readonly IMapper _mapper;
@@ -26,27 +28,30 @@ public class BookingController : ControllerBase
 
     // GET: api/Booking
     [HttpGet("GetAllBookingPlaces")]
-    public async Task<ActionResult<IEnumerable<BookingPlaceViewModel>>> GetAllBookingPlaces()
+    [ProducesResponseType(typeof(BaseResponse<IEnumerable<BookingPlaceViewModel>>), 200)]
+    public async Task<IActionResult> GetAllBookingPlaces()
     {
         var bookingPlaceDaos = await _repository.GetBookingsAsync();
-        return Ok(_mapper.Map<IEnumerable<BookingPlaceViewModel>>(bookingPlaceDaos));
+        return ReturnResponse(new BaseResponse<IEnumerable<BookingPlaceViewModel>>(_mapper.Map<IEnumerable<BookingPlaceViewModel>>(bookingPlaceDaos)));
     }
 
     [HttpGet("GetAllByFloorAndDate")]
-    public async Task<ActionResult<FloorViewModel>> GetAllByFloorAndDate([FromQuery]int floorId, [FromQuery]DateTime? bookingDate)
+    [ProducesResponseType(typeof(BaseResponse<FloorViewModel>), 200)]
+    public async Task<IActionResult> GetAllByFloorAndDate([FromQuery] int floorId, [FromQuery] DateTime? bookingDate)
     {
         var bookingPlaceDaos = await _repository.GetBookingPlacesWithBookingsByFloorIdAsync(floorId, bookingDate);
         var result = new FloorViewModel
         {
-            FloorId = floorId,
+            Id = floorId,
             BookingPlaces = _mapper.Map<List<BookingPlaceWithBookingsViewModel>>(bookingPlaceDaos)
         };
-        return Ok(result);
+        return ReturnResponse(new BaseResponse<FloorViewModel>(result));
     }
 
     // GET: api/Booking/5
     [HttpGet("BookingPlace/{id}")]
-    public async Task<ActionResult<BookingPlaceViewModel>> GetBookingPlace(int id)
+    [ProducesResponseType(typeof(BaseResponse<BookingPlaceViewModel>), 200)]
+    public async Task<IActionResult> GetBookingPlace(int id)
     {
         var bookingPlaceDao = await _repository.GetBookingPlaceAsync(id);
 
@@ -55,11 +60,12 @@ public class BookingController : ControllerBase
             return NotFound();
         }
 
-        return _mapper.Map<BookingPlaceViewModel>(bookingPlaceDao);
+        return ReturnResponse(new BaseResponse<BookingPlaceViewModel>(_mapper.Map<BookingPlaceViewModel>(bookingPlaceDao)));
     }
 
     [HttpGet("GetBookingById/{id}")]
-    public async Task<ActionResult<BookingViewModel>> GetBooking(int id)
+    [ProducesResponseType(typeof(BaseResponse<BookingViewModel>), 200)]
+    public async Task<IActionResult> GetBooking(int id)
     {
         var bookingDao = await _repository.GetBookingAsync(id);
 
@@ -68,14 +74,15 @@ public class BookingController : ControllerBase
             return NotFound();
         }
 
-        return _mapper.Map<BookingViewModel>(bookingDao);
+        return ReturnResponse(new BaseResponse<BookingViewModel>(_mapper.Map<BookingViewModel>(bookingDao)));
     }
 
     [HttpGet("GetByBookingPlaceIdWithDate/{id}")]
-    public async Task<ActionResult<BookingPlaceWithBookingsViewModel>> GetByBookingPlaceIdWithDate(int id)
+    [ProducesResponseType(typeof(BaseResponse<BookingPlaceWithBookingsViewModel>), 200)]
+    public async Task<IActionResult> GetByBookingPlaceIdWithDate(int id)
     {
         var bookingDaos = await _repository.GetBookingByBookingPlaceIdWithDateAsync(id);
-        var bookingPlace = await _repository.GetBookingPlaceAsync(id);        
+        var bookingPlace = await _repository.GetBookingPlaceAsync(id);
         var result = new BookingPlaceWithBookingsViewModel
         {
             Id = id,
@@ -84,15 +91,16 @@ public class BookingController : ControllerBase
             ItemType = bookingPlace.ItemType,
             AvailableForBooking = bookingPlace.AvailableForBooking,
             FloorId = bookingPlace.FloorId,
-            
+
             Bookings = _mapper.Map<List<BookingViewModel>>(bookingDaos)
         };
 
-        return result;
+        return ReturnResponse(new BaseResponse<BookingPlaceWithBookingsViewModel>(result));
     }
 
     // PUT: api/Booking/5
     [HttpPut("{id}")]
+    [ProducesResponseType(typeof(BaseResponse<bool>), 200)]
     public async Task<IActionResult> Put(int id, BookingPlaceViewModel bookingPlaceViewModel)
     {
         if (id != bookingPlaceViewModel.Id)
@@ -106,26 +114,33 @@ public class BookingController : ControllerBase
         var user = await _userManager.FindByEmailAsync(userEmail);
         if (user == null)
         {
-            return BadRequest("User not found");
+            return HandleError(new Exception(), "User not found");
         }
         var bookingItem = await _repository.GetBookingPlaceAsync(id);
         if (bookingItem == null)
         {
-            return NotFound();
+            return HandleError(new Exception(), "Booking item not found");
         }
         if (!isAdmin || user.Id != bookingItem.ReservedForId)
         {
-            return BadRequest("You are not allowed to udate this entity");
+            return HandleError(new Exception(), "You are not allowed to udate this entity");
         }
-        var bookingDao = _mapper.Map<BookingPlaceDao>(bookingPlaceViewModel);
-        bookingDao.ModifiedDate = DateTime.UtcNow;
-        await _repository.UpdateBookingPlaceAsync(bookingDao);
-
-        return NoContent();
+        try
+        {
+            var bookingDao = _mapper.Map<BookingPlaceDao>(bookingPlaceViewModel);
+            bookingDao.ModifiedDate = DateTime.UtcNow;
+            await _repository.UpdateBookingPlaceAsync(bookingDao);
+            return ReturnResponse(new BaseResponse<bool>(true));
+        }
+        catch (Exception ex)
+        {
+            return HandleError(ex);
+        }
     }
 
     [Authorize(Policy = IdentityData.AdminUserPolicyName)]
     [HttpPut("Admin/CreateOrUpdate")]
+    [ProducesResponseType(typeof(BaseResponse<bool>), 200)]
     public async Task<IActionResult> CreateOrUpdateBookings(BookingsViewModel request)
     {
         var userEmail = this.User.Claims.FirstOrDefault(item => item.Type == "email")?.Value;
@@ -133,7 +148,7 @@ public class BookingController : ControllerBase
         var user = await _userManager.FindByEmailAsync(userEmail);
         if (user == null)
         {
-            return BadRequest("User not found");
+            return HandleError(new Exception(), "User not found");
         }
         foreach (var bookingVm in request.Bookings)
         {
@@ -151,15 +166,15 @@ public class BookingController : ControllerBase
             {
                 if (existingBooking.BookedById != user.Id)
                 {
-                    return BadRequest("Already reserved by another user");
+                    return HandleError(new Exception(), "Already reserved");
                 }
                 try
                 {
                     await _repository.UpdateStateAsync(bookingRequest);
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
-                    throw;
+                    return HandleError(ex);
                 }
             }
             else
@@ -177,18 +192,18 @@ public class BookingController : ControllerBase
                 {
                     await _repository.CreateBookingAsync(newBooking);
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
-                    throw;
+                    return HandleError(ex);
                 }
             }
         }
 
-
-        return Ok();
+        return ReturnResponse(new BaseResponse<bool>(true));
     }
 
     [HttpPut("CreateOrUpdate")]
+    [ProducesResponseType(typeof(BaseResponse<bool>), 200)]
     public async Task<IActionResult> CreateOrUpdateBooking(BookingViewModel bookingVm)
     {
         var userEmail = this.User.FindFirstValue(ClaimTypes.Email) ?? "";
@@ -197,12 +212,12 @@ public class BookingController : ControllerBase
         var user = await _userManager.FindByEmailAsync(userEmail);
         if (user == null)
         {
-            return BadRequest("User not found");
+            return HandleError(new Exception(), "User not found");
         }
 
         if (bookingVm.BookingDate < DateTime.UtcNow)
         {
-            return BadRequest("Booking time cannot be in the past");
+            return HandleError(new Exception(), "Invalid booking date");
         }
 
         var bookingPlace = await _repository.GetBookingPlaceAsync(bookingVm.BookingPlaceId);
@@ -212,14 +227,14 @@ public class BookingController : ControllerBase
             bookingPlace.ReservedForId.HasValue &&
             bookingPlace.ReservedForId != user.Id)
             {
-                return BadRequest("This booking place is reserved for " + bookingPlace.ReservedForId);
+                return HandleError(new Exception(), "Booking place reserved");
             }
 
             if (bookingPlace.AvailableForBooking &&
                 bookingVm.BookingDate < bookingPlace.AvailableFrom &&
                 bookingVm.BookingDate > bookingPlace.AvailableTo)
             {
-                return BadRequest("This booking place is reserved for day you choosed.");
+                return HandleError(new Exception(), "This booking place is reserved for day you choosed.");
             }
         }
 
@@ -237,15 +252,15 @@ public class BookingController : ControllerBase
         {
             if (existingBooking.BookedById != user.Id)
             {
-                return BadRequest("Already reserved by another user");
+                return HandleError(new Exception(), "Already reserved by another user");
             }
             try
             {
                 await _repository.UpdateStateAsync(bookingRequest);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                throw;
+                return HandleError(ex);
             }
         }
         else
@@ -263,12 +278,12 @@ public class BookingController : ControllerBase
             {
                 await _repository.CreateBookingAsync(newBooking);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                throw;
+                return HandleError(ex);
             }
         }
-        return Ok();
+        return ReturnResponse(new BaseResponse<bool>(true));
     }
 
     // PUT: api/Booking/ChangeState
@@ -305,61 +320,81 @@ public class BookingController : ControllerBase
     // POST: api/Booking
     [Authorize(Policy = IdentityData.AdminUserPolicyName)]
     [HttpPost]
-    public async Task<ActionResult<BookingPlaceViewModel>> Post(BookingPlaceViewModel bookingPlaceViewModel)
+    [ProducesResponseType(typeof(BaseResponse<BookingPlaceViewModel>), 200)]
+    public async Task<IActionResult> Post(BookingPlaceViewModel bookingPlaceViewModel)
     {
         string userEmail = this.User.FindFirstValue(ClaimTypes.Email) ?? "";
         var user = await _userManager.FindByEmailAsync(userEmail);
         if (user == null)
         {
-            return BadRequest("User not found");
+            return HandleError(new Exception(), "User not found");
         }
         var bookingPlaceDao = _mapper.Map<BookingPlaceDao>(bookingPlaceViewModel);
         bookingPlaceDao.CreatedById = (int)user.Id;
-        var createdDao = await _repository.CreateBookingPlaceAsync(bookingPlaceDao);
-        if (createdDao != null)
+        try
         {
-            await _repository.CreateBookingAsync(new BookingDao
+            var createdDao = await _repository.CreateBookingPlaceAsync(bookingPlaceDao);
+            if (createdDao != null)
             {
-                BookingPlaceId = createdDao.Id,
-                State = bookingPlaceViewModel.State,
-                CreatedDate = DateTime.UtcNow,
-                CreatedById = (int)user.Id,
-            });
-        }
+                await _repository.CreateBookingAsync(new BookingDao
+                {
+                    BookingPlaceId = createdDao.Id,
+                    State = bookingPlaceViewModel.State,
+                    CreatedDate = DateTime.UtcNow,
+                    CreatedById = (int)user.Id,
+                });
+            }
 
-        return Ok(_mapper.Map<BookingPlaceViewModel>(createdDao));
+            return ReturnResponse(new BaseResponse<BookingPlaceViewModel>(_mapper.Map<BookingPlaceViewModel>(createdDao)));
+        }
+        catch (Exception ex)
+        {
+            return HandleError(ex);
+        }
     }
 
     // DELETE: api/Booking/5
     [Authorize(Policy = IdentityData.AdminUserPolicyName)]
     [HttpDelete("BookingPlace/{id}")]
+    [ProducesResponseType(typeof(BaseResponse<bool>), 200)]
     public async Task<IActionResult> DeleteBookingPlace(int id)
     {
         var BookingPlaceViewModel = await _repository.GetBookingPlaceAsync(id);
         if (BookingPlaceViewModel == null)
         {
-            return NotFound();
+            HandleError(new Exception(), "Booking place not found");
         }
 
-        await _repository.DeleteBookingPlaceAsync(id);
-
-        return NoContent();
+        try
+        {
+            await _repository.DeleteBookingPlaceAsync(id);
+            return ReturnResponse(new BaseResponse<bool>(true));
+        }
+        catch (Exception ex)
+        {
+            return HandleError(ex);
+        }
     }
 
     [Authorize(Policy = IdentityData.AdminUserPolicyName)]
     [HttpDelete("{id}")]
+    [ProducesResponseType(typeof(BaseResponse<bool>), 200)]
     public async Task<IActionResult> DeleteBooking(int id)
     {
         var BookingPlaceViewModel = await _repository.GetBookingAsync(id);
         if (BookingPlaceViewModel == null)
         {
-            return NotFound();
+            return HandleError(new Exception(), "Booking not found");
         }
 
-        await _repository.DeleteBookingAsync(id);
-
-        return NoContent();
+        try
+        {
+            await _repository.DeleteBookingAsync(id);            
+        }
+        catch (Exception ex)
+        {
+            HandleError(ex);
+        }
+        return ReturnResponse(new BaseResponse<bool>(true));
     }
-
-
 }

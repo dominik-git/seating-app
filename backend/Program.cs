@@ -96,6 +96,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 builder.Services.AddScoped<IBookingRepository, BookingRepository>();
+builder.Services.AddScoped<IFloorRepository, FloorRepository>();
 // Automapper
 var mappingConfig = new MapperConfiguration(mc =>
 {

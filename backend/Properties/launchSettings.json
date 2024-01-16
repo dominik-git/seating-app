@@ -42,7 +42,7 @@
         "Booking.Api": {
             "commandName": "Project",
             "launchBrowser": true,
-            "applicationUrl": "http://localhost:5038",
+            "applicationUrl": "http://localhost:5271",
             "environmentVariables": {
                 "ASPNETCORE_ENVIRONMENT": "Development"
             }
