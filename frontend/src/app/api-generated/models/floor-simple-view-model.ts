@@ -1,8 +1,8 @@
 /* tslint:disable */
 /* eslint-disable */
 export interface FloorSimpleViewModel {
-  floorDescription?: string | null;
-  floorId?: number;
-  floorName?: string | null;
+  description?: string | null;
+  id?: number;
+  name?: string | null;
   svg?: string | null;
 }

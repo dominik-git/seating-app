@@ -7,15 +7,17 @@ import { StrictHttpResponse } from '../../strict-http-response';
 import { RequestBuilder } from '../../request-builder';
 
 import { BookingPlaceViewModel } from '../../models/booking-place-view-model';
-import { BookingPlaceViewModelBaseResponse } from '../../models/booking-place-view-model-base-response';
+import { BooleanBaseResponse } from '../../models/boolean-base-response';
 
-export interface ApiBookingPost$Json$Params {
+export interface ApiBookingIdPut$Json$Params {
+  id: number;
       body?: BookingPlaceViewModel
 }
 
-export function apiBookingPost$Json(http: HttpClient, rootUrl: string, params?: ApiBookingPost$Json$Params, context?: HttpContext): Observable<StrictHttpResponse<BookingPlaceViewModelBaseResponse>> {
-  const rb = new RequestBuilder(rootUrl, apiBookingPost$Json.PATH, 'post');
+export function apiBookingIdPut$Json(http: HttpClient, rootUrl: string, params: ApiBookingIdPut$Json$Params, context?: HttpContext): Observable<StrictHttpResponse<BooleanBaseResponse>> {
+  const rb = new RequestBuilder(rootUrl, apiBookingIdPut$Json.PATH, 'put');
   if (params) {
+    rb.path('id', params.id, {});
     rb.body(params.body, 'application/*+json');
   }
 
@@ -24,9 +26,9 @@ export function apiBookingPost$Json(http: HttpClient, rootUrl: string, params?: 
   ).pipe(
     filter((r: any): r is HttpResponse<any> => r instanceof HttpResponse),
     map((r: HttpResponse<any>) => {
-      return r as StrictHttpResponse<BookingPlaceViewModelBaseResponse>;
+      return r as StrictHttpResponse<BooleanBaseResponse>;
     })
   );
 }
 
-apiBookingPost$Json.PATH = '/api/Booking';
+apiBookingIdPut$Json.PATH = '/api/Booking/{id}';

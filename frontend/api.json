@@ -64,26 +64,17 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/BookingPlaceViewModel"
-                  }
+                  "$ref": "#/components/schemas/BookingPlaceViewModelIEnumerableBaseResponse"
                 }
               },
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/BookingPlaceViewModel"
-                  }
+                  "$ref": "#/components/schemas/BookingPlaceViewModelIEnumerableBaseResponse"
                 }
               },
               "text/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/BookingPlaceViewModel"
-                  }
+                  "$ref": "#/components/schemas/BookingPlaceViewModelIEnumerableBaseResponse"
                 }
               }
             }
@@ -120,17 +111,17 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "$ref": "#/components/schemas/FloorViewModel"
+                  "$ref": "#/components/schemas/FloorViewModelBaseResponse"
                 }
               },
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/FloorViewModel"
+                  "$ref": "#/components/schemas/FloorViewModelBaseResponse"
                 }
               },
               "text/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/FloorViewModel"
+                  "$ref": "#/components/schemas/FloorViewModelBaseResponse"
                 }
               }
             }
@@ -160,17 +151,17 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "$ref": "#/components/schemas/BookingPlaceViewModel"
+                  "$ref": "#/components/schemas/BookingPlaceViewModelBaseResponse"
                 }
               },
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/BookingPlaceViewModel"
+                  "$ref": "#/components/schemas/BookingPlaceViewModelBaseResponse"
                 }
               },
               "text/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/BookingPlaceViewModel"
+                  "$ref": "#/components/schemas/BookingPlaceViewModelBaseResponse"
                 }
               }
             }
@@ -194,7 +185,24 @@
         ],
         "responses": {
           "200": {
-            "description": "Success"
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/BooleanBaseResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BooleanBaseResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BooleanBaseResponse"
+                }
+              }
+            }
           }
         }
       }
@@ -221,17 +229,17 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "$ref": "#/components/schemas/BookingViewModel"
+                  "$ref": "#/components/schemas/BookingViewModelBaseResponse"
                 }
               },
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/BookingViewModel"
+                  "$ref": "#/components/schemas/BookingViewModelBaseResponse"
                 }
               },
               "text/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/BookingViewModel"
+                  "$ref": "#/components/schemas/BookingViewModelBaseResponse"
                 }
               }
             }
@@ -261,17 +269,17 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "$ref": "#/components/schemas/BookingPlaceWithBookingsViewModel"
+                  "$ref": "#/components/schemas/BookingPlaceWithBookingsViewModelBaseResponse"
                 }
               },
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/BookingPlaceWithBookingsViewModel"
+                  "$ref": "#/components/schemas/BookingPlaceWithBookingsViewModelBaseResponse"
                 }
               },
               "text/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/BookingPlaceWithBookingsViewModel"
+                  "$ref": "#/components/schemas/BookingPlaceWithBookingsViewModelBaseResponse"
                 }
               }
             }
@@ -316,7 +324,24 @@
         },
         "responses": {
           "200": {
-            "description": "Success"
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/BooleanBaseResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BooleanBaseResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BooleanBaseResponse"
+                }
+              }
+            }
           }
         }
       },
@@ -337,7 +362,24 @@
         ],
         "responses": {
           "200": {
-            "description": "Success"
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/BooleanBaseResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BooleanBaseResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BooleanBaseResponse"
+                }
+              }
+            }
           }
         }
       }
@@ -368,7 +410,24 @@
         },
         "responses": {
           "200": {
-            "description": "Success"
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/BooleanBaseResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BooleanBaseResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BooleanBaseResponse"
+                }
+              }
+            }
           }
         }
       }
@@ -399,7 +458,24 @@
         },
         "responses": {
           "200": {
-            "description": "Success"
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/BooleanBaseResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BooleanBaseResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BooleanBaseResponse"
+                }
+              }
+            }
           }
         }
       }
@@ -496,17 +572,17 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "$ref": "#/components/schemas/BookingPlaceViewModel"
+                  "$ref": "#/components/schemas/BookingPlaceViewModelBaseResponse"
                 }
               },
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/BookingPlaceViewModel"
+                  "$ref": "#/components/schemas/BookingPlaceViewModelBaseResponse"
                 }
               },
               "text/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/BookingPlaceViewModel"
+                  "$ref": "#/components/schemas/BookingPlaceViewModelBaseResponse"
                 }
               }
             }
@@ -535,17 +611,17 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "$ref": "#/components/schemas/FloorSimpleViewModel"
+                  "$ref": "#/components/schemas/FloorSimpleViewModelBaseResponse"
                 }
               },
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/FloorSimpleViewModel"
+                  "$ref": "#/components/schemas/FloorSimpleViewModelBaseResponse"
                 }
               },
               "text/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/FloorSimpleViewModel"
+                  "$ref": "#/components/schemas/FloorSimpleViewModelBaseResponse"
                 }
               }
             }
@@ -581,17 +657,17 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "$ref": "#/components/schemas/FloorSimpleViewModel"
+                  "$ref": "#/components/schemas/FloorSimpleViewModelBaseResponse"
                 }
               },
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/FloorSimpleViewModel"
+                  "$ref": "#/components/schemas/FloorSimpleViewModelBaseResponse"
                 }
               },
               "text/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/FloorSimpleViewModel"
+                  "$ref": "#/components/schemas/FloorSimpleViewModelBaseResponse"
                 }
               }
             }
@@ -676,26 +752,17 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/FloorSimpleViewModel"
-                  }
+                  "$ref": "#/components/schemas/FloorSimpleViewModelListBaseResponse"
                 }
               },
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/FloorSimpleViewModel"
-                  }
+                  "$ref": "#/components/schemas/FloorSimpleViewModelListBaseResponse"
                 }
               },
               "text/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/FloorSimpleViewModel"
-                  }
+                  "$ref": "#/components/schemas/FloorSimpleViewModelListBaseResponse"
                 }
               }
             }
@@ -733,17 +800,17 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "$ref": "#/components/schemas/FloorViewModel"
+                  "$ref": "#/components/schemas/FloorViewModelBaseResponse"
                 }
               },
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/FloorViewModel"
+                  "$ref": "#/components/schemas/FloorViewModelBaseResponse"
                 }
               },
               "text/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/FloorViewModel"
+                  "$ref": "#/components/schemas/FloorViewModelBaseResponse"
                 }
               }
             }
@@ -810,6 +877,64 @@
         },
         "additionalProperties": false
       },
+      "BookingPlaceViewModelBaseResponse": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "$ref": "#/components/schemas/RequestExecution"
+          },
+          "data": {
+            "$ref": "#/components/schemas/BookingPlaceViewModel"
+          },
+          "responseMessage": {
+            "type": "string",
+            "nullable": true
+          },
+          "totalCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "errors": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "BookingPlaceViewModelIEnumerableBaseResponse": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "$ref": "#/components/schemas/RequestExecution"
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/BookingPlaceViewModel"
+            },
+            "nullable": true
+          },
+          "responseMessage": {
+            "type": "string",
+            "nullable": true
+          },
+          "totalCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "errors": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
       "BookingPlaceWithBookingsViewModel": {
         "type": "object",
         "properties": {
@@ -848,6 +973,33 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/BookingViewModel"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "BookingPlaceWithBookingsViewModelBaseResponse": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "$ref": "#/components/schemas/RequestExecution"
+          },
+          "data": {
+            "$ref": "#/components/schemas/BookingPlaceWithBookingsViewModel"
+          },
+          "responseMessage": {
+            "type": "string",
+            "nullable": true
+          },
+          "totalCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "errors": {
+            "type": "array",
+            "items": {
+              "type": "string"
             },
             "nullable": true
           }
@@ -893,6 +1045,33 @@
           "bookingDate": {
             "type": "string",
             "format": "date-time"
+          }
+        },
+        "additionalProperties": false
+      },
+      "BookingViewModelBaseResponse": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "$ref": "#/components/schemas/RequestExecution"
+          },
+          "data": {
+            "$ref": "#/components/schemas/BookingViewModel"
+          },
+          "responseMessage": {
+            "type": "string",
+            "nullable": true
+          },
+          "totalCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "errors": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "nullable": true
           }
         },
         "additionalProperties": false
@@ -965,15 +1144,15 @@
       "FloorSimpleViewModel": {
         "type": "object",
         "properties": {
-          "floorId": {
+          "id": {
             "type": "integer",
             "format": "int32"
           },
-          "floorName": {
+          "name": {
             "type": "string",
             "nullable": true
           },
-          "floorDescription": {
+          "description": {
             "type": "string",
             "nullable": true
           },
@@ -984,18 +1163,76 @@
         },
         "additionalProperties": false
       },
-      "FloorViewModel": {
+      "FloorSimpleViewModelBaseResponse": {
         "type": "object",
         "properties": {
-          "floorId": {
-            "type": "integer",
-            "format": "int32"
+          "status": {
+            "$ref": "#/components/schemas/RequestExecution"
           },
-          "floorName": {
+          "data": {
+            "$ref": "#/components/schemas/FloorSimpleViewModel"
+          },
+          "responseMessage": {
             "type": "string",
             "nullable": true
           },
-          "floorDescription": {
+          "totalCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "errors": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "FloorSimpleViewModelListBaseResponse": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "$ref": "#/components/schemas/RequestExecution"
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FloorSimpleViewModel"
+            },
+            "nullable": true
+          },
+          "responseMessage": {
+            "type": "string",
+            "nullable": true
+          },
+          "totalCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "errors": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "FloorViewModel": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "description": {
             "type": "string",
             "nullable": true
           },
@@ -1007,6 +1244,33 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/BookingPlaceWithBookingsViewModel"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "FloorViewModelBaseResponse": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "$ref": "#/components/schemas/RequestExecution"
+          },
+          "data": {
+            "$ref": "#/components/schemas/FloorViewModel"
+          },
+          "responseMessage": {
+            "type": "string",
+            "nullable": true
+          },
+          "totalCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "errors": {
+            "type": "array",
+            "items": {
+              "type": "string"
             },
             "nullable": true
           }

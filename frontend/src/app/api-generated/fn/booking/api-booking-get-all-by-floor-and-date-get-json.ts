@@ -6,14 +6,14 @@ import { filter, map } from 'rxjs/operators';
 import { StrictHttpResponse } from '../../strict-http-response';
 import { RequestBuilder } from '../../request-builder';
 
-import { FloorViewModel } from '../../models/floor-view-model';
+import { FloorViewModelBaseResponse } from '../../models/floor-view-model-base-response';
 
 export interface ApiBookingGetAllByFloorAndDateGet$Json$Params {
   floorId?: number;
   bookingDate?: string;
 }
 
-export function apiBookingGetAllByFloorAndDateGet$Json(http: HttpClient, rootUrl: string, params?: ApiBookingGetAllByFloorAndDateGet$Json$Params, context?: HttpContext): Observable<StrictHttpResponse<FloorViewModel>> {
+export function apiBookingGetAllByFloorAndDateGet$Json(http: HttpClient, rootUrl: string, params?: ApiBookingGetAllByFloorAndDateGet$Json$Params, context?: HttpContext): Observable<StrictHttpResponse<FloorViewModelBaseResponse>> {
   const rb = new RequestBuilder(rootUrl, apiBookingGetAllByFloorAndDateGet$Json.PATH, 'get');
   if (params) {
     rb.query('floorId', params.floorId, {});
@@ -25,7 +25,7 @@ export function apiBookingGetAllByFloorAndDateGet$Json(http: HttpClient, rootUrl
   ).pipe(
     filter((r: any): r is HttpResponse<any> => r instanceof HttpResponse),
     map((r: HttpResponse<any>) => {
-      return r as StrictHttpResponse<FloorViewModel>;
+      return r as StrictHttpResponse<FloorViewModelBaseResponse>;
     })
   );
 }

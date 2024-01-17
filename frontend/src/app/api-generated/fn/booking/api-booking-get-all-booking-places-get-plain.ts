@@ -6,12 +6,12 @@ import { filter, map } from 'rxjs/operators';
 import { StrictHttpResponse } from '../../strict-http-response';
 import { RequestBuilder } from '../../request-builder';
 
-import { BookingPlaceViewModel } from '../../models/booking-place-view-model';
+import { BookingPlaceViewModelIEnumerableBaseResponse } from '../../models/booking-place-view-model-i-enumerable-base-response';
 
 export interface ApiBookingGetAllBookingPlacesGet$Plain$Params {
 }
 
-export function apiBookingGetAllBookingPlacesGet$Plain(http: HttpClient, rootUrl: string, params?: ApiBookingGetAllBookingPlacesGet$Plain$Params, context?: HttpContext): Observable<StrictHttpResponse<Array<BookingPlaceViewModel>>> {
+export function apiBookingGetAllBookingPlacesGet$Plain(http: HttpClient, rootUrl: string, params?: ApiBookingGetAllBookingPlacesGet$Plain$Params, context?: HttpContext): Observable<StrictHttpResponse<BookingPlaceViewModelIEnumerableBaseResponse>> {
   const rb = new RequestBuilder(rootUrl, apiBookingGetAllBookingPlacesGet$Plain.PATH, 'get');
   if (params) {
   }
@@ -21,7 +21,7 @@ export function apiBookingGetAllBookingPlacesGet$Plain(http: HttpClient, rootUrl
   ).pipe(
     filter((r: any): r is HttpResponse<any> => r instanceof HttpResponse),
     map((r: HttpResponse<any>) => {
-      return r as StrictHttpResponse<Array<BookingPlaceViewModel>>;
+      return r as StrictHttpResponse<BookingPlaceViewModelIEnumerableBaseResponse>;
     })
   );
 }

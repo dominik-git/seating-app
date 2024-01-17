@@ -7,13 +7,13 @@ import { StrictHttpResponse } from '../../strict-http-response';
 import { RequestBuilder } from '../../request-builder';
 
 import { CreateFloorWithBookingPlacesRequest } from '../../models/create-floor-with-booking-places-request';
-import { FloorViewModel } from '../../models/floor-view-model';
+import { FloorViewModelBaseResponse } from '../../models/floor-view-model-base-response';
 
 export interface ApiFloorCreateWithBookingPlacesPost$Plain$Params {
       body?: CreateFloorWithBookingPlacesRequest
 }
 
-export function apiFloorCreateWithBookingPlacesPost$Plain(http: HttpClient, rootUrl: string, params?: ApiFloorCreateWithBookingPlacesPost$Plain$Params, context?: HttpContext): Observable<StrictHttpResponse<FloorViewModel>> {
+export function apiFloorCreateWithBookingPlacesPost$Plain(http: HttpClient, rootUrl: string, params?: ApiFloorCreateWithBookingPlacesPost$Plain$Params, context?: HttpContext): Observable<StrictHttpResponse<FloorViewModelBaseResponse>> {
   const rb = new RequestBuilder(rootUrl, apiFloorCreateWithBookingPlacesPost$Plain.PATH, 'post');
   if (params) {
     rb.body(params.body, 'application/*+json');
@@ -24,7 +24,7 @@ export function apiFloorCreateWithBookingPlacesPost$Plain(http: HttpClient, root
   ).pipe(
     filter((r: any): r is HttpResponse<any> => r instanceof HttpResponse),
     map((r: HttpResponse<any>) => {
-      return r as StrictHttpResponse<FloorViewModel>;
+      return r as StrictHttpResponse<FloorViewModelBaseResponse>;
     })
   );
 }

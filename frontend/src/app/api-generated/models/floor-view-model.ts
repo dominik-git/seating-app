@@ -3,8 +3,8 @@
 import { BookingPlaceWithBookingsViewModel } from '../models/booking-place-with-bookings-view-model';
 export interface FloorViewModel {
   bookingPlaces?: Array<BookingPlaceWithBookingsViewModel> | null;
-  floorDescription?: string | null;
-  floorId?: number;
-  floorName?: string | null;
+  description?: string | null;
+  id?: number;
+  name?: string | null;
   svg?: string | null;
 }

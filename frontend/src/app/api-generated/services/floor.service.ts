@@ -32,7 +32,9 @@ import { ApiFloorPut$Json$Params } from '../fn/floor/api-floor-put-json';
 import { apiFloorPut$Plain } from '../fn/floor/api-floor-put-plain';
 import { ApiFloorPut$Plain$Params } from '../fn/floor/api-floor-put-plain';
 import { FloorSimpleViewModel } from '../models/floor-simple-view-model';
-import { FloorViewModel } from '../models/floor-view-model';
+import { FloorSimpleViewModelBaseResponse } from '../models/floor-simple-view-model-base-response';
+import { FloorSimpleViewModelListBaseResponse } from '../models/floor-simple-view-model-list-base-response';
+import { FloorViewModelBaseResponse } from '../models/floor-view-model-base-response';
 
 @Injectable({ providedIn: 'root' })
 export class FloorService extends BaseService {
@@ -49,7 +51,7 @@ export class FloorService extends BaseService {
    *
    * This method doesn't expect any request body.
    */
-  apiFloorGet$Plain$Response(params?: ApiFloorGet$Plain$Params, context?: HttpContext): Observable<StrictHttpResponse<FloorSimpleViewModel>> {
+  apiFloorGet$Plain$Response(params?: ApiFloorGet$Plain$Params, context?: HttpContext): Observable<StrictHttpResponse<FloorSimpleViewModelBaseResponse>> {
     return apiFloorGet$Plain(this.http, this.rootUrl, params, context);
   }
 
@@ -59,9 +61,9 @@ export class FloorService extends BaseService {
    *
    * This method doesn't expect any request body.
    */
-  apiFloorGet$Plain(params?: ApiFloorGet$Plain$Params, context?: HttpContext): Observable<FloorSimpleViewModel> {
+  apiFloorGet$Plain(params?: ApiFloorGet$Plain$Params, context?: HttpContext): Observable<FloorSimpleViewModelBaseResponse> {
     return this.apiFloorGet$Plain$Response(params, context).pipe(
-      map((r: StrictHttpResponse<FloorSimpleViewModel>): FloorSimpleViewModel => r.body)
+      map((r: StrictHttpResponse<FloorSimpleViewModelBaseResponse>): FloorSimpleViewModelBaseResponse => r.body)
     );
   }
 
@@ -71,7 +73,7 @@ export class FloorService extends BaseService {
    *
    * This method doesn't expect any request body.
    */
-  apiFloorGet$Json$Response(params?: ApiFloorGet$Json$Params, context?: HttpContext): Observable<StrictHttpResponse<FloorSimpleViewModel>> {
+  apiFloorGet$Json$Response(params?: ApiFloorGet$Json$Params, context?: HttpContext): Observable<StrictHttpResponse<FloorSimpleViewModelBaseResponse>> {
     return apiFloorGet$Json(this.http, this.rootUrl, params, context);
   }
 
@@ -81,9 +83,9 @@ export class FloorService extends BaseService {
    *
    * This method doesn't expect any request body.
    */
-  apiFloorGet$Json(params?: ApiFloorGet$Json$Params, context?: HttpContext): Observable<FloorSimpleViewModel> {
+  apiFloorGet$Json(params?: ApiFloorGet$Json$Params, context?: HttpContext): Observable<FloorSimpleViewModelBaseResponse> {
     return this.apiFloorGet$Json$Response(params, context).pipe(
-      map((r: StrictHttpResponse<FloorSimpleViewModel>): FloorSimpleViewModel => r.body)
+      map((r: StrictHttpResponse<FloorSimpleViewModelBaseResponse>): FloorSimpleViewModelBaseResponse => r.body)
     );
   }
 
@@ -143,7 +145,7 @@ export class FloorService extends BaseService {
    *
    * This method sends `application/*+json` and handles request body of type `application/*+json`.
    */
-  apiFloorPost$Plain$Response(params?: ApiFloorPost$Plain$Params, context?: HttpContext): Observable<StrictHttpResponse<FloorSimpleViewModel>> {
+  apiFloorPost$Plain$Response(params?: ApiFloorPost$Plain$Params, context?: HttpContext): Observable<StrictHttpResponse<FloorSimpleViewModelBaseResponse>> {
     return apiFloorPost$Plain(this.http, this.rootUrl, params, context);
   }
 
@@ -153,9 +155,9 @@ export class FloorService extends BaseService {
    *
    * This method sends `application/*+json` and handles request body of type `application/*+json`.
    */
-  apiFloorPost$Plain(params?: ApiFloorPost$Plain$Params, context?: HttpContext): Observable<FloorSimpleViewModel> {
+  apiFloorPost$Plain(params?: ApiFloorPost$Plain$Params, context?: HttpContext): Observable<FloorSimpleViewModelBaseResponse> {
     return this.apiFloorPost$Plain$Response(params, context).pipe(
-      map((r: StrictHttpResponse<FloorSimpleViewModel>): FloorSimpleViewModel => r.body)
+      map((r: StrictHttpResponse<FloorSimpleViewModelBaseResponse>): FloorSimpleViewModelBaseResponse => r.body)
     );
   }
 
@@ -165,7 +167,7 @@ export class FloorService extends BaseService {
    *
    * This method sends `application/*+json` and handles request body of type `application/*+json`.
    */
-  apiFloorPost$Json$Response(params?: ApiFloorPost$Json$Params, context?: HttpContext): Observable<StrictHttpResponse<FloorSimpleViewModel>> {
+  apiFloorPost$Json$Response(params?: ApiFloorPost$Json$Params, context?: HttpContext): Observable<StrictHttpResponse<FloorSimpleViewModelBaseResponse>> {
     return apiFloorPost$Json(this.http, this.rootUrl, params, context);
   }
 
@@ -175,9 +177,9 @@ export class FloorService extends BaseService {
    *
    * This method sends `application/*+json` and handles request body of type `application/*+json`.
    */
-  apiFloorPost$Json(params?: ApiFloorPost$Json$Params, context?: HttpContext): Observable<FloorSimpleViewModel> {
+  apiFloorPost$Json(params?: ApiFloorPost$Json$Params, context?: HttpContext): Observable<FloorSimpleViewModelBaseResponse> {
     return this.apiFloorPost$Json$Response(params, context).pipe(
-      map((r: StrictHttpResponse<FloorSimpleViewModel>): FloorSimpleViewModel => r.body)
+      map((r: StrictHttpResponse<FloorSimpleViewModelBaseResponse>): FloorSimpleViewModelBaseResponse => r.body)
     );
   }
 
@@ -215,7 +217,7 @@ export class FloorService extends BaseService {
    *
    * This method doesn't expect any request body.
    */
-  apiFloorGetAllGet$Plain$Response(params?: ApiFloorGetAllGet$Plain$Params, context?: HttpContext): Observable<StrictHttpResponse<Array<FloorSimpleViewModel>>> {
+  apiFloorGetAllGet$Plain$Response(params?: ApiFloorGetAllGet$Plain$Params, context?: HttpContext): Observable<StrictHttpResponse<FloorSimpleViewModelListBaseResponse>> {
     return apiFloorGetAllGet$Plain(this.http, this.rootUrl, params, context);
   }
 
@@ -225,9 +227,9 @@ export class FloorService extends BaseService {
    *
    * This method doesn't expect any request body.
    */
-  apiFloorGetAllGet$Plain(params?: ApiFloorGetAllGet$Plain$Params, context?: HttpContext): Observable<Array<FloorSimpleViewModel>> {
+  apiFloorGetAllGet$Plain(params?: ApiFloorGetAllGet$Plain$Params, context?: HttpContext): Observable<FloorSimpleViewModelListBaseResponse> {
     return this.apiFloorGetAllGet$Plain$Response(params, context).pipe(
-      map((r: StrictHttpResponse<Array<FloorSimpleViewModel>>): Array<FloorSimpleViewModel> => r.body)
+      map((r: StrictHttpResponse<FloorSimpleViewModelListBaseResponse>): FloorSimpleViewModelListBaseResponse => r.body)
     );
   }
 
@@ -237,7 +239,7 @@ export class FloorService extends BaseService {
    *
    * This method doesn't expect any request body.
    */
-  apiFloorGetAllGet$Json$Response(params?: ApiFloorGetAllGet$Json$Params, context?: HttpContext): Observable<StrictHttpResponse<Array<FloorSimpleViewModel>>> {
+  apiFloorGetAllGet$Json$Response(params?: ApiFloorGetAllGet$Json$Params, context?: HttpContext): Observable<StrictHttpResponse<FloorSimpleViewModelListBaseResponse>> {
     return apiFloorGetAllGet$Json(this.http, this.rootUrl, params, context);
   }
 
@@ -247,9 +249,9 @@ export class FloorService extends BaseService {
    *
    * This method doesn't expect any request body.
    */
-  apiFloorGetAllGet$Json(params?: ApiFloorGetAllGet$Json$Params, context?: HttpContext): Observable<Array<FloorSimpleViewModel>> {
+  apiFloorGetAllGet$Json(params?: ApiFloorGetAllGet$Json$Params, context?: HttpContext): Observable<FloorSimpleViewModelListBaseResponse> {
     return this.apiFloorGetAllGet$Json$Response(params, context).pipe(
-      map((r: StrictHttpResponse<Array<FloorSimpleViewModel>>): Array<FloorSimpleViewModel> => r.body)
+      map((r: StrictHttpResponse<FloorSimpleViewModelListBaseResponse>): FloorSimpleViewModelListBaseResponse => r.body)
     );
   }
 
@@ -262,7 +264,7 @@ export class FloorService extends BaseService {
    *
    * This method sends `application/*+json` and handles request body of type `application/*+json`.
    */
-  apiFloorCreateWithBookingPlacesPost$Plain$Response(params?: ApiFloorCreateWithBookingPlacesPost$Plain$Params, context?: HttpContext): Observable<StrictHttpResponse<FloorViewModel>> {
+  apiFloorCreateWithBookingPlacesPost$Plain$Response(params?: ApiFloorCreateWithBookingPlacesPost$Plain$Params, context?: HttpContext): Observable<StrictHttpResponse<FloorViewModelBaseResponse>> {
     return apiFloorCreateWithBookingPlacesPost$Plain(this.http, this.rootUrl, params, context);
   }
 
@@ -272,9 +274,9 @@ export class FloorService extends BaseService {
    *
    * This method sends `application/*+json` and handles request body of type `application/*+json`.
    */
-  apiFloorCreateWithBookingPlacesPost$Plain(params?: ApiFloorCreateWithBookingPlacesPost$Plain$Params, context?: HttpContext): Observable<FloorViewModel> {
+  apiFloorCreateWithBookingPlacesPost$Plain(params?: ApiFloorCreateWithBookingPlacesPost$Plain$Params, context?: HttpContext): Observable<FloorViewModelBaseResponse> {
     return this.apiFloorCreateWithBookingPlacesPost$Plain$Response(params, context).pipe(
-      map((r: StrictHttpResponse<FloorViewModel>): FloorViewModel => r.body)
+      map((r: StrictHttpResponse<FloorViewModelBaseResponse>): FloorViewModelBaseResponse => r.body)
     );
   }
 
@@ -284,7 +286,7 @@ export class FloorService extends BaseService {
    *
    * This method sends `application/*+json` and handles request body of type `application/*+json`.
    */
-  apiFloorCreateWithBookingPlacesPost$Json$Response(params?: ApiFloorCreateWithBookingPlacesPost$Json$Params, context?: HttpContext): Observable<StrictHttpResponse<FloorViewModel>> {
+  apiFloorCreateWithBookingPlacesPost$Json$Response(params?: ApiFloorCreateWithBookingPlacesPost$Json$Params, context?: HttpContext): Observable<StrictHttpResponse<FloorViewModelBaseResponse>> {
     return apiFloorCreateWithBookingPlacesPost$Json(this.http, this.rootUrl, params, context);
   }
 
@@ -294,9 +296,9 @@ export class FloorService extends BaseService {
    *
    * This method sends `application/*+json` and handles request body of type `application/*+json`.
    */
-  apiFloorCreateWithBookingPlacesPost$Json(params?: ApiFloorCreateWithBookingPlacesPost$Json$Params, context?: HttpContext): Observable<FloorViewModel> {
+  apiFloorCreateWithBookingPlacesPost$Json(params?: ApiFloorCreateWithBookingPlacesPost$Json$Params, context?: HttpContext): Observable<FloorViewModelBaseResponse> {
     return this.apiFloorCreateWithBookingPlacesPost$Json$Response(params, context).pipe(
-      map((r: StrictHttpResponse<FloorViewModel>): FloorViewModel => r.body)
+      map((r: StrictHttpResponse<FloorViewModelBaseResponse>): FloorViewModelBaseResponse => r.body)
     );
   }
 

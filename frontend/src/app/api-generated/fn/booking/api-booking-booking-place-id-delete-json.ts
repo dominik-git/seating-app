@@ -6,14 +6,14 @@ import { filter, map } from 'rxjs/operators';
 import { StrictHttpResponse } from '../../strict-http-response';
 import { RequestBuilder } from '../../request-builder';
 
-import { BookingPlaceViewModelBaseResponse } from '../../models/booking-place-view-model-base-response';
+import { BooleanBaseResponse } from '../../models/boolean-base-response';
 
-export interface ApiBookingBookingPlaceIdGet$Json$Params {
+export interface ApiBookingBookingPlaceIdDelete$Json$Params {
   id: number;
 }
 
-export function apiBookingBookingPlaceIdGet$Json(http: HttpClient, rootUrl: string, params: ApiBookingBookingPlaceIdGet$Json$Params, context?: HttpContext): Observable<StrictHttpResponse<BookingPlaceViewModelBaseResponse>> {
-  const rb = new RequestBuilder(rootUrl, apiBookingBookingPlaceIdGet$Json.PATH, 'get');
+export function apiBookingBookingPlaceIdDelete$Json(http: HttpClient, rootUrl: string, params: ApiBookingBookingPlaceIdDelete$Json$Params, context?: HttpContext): Observable<StrictHttpResponse<BooleanBaseResponse>> {
+  const rb = new RequestBuilder(rootUrl, apiBookingBookingPlaceIdDelete$Json.PATH, 'delete');
   if (params) {
     rb.path('id', params.id, {});
   }
@@ -23,9 +23,9 @@ export function apiBookingBookingPlaceIdGet$Json(http: HttpClient, rootUrl: stri
   ).pipe(
     filter((r: any): r is HttpResponse<any> => r instanceof HttpResponse),
     map((r: HttpResponse<any>) => {
-      return r as StrictHttpResponse<BookingPlaceViewModelBaseResponse>;
+      return r as StrictHttpResponse<BooleanBaseResponse>;
     })
   );
 }
 
-apiBookingBookingPlaceIdGet$Json.PATH = '/api/Booking/BookingPlace/{id}';
+apiBookingBookingPlaceIdDelete$Json.PATH = '/api/Booking/BookingPlace/{id}';

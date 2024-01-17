@@ -7,12 +7,13 @@ import { StrictHttpResponse } from '../../strict-http-response';
 import { RequestBuilder } from '../../request-builder';
 
 import { BookingPlaceViewModel } from '../../models/booking-place-view-model';
+import { BookingPlaceViewModelBaseResponse } from '../../models/booking-place-view-model-base-response';
 
 export interface ApiBookingPost$Plain$Params {
       body?: BookingPlaceViewModel
 }
 
-export function apiBookingPost$Plain(http: HttpClient, rootUrl: string, params?: ApiBookingPost$Plain$Params, context?: HttpContext): Observable<StrictHttpResponse<BookingPlaceViewModel>> {
+export function apiBookingPost$Plain(http: HttpClient, rootUrl: string, params?: ApiBookingPost$Plain$Params, context?: HttpContext): Observable<StrictHttpResponse<BookingPlaceViewModelBaseResponse>> {
   const rb = new RequestBuilder(rootUrl, apiBookingPost$Plain.PATH, 'post');
   if (params) {
     rb.body(params.body, 'application/*+json');
@@ -23,7 +24,7 @@ export function apiBookingPost$Plain(http: HttpClient, rootUrl: string, params?:
   ).pipe(
     filter((r: any): r is HttpResponse<any> => r instanceof HttpResponse),
     map((r: HttpResponse<any>) => {
-      return r as StrictHttpResponse<BookingPlaceViewModel>;
+      return r as StrictHttpResponse<BookingPlaceViewModelBaseResponse>;
     })
   );
 }

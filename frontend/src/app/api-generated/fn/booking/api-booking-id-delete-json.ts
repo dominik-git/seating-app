@@ -6,14 +6,16 @@ import { filter, map } from 'rxjs/operators';
 import { StrictHttpResponse } from '../../strict-http-response';
 import { RequestBuilder } from '../../request-builder';
 
-import { FloorSimpleViewModelListBaseResponse } from '../../models/floor-simple-view-model-list-base-response';
+import { BooleanBaseResponse } from '../../models/boolean-base-response';
 
-export interface ApiFloorGetAllGet$Json$Params {
+export interface ApiBookingIdDelete$Json$Params {
+  id: number;
 }
 
-export function apiFloorGetAllGet$Json(http: HttpClient, rootUrl: string, params?: ApiFloorGetAllGet$Json$Params, context?: HttpContext): Observable<StrictHttpResponse<FloorSimpleViewModelListBaseResponse>> {
-  const rb = new RequestBuilder(rootUrl, apiFloorGetAllGet$Json.PATH, 'get');
+export function apiBookingIdDelete$Json(http: HttpClient, rootUrl: string, params: ApiBookingIdDelete$Json$Params, context?: HttpContext): Observable<StrictHttpResponse<BooleanBaseResponse>> {
+  const rb = new RequestBuilder(rootUrl, apiBookingIdDelete$Json.PATH, 'delete');
   if (params) {
+    rb.path('id', params.id, {});
   }
 
   return http.request(
@@ -21,9 +23,9 @@ export function apiFloorGetAllGet$Json(http: HttpClient, rootUrl: string, params
   ).pipe(
     filter((r: any): r is HttpResponse<any> => r instanceof HttpResponse),
     map((r: HttpResponse<any>) => {
-      return r as StrictHttpResponse<FloorSimpleViewModelListBaseResponse>;
+      return r as StrictHttpResponse<BooleanBaseResponse>;
     })
   );
 }
 
-apiFloorGetAllGet$Json.PATH = '/api/Floor/GetAll';
+apiBookingIdDelete$Json.PATH = '/api/Booking/{id}';

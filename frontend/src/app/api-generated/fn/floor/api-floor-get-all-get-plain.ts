@@ -6,12 +6,12 @@ import { filter, map } from 'rxjs/operators';
 import { StrictHttpResponse } from '../../strict-http-response';
 import { RequestBuilder } from '../../request-builder';
 
-import { FloorSimpleViewModel } from '../../models/floor-simple-view-model';
+import { FloorSimpleViewModelListBaseResponse } from '../../models/floor-simple-view-model-list-base-response';
 
 export interface ApiFloorGetAllGet$Plain$Params {
 }
 
-export function apiFloorGetAllGet$Plain(http: HttpClient, rootUrl: string, params?: ApiFloorGetAllGet$Plain$Params, context?: HttpContext): Observable<StrictHttpResponse<Array<FloorSimpleViewModel>>> {
+export function apiFloorGetAllGet$Plain(http: HttpClient, rootUrl: string, params?: ApiFloorGetAllGet$Plain$Params, context?: HttpContext): Observable<StrictHttpResponse<FloorSimpleViewModelListBaseResponse>> {
   const rb = new RequestBuilder(rootUrl, apiFloorGetAllGet$Plain.PATH, 'get');
   if (params) {
   }
@@ -21,7 +21,7 @@ export function apiFloorGetAllGet$Plain(http: HttpClient, rootUrl: string, param
   ).pipe(
     filter((r: any): r is HttpResponse<any> => r instanceof HttpResponse),
     map((r: HttpResponse<any>) => {
-      return r as StrictHttpResponse<Array<FloorSimpleViewModel>>;
+      return r as StrictHttpResponse<FloorSimpleViewModelListBaseResponse>;
     })
   );
 }
