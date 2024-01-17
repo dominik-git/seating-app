@@ -5,23 +5,34 @@ import { EMPTY, Observable } from 'rxjs';
 import { catchError, switchMap, tap } from 'rxjs/operators';
 import { FloorFormModelValues } from '../../models/floor-form.model';
 import { FloorService } from '../../../../api-generated/services/floor.service';
+import { PlacesStore } from '../../../../services/places/places.store';
 
 export interface FloorFormState {
+  floors: FloorSimpleViewModel[];
   floor: FloorSimpleViewModel;
   error: any;
   isLoading: boolean;
 }
 
 @Injectable()
-export class FloorFormStore extends ComponentStore<FloorFormState> {
-  constructor(private readonly floorService: FloorService) {
-    super({ floor: null, isLoading: false, error: null });
+export class EditFloorStore extends ComponentStore<FloorFormState> {
+  constructor(
+    private readonly floorService: FloorService,
+    private readonly placesStore: PlacesStore
+  ) {
+    super({ floors: [], floor: null, isLoading: false, error: null });
   }
 
   // SELECTORS
   readonly floor$: Observable<FloorSimpleViewModel | null> = this.select(
     state => state.floor
   );
+  readonly floors$: Observable<FloorSimpleViewModel[]> =
+    this.placesStore.selectFloors$;
+
+  readonly isLoadingFloors$: Observable<boolean> =
+    this.placesStore.selectIsLoading$;
+
   readonly isLoading$: Observable<boolean> = this.select(
     state => state.isLoading
   );

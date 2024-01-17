@@ -28,11 +28,11 @@ export const APP_ROUTES: Routes = [
           ).then(m => m.EditPlacesContainerComponent),
       },
       {
-        path: 'floor-form',
+        path: 'edit-floor',
         loadComponent: () =>
           import(
-            '../../../administration/pages/floor-form/floor-form.component'
-          ).then(m => m.FloorFormComponent),
+            '../../../administration/pages/edit-floor/edit-floor.component'
+          ).then(m => m.EditFloorComponent),
       },
     ],
   },

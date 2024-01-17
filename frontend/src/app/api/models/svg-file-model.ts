@@ -5,11 +5,11 @@ export interface SvgFileModelResponse {
 }
 
 export interface SvgFileModel {
-  id: string;
-  svgFile: string;
+  id: number;
+  svgFile: string | null;
 }
 
 export interface SvgFileSelectorModel {
-  id: string;
-  name: string;
+  id: number;
+  name: string | null;
 }

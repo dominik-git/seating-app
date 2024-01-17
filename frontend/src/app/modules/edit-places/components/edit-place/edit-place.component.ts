@@ -74,7 +74,7 @@ export class EditPlaceComponent implements AfterViewInit {
 
   private updateElementState(element: HTMLElement): void {
     const isFixed = this.fixedPlaces.some(
-      (place) => place.placeId === element.id
+      place => place.placeId === element.id
     );
     element.classList.toggle(this.fixedClass, isFixed);
     element.style.fill = isFixed ? '#D7063B' : '#7ed321';
@@ -99,6 +99,6 @@ export class EditPlaceComponent implements AfterViewInit {
   }
 
   private findFixedPlaceById(id: string): PlaceModel {
-    return this.fixedPlaces.find((place) => place.placeId === id);
+    return this.fixedPlaces.find(place => place.placeId === id);
   }
 }

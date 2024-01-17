@@ -1,9 +1,9 @@
 import { FormControl } from '@angular/forms';
 
 export interface FloorFormModel {
-  floorDescription?: FormControl<string>;
+  description?: FormControl<string>;
   floorId?: FormControl<number>;
-  floorName?: FormControl<string>;
+  name?: FormControl<string>;
   svg?: FormControl<string>;
 }
 

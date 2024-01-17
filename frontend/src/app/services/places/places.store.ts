@@ -5,13 +5,15 @@ import { EMPTY, Observable } from 'rxjs';
 // import { PlaceModel } from '../../../../api/place-model';
 import {
   SvgFileModel,
-  SvgFileModelResponse,
   SvgFileSelectorModel,
 } from '../../api/models/svg-file-model';
 import { PlacesResourceService } from '../../api/places/places-resource.service';
 import { catchError, switchMap, tap } from 'rxjs/operators';
+import { FloorService } from '../../api-generated/services/floor.service';
+import { FloorSimpleViewModel } from '../../api-generated/models/floor-simple-view-model';
 
 export interface PlacesStoreState {
+  floors: FloorSimpleViewModel[];
   placesSvg: SvgFileModel[];
   placesName: SvgFileSelectorModel[];
   isLoading: boolean;
@@ -20,8 +22,12 @@ export interface PlacesStoreState {
 
 @Injectable()
 export class PlacesStore extends ComponentStore<PlacesStoreState> {
-  constructor(private placesResourceService: PlacesResourceService) {
+  constructor(
+    private readonly placesResourceService: PlacesResourceService,
+    private readonly floorService: FloorService
+  ) {
     super({
+      floors: [],
       placesSvg: [],
       placesName: [],
       isLoading: false,
@@ -31,20 +37,24 @@ export class PlacesStore extends ComponentStore<PlacesStoreState> {
 
   // SELECTORS
   readonly selectIsLoading$: Observable<boolean> = this.select(
-    (state) => state.isLoading
+    state => state.isLoading
   );
 
-  readonly selectPlaceSvgById = this.select((state) => state.placesName);
+  readonly selectPlaceSvgById = this.select(state => state.placesName);
 
   readonly selectPlacesName$: Observable<SvgFileSelectorModel[]> = this.select(
-    (state) => state.placesName
+    state => state.placesName
+  );
+
+  readonly selectFloors$: Observable<FloorSimpleViewModel[]> = this.select(
+    state => state.floors
   );
 
   readonly selectPlaceById$ = (
-    id: string
+    id: number
   ): Observable<SvgFileModel | undefined> =>
-    this.select((state) => {
-      return state.placesSvg.find((svg) => svg.id === id);
+    this.select(state => {
+      return state.placesSvg.find(svg => svg.id === id);
     });
 
   // ACTIONS
@@ -52,12 +62,12 @@ export class PlacesStore extends ComponentStore<PlacesStoreState> {
     trigger$.pipe(
       tap(() => this.setLoading(true)),
       switchMap(() => {
-        return this.placesResourceService.getSvgFiles().pipe(
+        return this.floorService.apiFloorGetAllGet$Json().pipe(
           tapResponse(
-            (places) => {
-              this.processSvgFilesResponse(places);
+            response => {
+              this.processSvgFilesResponse(response.data);
             },
-            (error) => {
+            error => {
               this.setLoading(false);
               return EMPTY;
             }
@@ -70,14 +80,19 @@ export class PlacesStore extends ComponentStore<PlacesStoreState> {
 
   // REDUCERS
   readonly processSvgFilesResponse = this.updater(
-    (state, response: SvgFileModelResponse[]) => {
-      const placesSvg = response.map(({ id, svgFile }) => ({ id, svgFile }));
-      const placesName = response.map(({ id, name }) => ({ id, name }));
+    (state, data: FloorSimpleViewModel[]) => {
+      const placesSvg: SvgFileModel[] = data.map(({ id, svg }) => ({
+        id,
+        svgFile: svg,
+        // ... include other required properties if they exist
+      }));
+      const placesName = data.map(({ id, name }) => ({ id, name }));
 
       return {
         ...state,
         placesSvg,
         placesName,
+        floors: data,
         isLoading: false,
       };
     }
