@@ -15,7 +15,7 @@ public interface IBookingRepository
     Task CreateOrUpdateStatesAsync(BookingsModel request);
     Task UpdateTypeAsync(List<int> ids, BookingPlaceTypeEnum type);
     Task UpdateStateAsync(BookingModel request);
-    Task UpdateTypeAsync(int id, BookingPlaceTypeEnum type);
+    Task UpdateTypeAsync(int id, BookingPlaceTypeEnum type, int? reservedForId);
     Task DeleteBookingAsync(int id);
 
     Task DeleteBookingPlaceAsync(int id);

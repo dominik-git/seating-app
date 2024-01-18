@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using BookingApp.Daos;
+using BookingApp.Models;
 using BookingApp.ViewModels;
 
 public class AutoMapperProfile : Profile
@@ -16,5 +17,6 @@ public class AutoMapperProfile : Profile
         CreateMap<FloorViewModel, FloorDao>();
         CreateMap<FloorDao, FloorSimpleViewModel>();
         CreateMap<FloorSimpleViewModel, FloorDao>();
+        CreateMap<User, UserViewModel>();
     }
 }

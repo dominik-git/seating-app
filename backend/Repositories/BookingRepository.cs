@@ -135,13 +135,14 @@ namespace BookingApp.Repositories
             }
         }
 
-        public async Task UpdateTypeAsync(int id, BookingPlaceTypeEnum type)
+        public async Task UpdateTypeAsync(int id, BookingPlaceTypeEnum type, int? reserverForId)
         {
             var entity = _context.BookingPlaces.FirstOrDefault(item => item.Id == id);
             if (entity != null)
             {
                 entity.Type = type;
                 entity.ModifiedDate = DateTime.UtcNow;
+                entity.ReservedForId = reserverForId;
                 await _context.SaveChangesAsync();
             }
         }
@@ -176,6 +177,11 @@ namespace BookingApp.Repositories
 
         public async Task<BookingDao> CreateBookingAsync(BookingDao booking)
         {
+            var bookingPlace = await _context.BookingPlaces.FirstOrDefaultAsync(item => item.Id == booking.BookingPlaceId);
+            if (bookingPlace == null || !CanCreateBooking(booking, bookingPlace))
+            {
+                throw new Exception("Booking is not allowed");
+            }
             booking.CreatedDate = DateTime.UtcNow;
             var createdItem = _context.Bookings.Add(booking);
             await _context.SaveChangesAsync();
@@ -209,6 +215,17 @@ namespace BookingApp.Repositories
             return true;
         }
 
+        private static bool CanCreateBooking(BookingDao booking, BookingPlaceDao bookingPlace)
+        {
+            if (bookingPlace.Type == BookingPlaceTypeEnum.Fixed &&
+                (bookingPlace.AvailableFrom.HasValue &&
+                booking.BookingDate < bookingPlace.AvailableFrom || bookingPlace.AvailableTo.HasValue && booking.BookingDate > bookingPlace.AvailableTo))
+            {
+                return false;
+            }
+            return true;
+        }
+
         public async Task<List<BookingPlaceDao>> GetBookingPlacesWithBookingsByFloorIdAsync(int floorId, DateTime? bookingDate)
         {
             if (floorId == default)
@@ -216,7 +233,8 @@ namespace BookingApp.Repositories
                 throw new Exception("Floor Id is required");
             }
             var query = await _context.BookingPlaces
-                .Include(item => item.Bookings
+                .Include(x => x.Floor)
+                .Include(item => item.Bookings                
                     .Where(y => !bookingDate.HasValue || y.BookingDate.Date == bookingDate.Value.Date))
                 .Where(item => item.FloorId == floorId)
                 .ToListAsync();

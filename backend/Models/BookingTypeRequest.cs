@@ -6,5 +6,6 @@ namespace BookingApp.Models
     {
         public int Id { get; set; }
         public BookingPlaceTypeEnum Type { get; set; }
+        public int? ReservedForId { get; set; }
     }
 }

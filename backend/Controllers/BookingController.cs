@@ -302,19 +302,21 @@ public class BookingController : BaseController
         return Ok();
     }
 
+    [Authorize(Policy = IdentityData.AdminUserPolicyName)]
     [HttpPut("ChangeType")]
+    [ProducesResponseType(typeof(BaseResponse<bool>), 200)]
     public async Task<IActionResult> ChangeType(BookingTypeRequest request)
     {
         try
         {
-            await _repository.UpdateTypeAsync(request.Id, request.Type);
+            await _repository.UpdateTypeAsync(request.Id, request.Type, request.ReservedForId);
         }
-        catch (Exception)
+        catch (Exception ex)
         {
-            throw;
+            HandleError(ex);
         }
 
-        return Ok();
+        return ReturnResponse(new BaseResponse<bool>(true));
     }
 
     // POST: api/Booking
@@ -396,5 +398,19 @@ public class BookingController : BaseController
             HandleError(ex);
         }
         return ReturnResponse(new BaseResponse<bool>(true));
+    }
+
+    [Authorize(Policy = IdentityData.AdminUserPolicyName)]
+    [HttpGet("GetAllByFloorId/{floorId}")]
+    [ProducesResponseType(typeof(BaseResponse<BookingPlaceWithBookingsViewModel>), 200)]
+    public async Task<IActionResult> GetAllByFloorId(int floorId)
+    {
+        var bookingPlaceList = await _repository.GetBookingPlacesWithBookingsByFloorIdAsync(floorId, null);
+        if (bookingPlaceList == null)
+        {
+            return HandleError(new Exception(), "Booking not found");
+        }
+        
+        return ReturnResponse(new BaseResponse<BookingPlaceWithBookingsViewModel>(_mapper.Map<BookingPlaceWithBookingsViewModel>(bookingPlaceList)));
     }
 }
