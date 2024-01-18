@@ -7,7 +7,6 @@ import {
   SvgFileModel,
   SvgFileSelectorModel,
 } from '../../api/models/svg-file-model';
-import { PlacesResourceService } from '../../api/places/places-resource.service';
 import { catchError, switchMap, tap } from 'rxjs/operators';
 import { FloorService } from '../../api-generated/services/floor.service';
 import { FloorSimpleViewModel } from '../../api-generated/models/floor-simple-view-model';
@@ -22,10 +21,7 @@ export interface PlacesStoreState {
 
 @Injectable()
 export class PlacesStore extends ComponentStore<PlacesStoreState> {
-  constructor(
-    private readonly placesResourceService: PlacesResourceService,
-    private readonly floorService: FloorService
-  ) {
+  constructor(private readonly floorService: FloorService) {
     super({
       floors: [],
       placesSvg: [],
@@ -66,6 +62,26 @@ export class PlacesStore extends ComponentStore<PlacesStoreState> {
           tapResponse(
             response => {
               this.processSvgFilesResponse(response.data);
+            },
+            error => {
+              this.setLoading(false);
+              return EMPTY;
+            }
+          ),
+          catchError(() => EMPTY)
+        );
+      })
+    )
+  );
+
+  readonly deleteFloor$ = this.effect((floorId$: Observable<number>) =>
+    floorId$.pipe(
+      tap(() => this.setLoading(true)),
+      switchMap(id => {
+        return this.floorService.apiFloorDelete({ id }).pipe(
+          tapResponse(
+            response => {
+              this.loadSvgPlaces$();
             },
             error => {
               this.setLoading(false);

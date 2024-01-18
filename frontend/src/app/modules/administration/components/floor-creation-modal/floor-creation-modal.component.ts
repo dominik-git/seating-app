@@ -10,7 +10,12 @@ import {
 } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { FloorSimpleViewModel } from '../../../../api-generated/models/floor-simple-view-model';
-import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import {
+  FormControl,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { FloorFormModel } from '../../models/floor-form.model';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -18,6 +23,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { NgIf } from '@angular/common';
 import { SafeHtmlPipe } from '../../../shared/pipes/safe-html.pipe';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-floor-creation-modal',
@@ -30,6 +36,7 @@ import { SafeHtmlPipe } from '../../../shared/pipes/safe-html.pipe';
     NgIf,
     ReactiveFormsModule,
     SafeHtmlPipe,
+    TranslateModule,
   ],
   templateUrl: './floor-creation-modal.component.html',
   styleUrl: './floor-creation-modal.component.scss',
@@ -52,10 +59,14 @@ export class FloorCreationModalComponent {
 
   ngOnInit() {
     this.floorForm = new FormGroup<FloorFormModel>({
-      description: new FormControl(this.initialData?.description),
+      description: new FormControl(
+        this.initialData?.description,
+        Validators.required
+      ),
       floorId: new FormControl(0),
-      name: new FormControl(this.initialData?.name),
-      svg: new FormControl(this.initialData?.svg),
+      name: new FormControl(this.initialData?.name, Validators.required),
+      svg: new FormControl(this.initialData?.svg, Validators.required),
+      bookingPlaces: new FormControl([], Validators.required),
     });
   }
 
@@ -89,11 +100,10 @@ export class FloorCreationModalComponent {
     if (svgElement) {
       const bookableSlots = svgElement.querySelector('#Bookable_Slots');
       if (bookableSlots) {
-        Array.from(bookableSlots.children).forEach((element: HTMLElement) => {
-          console.log(element.id);
-        });
-        // Do something with bookableSlots
-        console.log('Bookable slots found:', bookableSlots);
+        const bookingPlaces: string[] = Array.from(bookableSlots.children).map(
+          (element: HTMLElement) => element.id
+        );
+        this.floorForm.controls.bookingPlaces.setValue(bookingPlaces);
       }
     }
   }
@@ -106,9 +116,9 @@ export class FloorCreationModalComponent {
     // Logic to save the floor
     if (this.floorForm.valid) {
       console.log(this.floorForm.value);
+      this.dialogRef.close(this.floorForm.value);
 
       // this.floorFormStore.saveFloor(this.floorForm.value);
     }
-    this.dialogRef.close();
   }
 }

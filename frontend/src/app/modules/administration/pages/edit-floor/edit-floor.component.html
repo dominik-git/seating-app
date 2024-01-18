@@ -6,16 +6,11 @@
 
 <ng-container *ngIf="(isLoadingFloors$ | async) === false; else showSkeleton">
   <ng-container *ngIf="(floors$ | async )as floors">
+
     <div class="flex flex-wrap">
-      <mat-card class="example-card m-3" *ngFor="let floor of floors">
-        <mat-card-header>
-          <mat-card-title-group>
-            <mat-card-title>{{ floor.name }}</mat-card-title>
-            <div mat-card-xl-image [innerHTML]="floor.svg | safeHtml"></div>
-          </mat-card-title-group>
-        </mat-card-header>
-        <mat-card-content> {{floor.description}}</mat-card-content>
-      </mat-card>
+      <ng-container *ngFor="let floor of floors">
+        <app-floor-card [floor]="floor" (deleteFloorChange)="deleteFloor($event)"></app-floor-card>
+      </ng-container>
     </div>
   </ng-container>
 </ng-container>

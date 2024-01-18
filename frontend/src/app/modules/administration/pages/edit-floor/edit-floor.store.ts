@@ -6,6 +6,9 @@ import { catchError, switchMap, tap } from 'rxjs/operators';
 import { FloorFormModelValues } from '../../models/floor-form.model';
 import { FloorService } from '../../../../api-generated/services/floor.service';
 import { PlacesStore } from '../../../../services/places/places.store';
+import { FloorCreationModalComponent } from '../../components/floor-creation-modal/floor-creation-modal.component';
+import { MatDialog } from '@angular/material/dialog';
+import { CreateFloorWithBookingPlacesRequest } from '../../../../api-generated/models/create-floor-with-booking-places-request';
 
 export interface FloorFormState {
   floors: FloorSimpleViewModel[];
@@ -18,7 +21,8 @@ export interface FloorFormState {
 export class EditFloorStore extends ComponentStore<FloorFormState> {
   constructor(
     private readonly floorService: FloorService,
-    private readonly placesStore: PlacesStore
+    private readonly placesStore: PlacesStore,
+    public dialog: MatDialog
   ) {
     super({ floors: [], floor: null, isLoading: false, error: null });
   }
@@ -57,21 +61,48 @@ export class EditFloorStore extends ComponentStore<FloorFormState> {
   }));
 
   // EFFECTS
+
+  readonly openCreateFloorModal = this.effect((trigger$: Observable<void>) =>
+    trigger$.pipe(
+      tap(() => {
+        const dialogRef = this.dialog.open(FloorCreationModalComponent, {
+          width: '400px',
+          data: {}, // Pass data if needed
+        });
+
+        dialogRef.afterClosed().subscribe(result => {
+          console.log('The dialog was closed', result);
+          // Handle the result here, possibly call saveFloor
+          if (result) {
+            this.saveFloor(result);
+          }
+        });
+      })
+    )
+  );
+
   readonly saveFloor = this.effect((floor$: Observable<FloorFormModelValues>) =>
     floor$.pipe(
       tap(() => this.setLoading(true)),
       // Add logic to load floor data
       switchMap(formData => {
+        const data: CreateFloorWithBookingPlacesRequest = {
+          bookingPlaces: formData.bookingPlaces.map(id => ({ name: id })),
+          description: formData.description,
+          name: formData.name,
+          svg: formData.svg,
+        };
         return this.floorService
-          .apiFloorPost$Json({
+          .apiFloorCreateWithBookingPlacesPost$Plain({
             body: {
-              ...formData,
+              ...data,
             },
           })
           .pipe(
             tapResponse(
               places => {
                 this.setLoading(false);
+                this.placesStore.loadSvgPlaces$();
               },
               error => {
                 this.setLoading(false);

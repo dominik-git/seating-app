@@ -1,6 +1,8 @@
 :host {
-  display: block;
+  display: grid;
+  grid-template-columns: 64px 1fr;
   height: 100%;
+  background: white;
 }
 
 mat-toolbar {
@@ -11,6 +13,7 @@ mat-toolbar {
   height: 100%;
   border: 1px solid rgba(0, 0, 0, 0.5);
   position: relative;
+  display: flex;
 }
 
 .example-sidenav-content {
@@ -21,7 +24,8 @@ mat-toolbar {
 }
 
 .example-sidenav {
-  user-select: none;
+  background: #e6e8ee;
+  z-index: 2;
 }
 
 .full-width {

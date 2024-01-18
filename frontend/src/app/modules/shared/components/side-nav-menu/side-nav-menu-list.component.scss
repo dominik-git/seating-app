@@ -13,17 +13,17 @@
   z-index: 1000;
 }
 
-.nav-link {
+.navigation-link {
   padding: 0.5rem;
   display: flex;
   align-items: center;
-  justify-content: start;
-  gap: 1rem
+  justify-content: center;
 }
 
 ::ng-deep {
   .mat-expansion-panel-header {
     padding: 0 16px !important;
+    flex-direction: column !important;;
   }
 
   .mat-expansion-panel-body {

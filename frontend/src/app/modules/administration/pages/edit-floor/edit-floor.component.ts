@@ -7,9 +7,9 @@ import { MatIconModule } from '@angular/material/icon';
 import { AsyncPipe, JsonPipe, NgForOf, NgIf } from '@angular/common';
 import { SafeHtmlPipe } from '../../../shared/pipes/safe-html.pipe';
 import { MatCardModule } from '@angular/material/card';
-import { MatDialog } from '@angular/material/dialog';
-import { FloorCreationModalComponent } from '../../components/floor-creation-modal/floor-creation-modal.component';
 import { NgxSkeletonLoaderModule } from 'ngx-skeleton-loader';
+import { FloorCardComponent } from '../../components/floor-card/floor-card.component';
+import { PlacesStore } from '../../../../services/places/places.store';
 
 @Component({
   selector: 'app-edit-floor',
@@ -27,29 +27,26 @@ import { NgxSkeletonLoaderModule } from 'ngx-skeleton-loader';
     NgxSkeletonLoaderModule,
     NgForOf,
     JsonPipe,
+    FloorCardComponent,
   ],
   templateUrl: './edit-floor.component.html',
   styleUrl: './edit-floor.component.scss',
   providers: [EditFloorStore],
 })
 export class EditFloorComponent {
-  floors$ = this.EditFloorStore.floors$;
-  isLoadingFloors$ = this.EditFloorStore.isLoadingFloors$;
+  floors$ = this.editFloorStore.floors$;
+  isLoadingFloors$ = this.editFloorStore.isLoadingFloors$;
 
   constructor(
-    public dialog: MatDialog,
-    private readonly EditFloorStore: EditFloorStore
+    private readonly editFloorStore: EditFloorStore,
+    private readonly placesStore: PlacesStore
   ) {}
 
   openCreateFloorModal(): void {
-    const dialogRef = this.dialog.open(FloorCreationModalComponent, {
-      width: '400px',
-      data: {}, // Pass data if needed
-    });
+    this.editFloorStore.openCreateFloorModal();
+  }
 
-    dialogRef.afterClosed().subscribe(result => {
-      console.log('The dialog was closed', result);
-      // Handle the result here
-    });
+  deleteFloor(id: number) {
+    this.placesStore.deleteFloor$(id);
   }
 }
