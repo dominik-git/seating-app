@@ -1,10 +1,12 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { SeatsInRange } from '../../../../models/booking.model';
 import { FixedPlaceModel } from '../../../../models/fixedPlace.model';
 import {
+  FormBuilder,
+  FormControl,
+  FormGroup,
   FormsModule,
   ReactiveFormsModule,
-  UntypedFormControl,
+  Validators,
 } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
@@ -25,10 +27,13 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { AsyncPipe, NgFor, NgIf } from '@angular/common';
 import { ChairTypeEnum } from '../../../../enums/chairType.enum';
 import { UserViewModel } from '../../../../api-generated/models/user-view-model';
+import { MatRadioModule } from '@angular/material/radio';
+import { AssignPlaceFormModel } from '../../models/assign-place.form.model';
+import { BookingPlaceTypeEnum } from '../../../../api-generated/models/booking-place-type-enum';
 
 @Component({
   selector: 'assign-fixed-place-dialog',
-  styleUrls: ['assign-fixed-place-dialog.css'],
+  styleUrls: ['assign-fixed-place-dialog.scss'],
   templateUrl: 'assign-fixed-place-dialog.html',
   standalone: true,
   imports: [
@@ -47,17 +52,16 @@ import { UserViewModel } from '../../../../api-generated/models/user-view-model'
     MatButtonModule,
     MatDialogClose,
     AsyncPipe,
+    MatRadioModule,
   ],
 })
 export class AssignFixedPlaceDialog implements OnInit {
-  seatsInWeek: SeatsInRange[];
-  bookedDays: Date[] = [];
-  loading = false;
-  myControl = new UntypedFormControl();
-  options: UserViewModel[];
+  assignForm: FormGroup<AssignPlaceFormModel>;
   filteredOptions: Observable<UserViewModel[]>;
+  loading;
 
   constructor(
+    private fb: FormBuilder,
     public dialogRef: MatDialogRef<AssignFixedPlaceDialog>,
     @Inject(MAT_DIALOG_DATA)
     public data: {
@@ -65,38 +69,39 @@ export class AssignFixedPlaceDialog implements OnInit {
       fixedPlace: FixedPlaceModel;
       users: UserViewModel[];
     }
-  ) {
-    this.options = this.data.users;
-  }
+  ) {}
 
   ngOnInit() {
-    this.filteredOptions = this.myControl.valueChanges.pipe(
+    this.assignForm = new FormGroup<AssignPlaceFormModel>({
+      assignee: new FormControl(null, Validators.required),
+      state: new FormControl(BookingPlaceTypeEnum.$1, Validators.required),
+    });
+
+    this.filteredOptions = this.assignForm.get('assignee').valueChanges.pipe(
       startWith(''),
       map(value => (typeof value === 'string' ? value : value.fullName)),
-      map(name => (name ? this._filter(name) : this.options.slice()))
+      map(name => (name ? this._filter(name) : this.data.users.slice()))
     );
   }
 
-  displayFn(user: any): string {
+  displayFn(user: UserViewModel): string {
     return user && user.fullName ? user.fullName : '';
   }
 
-  private _filter(name: string): any[] {
+  private _filter(name: string): UserViewModel[] {
     const filterValue = name.toLowerCase();
-
-    return this.options.filter(option =>
+    return this.data.users.filter(option =>
       option.fullName.toLowerCase().includes(filterValue)
     );
   }
 
   assignPlace() {
+    const selectedUser = this.assignForm.get('assignee').value;
     const fixedPlaceMock = {
       placeId: this.data.placeId,
       state: ChairTypeEnum.fixed,
       type: 0,
-      fullName: this.myControl.value.fullName,
-      position: this.myControl.value.position,
-      userId: this.myControl.value.userId,
+      fullName: selectedUser.fullName,
     };
 
     this.dialogRef.close({

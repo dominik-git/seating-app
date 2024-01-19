@@ -1,24 +1,33 @@
-<ng-container  *ngIf="!data?.fixedPlace">
+<ng-container *ngIf="!data?.fixedPlace">
   <div class="dialog-wrapper">
     <mat-spinner *ngIf="loading"></mat-spinner>
-    <div [class.hidden] = "loading">
-      <h1 mat-dialog-title *ngIf="!data?.fixedPlace" >Assign user to place</h1>
+    <div [class.hidden]="loading">
+      <h1 mat-dialog-title *ngIf="!data?.fixedPlace">Assign user to place</h1>
       <mat-dialog-content class="mat-typography">
-        <form class="example-form" >
+        <form class="example-form">
           <mat-form-field class="example-full-width" appearance="fill">
             <mat-label>Assignee</mat-label>
-            <input type="text" matInput [formControl]="myControl" [matAutocomplete]="auto">
+            <input type="text" matInput [formControl]="assignForm.controls.assignee" [matAutocomplete]="auto">
             <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
               <mat-option *ngFor="let option of filteredOptions | async" [value]="option">
-                {{option.fullName}}
+                <img class="profile-img" *ngIf="option.profilePicture" [src]="option.profilePicture" alt="Profile">
+                {{ option.fullName }}
               </mat-option>
             </mat-autocomplete>
           </mat-form-field>
+          <!-- Radio Buttons -->
+          <mat-radio-group aria-label="Select an option" class="radio-group" formControlName="radioOption">
+            <mat-radio-button value="option1">Option 1</mat-radio-button>
+            <mat-radio-button value="option2">Option 2</mat-radio-button>
+            <mat-radio-button value="option3">Option 3</mat-radio-button>
+          </mat-radio-group>
+
+
         </form>
       </mat-dialog-content>
       <mat-dialog-actions align="end">
         <button mat-button mat-dialog-close>Cancel</button>
-        <button mat-button cdkFocusInitial (click)="assignPlace()" >
+        <button mat-button cdkFocusInitial (click)="assignPlace()">
           Assign
         </button>
       </mat-dialog-actions>
@@ -30,9 +39,9 @@
 <ng-container *ngIf="data?.fixedPlace as fixedPlace">
   <div class="dialog-wrapper">
     <mat-spinner *ngIf="loading"></mat-spinner>
-    <div [class.hidden] = "loading">
-      <h1 mat-dialog-title *ngIf="data?.fixedPlace as fixedPlace" >Place is assigned to {{fixedPlace.fullName}}</h1>
-      <h1 mat-dialog-title *ngIf="!data?.fixedPlace" >Assign user to place</h1>
+    <div [class.hidden]="loading">
+      <h1 mat-dialog-title *ngIf="data?.fixedPlace as fixedPlace">Place is assigned to {{fixedPlace.fullName}}</h1>
+      <h1 mat-dialog-title *ngIf="!data?.fixedPlace">Assign user to place</h1>
 
       <mat-dialog-content class="mat-typography">
 
@@ -47,11 +56,10 @@
         </div>
 
 
-
       </mat-dialog-content>
       <mat-dialog-actions align="end">
         <button mat-button mat-dialog-close>Cancel</button>
-        <button mat-button  cdkFocusInitial (click)="unAssignPlace()" >
+        <button mat-button cdkFocusInitial (click)="unAssignPlace()">
           UnAssign
         </button>
       </mat-dialog-actions>

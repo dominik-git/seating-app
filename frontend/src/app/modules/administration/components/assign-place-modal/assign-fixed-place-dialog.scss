@@ -1,0 +1,29 @@
+.dialog-wrapper {
+  min-height: 400px;
+  min-width: 400px;
+  display: flex;
+  /*align-items: center;*/
+  justify-content: center;
+}
+
+.hidden {
+  display: none;
+}
+
+.profile-img {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-right: 8px;
+  vertical-align: middle;
+}
+
+.example-form {
+  display: flex;
+  flex-direction: column;
+}
+
+.example-full-width {
+  width: 100%;
+}
