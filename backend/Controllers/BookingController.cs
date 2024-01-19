@@ -406,7 +406,7 @@ public class BookingController : BaseController
 
     [Authorize(Policy = IdentityData.AdminUserPolicyName)]
     [HttpGet("GetAllByFloorId/{floorId}")]
-    [ProducesResponseType(typeof(BaseResponse<BookingPlaceWithBookingsViewModel>), 200)]
+    [ProducesResponseType(typeof(BaseResponse<List<BookingPlaceWithBookingsViewModel>>), 200)]
     public async Task<IActionResult> GetAllByFloorId(int floorId)
     {
         var bookingPlaceList = await _repository.GetBookingPlacesWithBookingsByFloorIdAsync(floorId, null);
@@ -415,6 +415,6 @@ public class BookingController : BaseController
             return HandleError(new Exception(), "Booking not found");
         }
         
-        return ReturnResponse(new BaseResponse<BookingPlaceWithBookingsViewModel>(_mapper.Map<BookingPlaceWithBookingsViewModel>(bookingPlaceList)));
+        return ReturnResponse(new BaseResponse<List<BookingPlaceWithBookingsViewModel>>(_mapper.Map<List<BookingPlaceWithBookingsViewModel>>(bookingPlaceList)));
     }
 }
