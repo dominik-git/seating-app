@@ -307,6 +307,10 @@ public class BookingController : BaseController
     [ProducesResponseType(typeof(BaseResponse<bool>), 200)]
     public async Task<IActionResult> ChangeType(BookingTypeRequest request)
     {
+        if (request.Type == BookingPlaceTypeEnum.Fixed && request.ReservedForId == null)
+        {
+            HandleError(new Exception("UserId is missing for Fixed type"));
+        }
         try
         {
             await _repository.UpdateTypeAsync(request.Id, request.Type, request.ReservedForId);
