@@ -9,10 +9,10 @@ import { SafeHtmlPipe } from '../../../shared/pipes/safe-html.pipe';
 import { MatCardModule } from '@angular/material/card';
 import { NgxSkeletonLoaderModule } from 'ngx-skeleton-loader';
 import { FloorCardComponent } from '../../components/floor-card/floor-card.component';
-import { PlacesStore } from '../../../../services/places/places.store';
+import { PlacesStore } from '../../../shared/services/places.store';
 
 @Component({
-  selector: 'app-edit-floor',
+  selector: 'app-edit-floor-container',
   standalone: true,
   imports: [
     ReactiveFormsModule,
@@ -29,11 +29,11 @@ import { PlacesStore } from '../../../../services/places/places.store';
     JsonPipe,
     FloorCardComponent,
   ],
-  templateUrl: './edit-floor.component.html',
-  styleUrl: './edit-floor.component.scss',
+  templateUrl: './edit-floor-container.component.html',
+  styleUrl: './edit-floor-container.component.scss',
   providers: [EditFloorStore],
 })
-export class EditFloorComponent {
+export class EditFloorContainerComponent {
   floors$ = this.editFloorStore.floors$;
   isLoadingFloors$ = this.editFloorStore.isLoadingFloors$;
 

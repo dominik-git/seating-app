@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatSidenav, MatSidenavModule } from '@angular/material/sidenav';
 import { BreakpointObserver } from '@angular/cdk/layout';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
-import { PlacesStore } from '../../../../services/places/places.store';
+import { PlacesStore } from '../../services/places.store';
 import {
   GoogleSigninButtonModule,
   SocialAuthService,

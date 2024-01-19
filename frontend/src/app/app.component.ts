@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { BreakpointObserver } from '@angular/cdk/layout';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
@@ -9,7 +8,7 @@ import { MatListModule } from '@angular/material/list';
 import { MatButtonModule } from '@angular/material/button';
 import { NgIf } from '@angular/common';
 import { SideNavMenuListComponent } from './modules/shared/components/side-nav-menu/side-nav-menu-list.component';
-import { PlacesStore } from './services/places/places.store';
+import { PlacesStore } from './modules/shared/services/places.store';
 import {
   GoogleSigninButtonModule,
   SocialAuthService,
@@ -17,7 +16,7 @@ import {
 import { AuthGuardService } from './modules/shared/guards/auth.guard';
 import { AuthService } from './api-generated/services/auth.service';
 import { switchMap } from 'rxjs/operators';
-import { BookingService } from './api-generated/services/booking.service';
+import { UsersStore } from './modules/shared/services/users.store';
 
 @Component({
   selector: 'app-root',
@@ -39,14 +38,13 @@ import { BookingService } from './api-generated/services/booking.service';
 })
 export class AppComponent implements OnInit {
   constructor(
-    private readonly observer: BreakpointObserver,
     private readonly translate: TranslateService,
     private readonly placesStore: PlacesStore,
     private socialAuthService: SocialAuthService,
     private router: Router,
     private authGuardService: AuthGuardService,
     private authService: AuthService,
-    private bookingService: BookingService
+    private usersStore: UsersStore
   ) {
     this.socialAuthService.authState
       .pipe(
@@ -79,6 +77,7 @@ export class AppComponent implements OnInit {
       // Optionally, validate the token with your backend here
     }
     this.placesStore.loadSvgPlaces$();
+    this.usersStore.loadUsers$();
   }
 
   useLanguage(language: string): void {

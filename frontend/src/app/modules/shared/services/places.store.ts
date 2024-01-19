@@ -6,10 +6,10 @@ import { EMPTY, Observable } from 'rxjs';
 import {
   SvgFileModel,
   SvgFileSelectorModel,
-} from '../../api/models/svg-file-model';
+} from '../../../api/models/svg-file-model';
 import { catchError, switchMap, tap } from 'rxjs/operators';
-import { FloorService } from '../../api-generated/services/floor.service';
-import { FloorSimpleViewModel } from '../../api-generated/models/floor-simple-view-model';
+import { FloorService } from '../../../api-generated/services/floor.service';
+import { FloorSimpleViewModel } from '../../../api-generated/models/floor-simple-view-model';
 
 export interface PlacesStoreState {
   floors: FloorSimpleViewModel[];

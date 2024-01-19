@@ -24,15 +24,16 @@ export const APP_ROUTES: Routes = [
         path: 'edit-places',
         loadComponent: () =>
           import(
-            '../../../edit-places/pages/edit-places-container/edit-places-container.component'
+            '../../../administration/pages/edit-places-container/edit-places-container.component'
           ).then(m => m.EditPlacesContainerComponent),
       },
+
       {
-        path: 'edit-floor',
+        path: 'edit-floor-container',
         loadComponent: () =>
           import(
-            '../../../administration/pages/edit-floor/edit-floor.component'
-          ).then(m => m.EditFloorComponent),
+            '../../../administration/pages/edit-floor-container/edit-floor-container.component'
+          ).then(m => m.EditFloorContainerComponent),
       },
     ],
   },

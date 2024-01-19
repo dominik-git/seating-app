@@ -5,7 +5,7 @@ import { EMPTY, Observable } from 'rxjs';
 import { catchError, switchMap, tap } from 'rxjs/operators';
 import { FloorFormModelValues } from '../../models/floor-form.model';
 import { FloorService } from '../../../../api-generated/services/floor.service';
-import { PlacesStore } from '../../../../services/places/places.store';
+import { PlacesStore } from '../../../shared/services/places.store';
 import { FloorCreationModalComponent } from '../../components/floor-creation-modal/floor-creation-modal.component';
 import { MatDialog } from '@angular/material/dialog';
 import { CreateFloorWithBookingPlacesRequest } from '../../../../api-generated/models/create-floor-with-booking-places-request';

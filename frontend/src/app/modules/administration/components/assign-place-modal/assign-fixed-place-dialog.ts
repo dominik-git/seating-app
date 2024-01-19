@@ -1,8 +1,6 @@
 import { Component, Inject, OnInit } from '@angular/core';
-
-import { BookingResourceService } from '../../../api/booking/booking-resource.service';
-import { SeatsInRange } from '../../../models/booking.model';
-import { FixedPlaceModel } from '../../../models/fixedPlace.model';
+import { SeatsInRange } from '../../../../models/booking.model';
+import { FixedPlaceModel } from '../../../../models/fixedPlace.model';
 import {
   FormsModule,
   ReactiveFormsModule,
@@ -25,7 +23,8 @@ import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { AsyncPipe, NgFor, NgIf } from '@angular/common';
-import { ChairTypeEnum } from '../../../enums/chairType.enum';
+import { ChairTypeEnum } from '../../../../enums/chairType.enum';
+import { UserViewModel } from '../../../../api-generated/models/user-view-model';
 
 @Component({
   selector: 'assign-fixed-place-dialog',
@@ -55,47 +54,42 @@ export class AssignFixedPlaceDialog implements OnInit {
   bookedDays: Date[] = [];
   loading = false;
   myControl = new UntypedFormControl();
-  options = [
-    { fullName: 'Mary', userId: 1, position: 'software engineer' },
-    { fullName: 'Shelley', userId: 2, position: 'software engineer' },
-    { fullName: 'Igor', userId: 3, position: 'software engineer' },
-  ];
-  filteredOptions: Observable<any[]>;
+  options: UserViewModel[];
+  filteredOptions: Observable<UserViewModel[]>;
 
   constructor(
     public dialogRef: MatDialogRef<AssignFixedPlaceDialog>,
     @Inject(MAT_DIALOG_DATA)
-    public data: { placeId: string; fixedPlace: FixedPlaceModel },
-    private bookingResourceService: BookingResourceService
-  ) {}
+    public data: {
+      placeId: string;
+      fixedPlace: FixedPlaceModel;
+      users: UserViewModel[];
+    }
+  ) {
+    this.options = this.data.users;
+  }
 
   ngOnInit() {
     this.filteredOptions = this.myControl.valueChanges.pipe(
       startWith(''),
-      map((value) => (typeof value === 'string' ? value : value.name)),
-      map((name) => (name ? this._filter(name) : this.options.slice()))
+      map(value => (typeof value === 'string' ? value : value.fullName)),
+      map(name => (name ? this._filter(name) : this.options.slice()))
     );
   }
 
   displayFn(user: any): string {
-    return user && user.name ? user.name : '';
+    return user && user.fullName ? user.fullName : '';
   }
 
   private _filter(name: string): any[] {
     const filterValue = name.toLowerCase();
 
-    return this.options.filter((option) =>
+    return this.options.filter(option =>
       option.fullName.toLowerCase().includes(filterValue)
     );
   }
 
   assignPlace() {
-    // const fixedPlaceMock = {
-    //     placeId: svgElementId,
-    //     fullName: 'Roman Klimcik',
-    //     position: 'software engineer',
-    //     userId: 1
-    // }
     const fixedPlaceMock = {
       placeId: this.data.placeId,
       state: ChairTypeEnum.fixed,

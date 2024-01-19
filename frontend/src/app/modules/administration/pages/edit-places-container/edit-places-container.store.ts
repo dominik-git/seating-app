@@ -1,13 +1,25 @@
 import { Injectable } from '@angular/core';
-import {ComponentStore, OnStoreInit, tapResponse} from '@ngrx/component-store';
+import {
+  ComponentStore,
+  OnStoreInit,
+  tapResponse,
+} from '@ngrx/component-store';
 import { combineLatest, EMPTY, Observable } from 'rxjs';
-import { catchError, filter, map, switchMap, tap } from 'rxjs/operators';
+import {
+  catchError,
+  filter,
+  map,
+  switchMap,
+  tap,
+  withLatestFrom,
+} from 'rxjs/operators';
 import { BookingResourceService } from '../../../../api/booking/booking-resource.service';
 import { PlaceModel } from '../../../../api/models/place-model';
-import { PlacesStore } from '../../../../services/places/places.store';
+import { PlacesStore } from '../../../shared/services/places.store';
 import { SvgFileSelectorModel } from '../../../../api/models/svg-file-model';
 import { MatDialog } from '@angular/material/dialog';
-import { AssignFixedPlaceDialog } from '../../modals/assign-fixed-place-dialog';
+import { AssignFixedPlaceDialog } from '../../components/assign-place-modal/assign-fixed-place-dialog';
+import { UsersStore } from '../../../shared/services/users.store';
 
 export interface EditPlacesState {
   fixedPlaces: PlaceModel[];
@@ -16,11 +28,15 @@ export interface EditPlacesState {
 }
 
 @Injectable()
-export class EditPlacesContainerStore extends ComponentStore<EditPlacesState>  implements OnStoreInit {
+export class EditPlacesContainerStore
+  extends ComponentStore<EditPlacesState>
+  implements OnStoreInit
+{
   constructor(
     private bookingResourceService: BookingResourceService,
     private readonly placesStore: PlacesStore,
-    private readonly dialog: MatDialog
+    private readonly dialog: MatDialog,
+    private readonly usersStore: UsersStore
   ) {
     super({
       fixedPlaces: [],
@@ -29,25 +45,24 @@ export class EditPlacesContainerStore extends ComponentStore<EditPlacesState>  i
     });
   }
 
-
   ngrxOnStoreInit() {
     this.setDefaultPlace$();
   }
 
-
-
   // SELECTORS
 
+  readonly selectUsers$ = this.usersStore.selectUsers$;
+
   readonly selectFixedPlaces$: Observable<PlaceModel[]> = this.select(
-    (state) => state.fixedPlaces
+    state => state.fixedPlaces
   );
 
   readonly selectIsLoadingEditingPage$: Observable<boolean> = this.select(
-    (state) => state.isLoading
+    state => state.isLoading
   );
 
   readonly selectSelectedPlace$: Observable<SvgFileSelectorModel> = this.select(
-    (state) => state.selectedPlace
+    state => state.selectedPlace
   );
 
   readonly selectIsLoadingFloors: Observable<boolean> =
@@ -64,16 +79,16 @@ export class EditPlacesContainerStore extends ComponentStore<EditPlacesState>  i
   );
 
   readonly selectSelectedPlaceSvg$ = this.select(
-    (state) => state.selectedPlace
+    state => state.selectedPlace
   ).pipe(
-    filter((place) => !!place), // Filter out null or undefined
-    switchMap((place) => {
+    filter(place => !!place), // Filter out null or undefined
+    switchMap(place => {
       return this.placesStore.selectPlaceById$(place.id);
     })
   );
 
-  readonly selectPlacesName$ = this.select((state) => state.selectedPlace).pipe(
-    switchMap((place) => {
+  readonly selectPlacesName$ = this.select(state => state.selectedPlace).pipe(
+    switchMap(place => {
       return this.placesStore.selectPlacesName$;
     })
   );
@@ -84,23 +99,24 @@ export class EditPlacesContainerStore extends ComponentStore<EditPlacesState>  i
   readonly changePlace$ = this.effect(
     (selectedPlace$: Observable<SvgFileSelectorModel>) =>
       selectedPlace$.pipe(
-        tap((selectedPlace) => this.setSelectedPlace(selectedPlace)),
-        switchMap((selectedPlace) => this.fetchFixedPlaces(selectedPlace.name))
+        tap(selectedPlace => this.setSelectedPlace(selectedPlace)),
+        switchMap(selectedPlace => this.fetchFixedPlaces(selectedPlace.name))
       )
   );
 
   readonly handlePlaceSelection = this.effect<{
     placeId: string;
     fixedPlace: PlaceModel | null;
-  }>((placeSelection$) =>
+  }>(placeSelection$ =>
     placeSelection$.pipe(
-      tap(({ placeId, fixedPlace }) => {
-        this.setLoading(true); // Set loading to true immediately
+      withLatestFrom(this.selectUsers$), // Combine the latest users data
+      tap(([{ placeId, fixedPlace }, users]) => {
+        this.setLoading(true);
         const dialogRef = this.dialog.open(AssignFixedPlaceDialog, {
-          data: { placeId, fixedPlace },
+          data: { placeId, fixedPlace, users }, // Pass users data along with place data
         });
 
-        dialogRef.afterClosed().subscribe((response) => {
+        dialogRef.afterClosed().subscribe(response => {
           if (response) {
             if (response.assigned) {
               this.assignFixedPlace(response.fixedPlace);
@@ -108,13 +124,13 @@ export class EditPlacesContainerStore extends ComponentStore<EditPlacesState>  i
               this.unAssignFixedPlace(response.fixedPlace);
             }
           }
-          this.setLoading(false); // Reset loading to false after processing
+          this.setLoading(false);
         });
       })
     )
   );
 
-  readonly setDefaultPlace$ = this.effect<void>((trigger$) =>
+  readonly setDefaultPlace$ = this.effect<void>(trigger$ =>
     trigger$.pipe(
       // Trigger this effect, ignoring the emitted values of trigger$
       switchMap(() =>
@@ -134,10 +150,10 @@ export class EditPlacesContainerStore extends ComponentStore<EditPlacesState>  i
       // Continue with additional actions if necessary
       switchMap(([isLoading, places]) => {
         // Fetch more data based on the selected place
-        return this.fetchFixedPlaces(places[0].name,);
+        return this.fetchFixedPlaces(places[0].name);
       }),
       // Handle any errors
-      catchError((error) => {
+      catchError(error => {
         console.error('Error in setDefaultPlace$:', error);
         return EMPTY;
       })
@@ -168,7 +184,7 @@ export class EditPlacesContainerStore extends ComponentStore<EditPlacesState>  i
 
   readonly assignFixedPlace = this.updater((state, fixedPlace: PlaceModel) => {
     const exists = state.fixedPlaces.some(
-      (place) => place.placeId === fixedPlace.placeId
+      place => place.placeId === fixedPlace.placeId
     );
     if (!exists) {
       return {
@@ -185,7 +201,7 @@ export class EditPlacesContainerStore extends ComponentStore<EditPlacesState>  i
       ...state,
       isLoading: false,
       fixedPlaces: state.fixedPlaces.filter(
-        (place) => place.placeId !== fixedPlace.placeId
+        place => place.placeId !== fixedPlace.placeId
       ),
     })
   );
@@ -194,10 +210,10 @@ export class EditPlacesContainerStore extends ComponentStore<EditPlacesState>  i
   private fetchFixedPlaces(selectedPlace: string): Observable<PlaceModel[]> {
     return this.bookingResourceService.getFixedPlaces(selectedPlace).pipe(
       tapResponse(
-        (places) => {
+        places => {
           this.setFixedPlaces(places);
         },
-        (error) => {
+        error => {
           this.setLoading(false);
           return EMPTY;
         }
