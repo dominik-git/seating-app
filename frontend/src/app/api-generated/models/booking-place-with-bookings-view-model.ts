@@ -12,5 +12,6 @@ export interface BookingPlaceWithBookingsViewModel {
   id?: number;
   itemType?: BookingPlaceItemTypeEnum;
   name?: string | null;
+  reservedForId?: number | null;
   type?: BookingPlaceTypeEnum;
 }

@@ -7,25 +7,26 @@ import { StrictHttpResponse } from '../../strict-http-response';
 import { RequestBuilder } from '../../request-builder';
 
 import { BookingTypeRequest } from '../../models/booking-type-request';
+import { BooleanBaseResponse } from '../../models/boolean-base-response';
 
-export interface ApiBookingChangeTypePut$Params {
+export interface ApiBookingChangeTypePut$Json$Params {
       body?: BookingTypeRequest
 }
 
-export function apiBookingChangeTypePut(http: HttpClient, rootUrl: string, params?: ApiBookingChangeTypePut$Params, context?: HttpContext): Observable<StrictHttpResponse<void>> {
-  const rb = new RequestBuilder(rootUrl, apiBookingChangeTypePut.PATH, 'put');
+export function apiBookingChangeTypePut$Json(http: HttpClient, rootUrl: string, params?: ApiBookingChangeTypePut$Json$Params, context?: HttpContext): Observable<StrictHttpResponse<BooleanBaseResponse>> {
+  const rb = new RequestBuilder(rootUrl, apiBookingChangeTypePut$Json.PATH, 'put');
   if (params) {
     rb.body(params.body, 'application/*+json');
   }
 
   return http.request(
-    rb.build({ responseType: 'text', accept: '*/*', context })
+    rb.build({ responseType: 'json', accept: 'text/json', context })
   ).pipe(
     filter((r: any): r is HttpResponse<any> => r instanceof HttpResponse),
     map((r: HttpResponse<any>) => {
-      return (r as HttpResponse<any>).clone({ body: undefined }) as StrictHttpResponse<void>;
+      return r as StrictHttpResponse<BooleanBaseResponse>;
     })
   );
 }
 
-apiBookingChangeTypePut.PATH = '/api/Booking/ChangeType';
+apiBookingChangeTypePut$Json.PATH = '/api/Booking/ChangeType';

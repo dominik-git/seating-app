@@ -22,3 +22,6 @@ export { FloorViewModelBaseResponse } from './models/floor-view-model-base-respo
 export { GoogleSignInViewModel } from './models/google-sign-in-view-model';
 export { MultipleBookingsTypeRequest } from './models/multiple-bookings-type-request';
 export { RequestExecution } from './models/request-execution';
+export { UserViewModel } from './models/user-view-model';
+export { UserViewModelBaseResponse } from './models/user-view-model-base-response';
+export { UserViewModelListBaseResponse } from './models/user-view-model-list-base-response';

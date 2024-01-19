@@ -1,5 +1,4 @@
 /* tslint:disable */
-
 /* eslint-disable */
 export interface FloorSimpleViewModel {
   description?: string | null;

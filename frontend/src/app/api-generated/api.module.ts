@@ -7,6 +7,7 @@ import { ApiConfiguration, ApiConfigurationParams } from './api-configuration';
 import { AuthService } from './services/auth.service';
 import { BookingService } from './services/booking.service';
 import { FloorService } from './services/floor.service';
+import { UserService } from './services/user.service';
 
 /**
  * Module that provides all services and configuration.
@@ -19,6 +20,7 @@ import { FloorService } from './services/floor.service';
     AuthService,
     BookingService,
     FloorService,
+    UserService,
     ApiConfiguration
   ],
 })

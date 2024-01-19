@@ -21,8 +21,10 @@ import { apiBookingBookingPlaceIdGet$Json } from '../fn/booking/api-booking-book
 import { ApiBookingBookingPlaceIdGet$Json$Params } from '../fn/booking/api-booking-booking-place-id-get-json';
 import { apiBookingBookingPlaceIdGet$Plain } from '../fn/booking/api-booking-booking-place-id-get-plain';
 import { ApiBookingBookingPlaceIdGet$Plain$Params } from '../fn/booking/api-booking-booking-place-id-get-plain';
-import { apiBookingChangeTypePut } from '../fn/booking/api-booking-change-type-put';
-import { ApiBookingChangeTypePut$Params } from '../fn/booking/api-booking-change-type-put';
+import { apiBookingChangeTypePut$Json } from '../fn/booking/api-booking-change-type-put-json';
+import { ApiBookingChangeTypePut$Json$Params } from '../fn/booking/api-booking-change-type-put-json';
+import { apiBookingChangeTypePut$Plain } from '../fn/booking/api-booking-change-type-put-plain';
+import { ApiBookingChangeTypePut$Plain$Params } from '../fn/booking/api-booking-change-type-put-plain';
 import { apiBookingChangeTypesPut } from '../fn/booking/api-booking-change-types-put';
 import { ApiBookingChangeTypesPut$Params } from '../fn/booking/api-booking-change-types-put';
 import { apiBookingCreateOrUpdatePut$Json } from '../fn/booking/api-booking-create-or-update-put-json';
@@ -37,6 +39,10 @@ import { apiBookingGetAllByFloorAndDateGet$Json } from '../fn/booking/api-bookin
 import { ApiBookingGetAllByFloorAndDateGet$Json$Params } from '../fn/booking/api-booking-get-all-by-floor-and-date-get-json';
 import { apiBookingGetAllByFloorAndDateGet$Plain } from '../fn/booking/api-booking-get-all-by-floor-and-date-get-plain';
 import { ApiBookingGetAllByFloorAndDateGet$Plain$Params } from '../fn/booking/api-booking-get-all-by-floor-and-date-get-plain';
+import { apiBookingGetAllByFloorIdFloorIdGet$Json } from '../fn/booking/api-booking-get-all-by-floor-id-floor-id-get-json';
+import { ApiBookingGetAllByFloorIdFloorIdGet$Json$Params } from '../fn/booking/api-booking-get-all-by-floor-id-floor-id-get-json';
+import { apiBookingGetAllByFloorIdFloorIdGet$Plain } from '../fn/booking/api-booking-get-all-by-floor-id-floor-id-get-plain';
+import { ApiBookingGetAllByFloorIdFloorIdGet$Plain$Params } from '../fn/booking/api-booking-get-all-by-floor-id-floor-id-get-plain';
 import { apiBookingGetBookingByIdIdGet$Json } from '../fn/booking/api-booking-get-booking-by-id-id-get-json';
 import { ApiBookingGetBookingByIdIdGet$Json$Params } from '../fn/booking/api-booking-get-booking-by-id-id-get-json';
 import { apiBookingGetBookingByIdIdGet$Plain } from '../fn/booking/api-booking-get-booking-by-id-id-get-plain';
@@ -570,23 +576,45 @@ export class BookingService extends BaseService {
 
   /**
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `apiBookingChangeTypePut()` instead.
+   * To access only the response body, use `apiBookingChangeTypePut$Plain()` instead.
    *
    * This method sends `application/*+json` and handles request body of type `application/*+json`.
    */
-  apiBookingChangeTypePut$Response(params?: ApiBookingChangeTypePut$Params, context?: HttpContext): Observable<StrictHttpResponse<void>> {
-    return apiBookingChangeTypePut(this.http, this.rootUrl, params, context);
+  apiBookingChangeTypePut$Plain$Response(params?: ApiBookingChangeTypePut$Plain$Params, context?: HttpContext): Observable<StrictHttpResponse<BooleanBaseResponse>> {
+    return apiBookingChangeTypePut$Plain(this.http, this.rootUrl, params, context);
   }
 
   /**
    * This method provides access only to the response body.
-   * To access the full response (for headers, for example), `apiBookingChangeTypePut$Response()` instead.
+   * To access the full response (for headers, for example), `apiBookingChangeTypePut$Plain$Response()` instead.
    *
    * This method sends `application/*+json` and handles request body of type `application/*+json`.
    */
-  apiBookingChangeTypePut(params?: ApiBookingChangeTypePut$Params, context?: HttpContext): Observable<void> {
-    return this.apiBookingChangeTypePut$Response(params, context).pipe(
-      map((r: StrictHttpResponse<void>): void => r.body)
+  apiBookingChangeTypePut$Plain(params?: ApiBookingChangeTypePut$Plain$Params, context?: HttpContext): Observable<BooleanBaseResponse> {
+    return this.apiBookingChangeTypePut$Plain$Response(params, context).pipe(
+      map((r: StrictHttpResponse<BooleanBaseResponse>): BooleanBaseResponse => r.body)
+    );
+  }
+
+  /**
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `apiBookingChangeTypePut$Json()` instead.
+   *
+   * This method sends `application/*+json` and handles request body of type `application/*+json`.
+   */
+  apiBookingChangeTypePut$Json$Response(params?: ApiBookingChangeTypePut$Json$Params, context?: HttpContext): Observable<StrictHttpResponse<BooleanBaseResponse>> {
+    return apiBookingChangeTypePut$Json(this.http, this.rootUrl, params, context);
+  }
+
+  /**
+   * This method provides access only to the response body.
+   * To access the full response (for headers, for example), `apiBookingChangeTypePut$Json$Response()` instead.
+   *
+   * This method sends `application/*+json` and handles request body of type `application/*+json`.
+   */
+  apiBookingChangeTypePut$Json(params?: ApiBookingChangeTypePut$Json$Params, context?: HttpContext): Observable<BooleanBaseResponse> {
+    return this.apiBookingChangeTypePut$Json$Response(params, context).pipe(
+      map((r: StrictHttpResponse<BooleanBaseResponse>): BooleanBaseResponse => r.body)
     );
   }
 
@@ -634,6 +662,53 @@ export class BookingService extends BaseService {
   apiBookingPost$Json(params?: ApiBookingPost$Json$Params, context?: HttpContext): Observable<BookingPlaceViewModelBaseResponse> {
     return this.apiBookingPost$Json$Response(params, context).pipe(
       map((r: StrictHttpResponse<BookingPlaceViewModelBaseResponse>): BookingPlaceViewModelBaseResponse => r.body)
+    );
+  }
+
+  /** Path part for operation `apiBookingGetAllByFloorIdFloorIdGet()` */
+  static readonly ApiBookingGetAllByFloorIdFloorIdGetPath = '/api/Booking/GetAllByFloorId/{floorId}';
+
+  /**
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `apiBookingGetAllByFloorIdFloorIdGet$Plain()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  apiBookingGetAllByFloorIdFloorIdGet$Plain$Response(params: ApiBookingGetAllByFloorIdFloorIdGet$Plain$Params, context?: HttpContext): Observable<StrictHttpResponse<BookingPlaceWithBookingsViewModelBaseResponse>> {
+    return apiBookingGetAllByFloorIdFloorIdGet$Plain(this.http, this.rootUrl, params, context);
+  }
+
+  /**
+   * This method provides access only to the response body.
+   * To access the full response (for headers, for example), `apiBookingGetAllByFloorIdFloorIdGet$Plain$Response()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  apiBookingGetAllByFloorIdFloorIdGet$Plain(params: ApiBookingGetAllByFloorIdFloorIdGet$Plain$Params, context?: HttpContext): Observable<BookingPlaceWithBookingsViewModelBaseResponse> {
+    return this.apiBookingGetAllByFloorIdFloorIdGet$Plain$Response(params, context).pipe(
+      map((r: StrictHttpResponse<BookingPlaceWithBookingsViewModelBaseResponse>): BookingPlaceWithBookingsViewModelBaseResponse => r.body)
+    );
+  }
+
+  /**
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `apiBookingGetAllByFloorIdFloorIdGet$Json()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  apiBookingGetAllByFloorIdFloorIdGet$Json$Response(params: ApiBookingGetAllByFloorIdFloorIdGet$Json$Params, context?: HttpContext): Observable<StrictHttpResponse<BookingPlaceWithBookingsViewModelBaseResponse>> {
+    return apiBookingGetAllByFloorIdFloorIdGet$Json(this.http, this.rootUrl, params, context);
+  }
+
+  /**
+   * This method provides access only to the response body.
+   * To access the full response (for headers, for example), `apiBookingGetAllByFloorIdFloorIdGet$Json$Response()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  apiBookingGetAllByFloorIdFloorIdGet$Json(params: ApiBookingGetAllByFloorIdFloorIdGet$Json$Params, context?: HttpContext): Observable<BookingPlaceWithBookingsViewModelBaseResponse> {
+    return this.apiBookingGetAllByFloorIdFloorIdGet$Json$Response(params, context).pipe(
+      map((r: StrictHttpResponse<BookingPlaceWithBookingsViewModelBaseResponse>): BookingPlaceWithBookingsViewModelBaseResponse => r.body)
     );
   }
 
