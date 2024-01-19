@@ -35,7 +35,7 @@ namespace BookingApp.Controllers
             try
             {
                 var users = await _userManager.Users.ToListAsync();
-                return ReturnResponse(_mapper.Map<List<UserViewModel>>(users));
+                return ReturnResponse(new BaseResponse<List<UserViewModel>>(_mapper.Map<List<UserViewModel>>(users)));
             }
             catch (Exception ex)
             {
@@ -54,7 +54,7 @@ namespace BookingApp.Controllers
                 {
                     return HandleError(new Exception("User not found"));
                 }
-                return ReturnResponse(_mapper.Map<UserViewModel>(user));
+                return ReturnResponse(new BaseResponse<UserViewModel>(_mapper.Map<UserViewModel>(user)));
             }
             catch (Exception ex)
             {
