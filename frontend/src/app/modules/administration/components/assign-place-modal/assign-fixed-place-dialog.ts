@@ -1,5 +1,4 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { FixedPlaceModel } from '../../../../models/fixedPlace.model';
 import {
   FormBuilder,
   FormControl,
@@ -25,11 +24,12 @@ import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { AsyncPipe, NgFor, NgIf } from '@angular/common';
-import { ChairTypeEnum } from '../../../../enums/chairType.enum';
 import { UserViewModel } from '../../../../api-generated/models/user-view-model';
 import { MatRadioModule } from '@angular/material/radio';
-import { AssignPlaceFormModel } from '../../models/assign-place.form.model';
 import { BookingPlaceTypeEnum } from '../../../../api-generated/models/booking-place-type-enum';
+import { AssignPlace } from '../../models/assign-place';
+import { AssignPlaceFormModel } from '../../models/assign-place.form.model';
+import { BookingTypeRequest } from '../../../../api-generated/models/booking-type-request';
 
 @Component({
   selector: 'assign-fixed-place-dialog',
@@ -58,34 +58,53 @@ import { BookingPlaceTypeEnum } from '../../../../api-generated/models/booking-p
 export class AssignFixedPlaceDialog implements OnInit {
   assignForm: FormGroup<AssignPlaceFormModel>;
   filteredOptions: Observable<UserViewModel[]>;
-  loading;
+  loading: boolean = false;
+  BookingPlaceTypeEnum = BookingPlaceTypeEnum;
 
   constructor(
     private fb: FormBuilder,
     public dialogRef: MatDialogRef<AssignFixedPlaceDialog>,
     @Inject(MAT_DIALOG_DATA)
-    public data: {
-      placeId: string;
-      fixedPlace: FixedPlaceModel;
-      users: UserViewModel[];
-    }
-  ) {}
+    public data: { placeData: AssignPlace; users: UserViewModel[] }
+  ) {
+    this.initializeForm();
+  }
 
   ngOnInit() {
+    this.setUpFilteredOptions();
+  }
+
+  private initializeForm(): void {
     this.assignForm = new FormGroup<AssignPlaceFormModel>({
       assignee: new FormControl(null, Validators.required),
-      state: new FormControl(BookingPlaceTypeEnum.$1, Validators.required),
+      type: new FormControl(BookingPlaceTypeEnum.$1, Validators.required),
+      id: new FormControl(0),
+      name: new FormControl(''),
     });
 
-    this.filteredOptions = this.assignForm.get('assignee').valueChanges.pipe(
+    if (this.data?.placeData?.reservedForId) {
+      const foundUser = this.data.users.find(
+        user => user.id === this.data.placeData.reservedForId
+      );
+      this.assignForm.patchValue({ assignee: foundUser });
+    }
+    this.assignForm.patchValue({
+      type: this.data.placeData.type,
+      id: this.data.placeData.id,
+      name: this.data.placeData.name,
+    });
+  }
+
+  private setUpFilteredOptions(): void {
+    this.filteredOptions = this.assignForm.controls.assignee.valueChanges.pipe(
       startWith(''),
-      map(value => (typeof value === 'string' ? value : value.fullName)),
+      map(value => (typeof value === 'string' ? value : value?.fullName)),
       map(name => (name ? this._filter(name) : this.data.users.slice()))
     );
   }
 
   displayFn(user: UserViewModel): string {
-    return user && user.fullName ? user.fullName : '';
+    return user?.fullName || '';
   }
 
   private _filter(name: string): UserViewModel[] {
@@ -95,25 +114,19 @@ export class AssignFixedPlaceDialog implements OnInit {
     );
   }
 
-  assignPlace() {
-    const selectedUser = this.assignForm.get('assignee').value;
-    const fixedPlaceMock = {
-      placeId: this.data.placeId,
-      state: ChairTypeEnum.fixed,
-      type: 0,
-      fullName: selectedUser.fullName,
+  assignPlace(): void {
+    const { type, id, assignee } = this.assignForm.getRawValue();
+    const data: BookingTypeRequest = {
+      id: id,
+      type: type,
+      reservedForId: assignee.id,
     };
+    this.dialogRef.close(data);
 
-    this.dialogRef.close({
-      assigned: true,
-      fixedPlace: fixedPlaceMock,
-    });
+    // Handle the assignment logic here
   }
 
-  unAssignPlace() {
-    this.dialogRef.close({
-      assigned: false,
-      fixedPlace: this.data.fixedPlace,
-    });
+  unAssignPlace(): void {
+    // Handle the unassignment logic here
   }
 }

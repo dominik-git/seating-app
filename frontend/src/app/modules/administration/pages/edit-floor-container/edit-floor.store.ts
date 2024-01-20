@@ -9,6 +9,7 @@ import { PlacesStore } from '../../../shared/services/places.store';
 import { FloorCreationModalComponent } from '../../components/floor-creation-modal/floor-creation-modal.component';
 import { MatDialog } from '@angular/material/dialog';
 import { CreateFloorWithBookingPlacesRequest } from '../../../../api-generated/models/create-floor-with-booking-places-request';
+import { BookingPlaceTypeEnum } from '../../../../api-generated/models/booking-place-type-enum';
 
 export interface FloorFormState {
   floors: FloorSimpleViewModel[];
@@ -87,7 +88,10 @@ export class EditFloorStore extends ComponentStore<FloorFormState> {
       // Add logic to load floor data
       switchMap(formData => {
         const data: CreateFloorWithBookingPlacesRequest = {
-          bookingPlaces: formData.bookingPlaces.map(id => ({ name: id })),
+          bookingPlaces: formData.bookingPlaces.map(id => ({
+            name: id,
+            type: BookingPlaceTypeEnum.$1,
+          })),
           description: formData.description,
           name: formData.name,
           svg: formData.svg,

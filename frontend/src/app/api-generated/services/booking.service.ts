@@ -66,6 +66,7 @@ import { ApiBookingPost$Plain$Params } from '../fn/booking/api-booking-post-plai
 import { BookingPlaceViewModelBaseResponse } from '../models/booking-place-view-model-base-response';
 import { BookingPlaceViewModelIEnumerableBaseResponse } from '../models/booking-place-view-model-i-enumerable-base-response';
 import { BookingPlaceWithBookingsViewModelBaseResponse } from '../models/booking-place-with-bookings-view-model-base-response';
+import { BookingPlaceWithBookingsViewModelListBaseResponse } from '../models/booking-place-with-bookings-view-model-list-base-response';
 import { BookingViewModelBaseResponse } from '../models/booking-view-model-base-response';
 import { BooleanBaseResponse } from '../models/boolean-base-response';
 import { FloorViewModelBaseResponse } from '../models/floor-view-model-base-response';
@@ -674,7 +675,7 @@ export class BookingService extends BaseService {
    *
    * This method doesn't expect any request body.
    */
-  apiBookingGetAllByFloorIdFloorIdGet$Plain$Response(params: ApiBookingGetAllByFloorIdFloorIdGet$Plain$Params, context?: HttpContext): Observable<StrictHttpResponse<BookingPlaceWithBookingsViewModelBaseResponse>> {
+  apiBookingGetAllByFloorIdFloorIdGet$Plain$Response(params: ApiBookingGetAllByFloorIdFloorIdGet$Plain$Params, context?: HttpContext): Observable<StrictHttpResponse<BookingPlaceWithBookingsViewModelListBaseResponse>> {
     return apiBookingGetAllByFloorIdFloorIdGet$Plain(this.http, this.rootUrl, params, context);
   }
 
@@ -684,9 +685,9 @@ export class BookingService extends BaseService {
    *
    * This method doesn't expect any request body.
    */
-  apiBookingGetAllByFloorIdFloorIdGet$Plain(params: ApiBookingGetAllByFloorIdFloorIdGet$Plain$Params, context?: HttpContext): Observable<BookingPlaceWithBookingsViewModelBaseResponse> {
+  apiBookingGetAllByFloorIdFloorIdGet$Plain(params: ApiBookingGetAllByFloorIdFloorIdGet$Plain$Params, context?: HttpContext): Observable<BookingPlaceWithBookingsViewModelListBaseResponse> {
     return this.apiBookingGetAllByFloorIdFloorIdGet$Plain$Response(params, context).pipe(
-      map((r: StrictHttpResponse<BookingPlaceWithBookingsViewModelBaseResponse>): BookingPlaceWithBookingsViewModelBaseResponse => r.body)
+      map((r: StrictHttpResponse<BookingPlaceWithBookingsViewModelListBaseResponse>): BookingPlaceWithBookingsViewModelListBaseResponse => r.body)
     );
   }
 
@@ -696,7 +697,7 @@ export class BookingService extends BaseService {
    *
    * This method doesn't expect any request body.
    */
-  apiBookingGetAllByFloorIdFloorIdGet$Json$Response(params: ApiBookingGetAllByFloorIdFloorIdGet$Json$Params, context?: HttpContext): Observable<StrictHttpResponse<BookingPlaceWithBookingsViewModelBaseResponse>> {
+  apiBookingGetAllByFloorIdFloorIdGet$Json$Response(params: ApiBookingGetAllByFloorIdFloorIdGet$Json$Params, context?: HttpContext): Observable<StrictHttpResponse<BookingPlaceWithBookingsViewModelListBaseResponse>> {
     return apiBookingGetAllByFloorIdFloorIdGet$Json(this.http, this.rootUrl, params, context);
   }
 
@@ -706,9 +707,9 @@ export class BookingService extends BaseService {
    *
    * This method doesn't expect any request body.
    */
-  apiBookingGetAllByFloorIdFloorIdGet$Json(params: ApiBookingGetAllByFloorIdFloorIdGet$Json$Params, context?: HttpContext): Observable<BookingPlaceWithBookingsViewModelBaseResponse> {
+  apiBookingGetAllByFloorIdFloorIdGet$Json(params: ApiBookingGetAllByFloorIdFloorIdGet$Json$Params, context?: HttpContext): Observable<BookingPlaceWithBookingsViewModelListBaseResponse> {
     return this.apiBookingGetAllByFloorIdFloorIdGet$Json$Response(params, context).pipe(
-      map((r: StrictHttpResponse<BookingPlaceWithBookingsViewModelBaseResponse>): BookingPlaceWithBookingsViewModelBaseResponse => r.body)
+      map((r: StrictHttpResponse<BookingPlaceWithBookingsViewModelListBaseResponse>): BookingPlaceWithBookingsViewModelListBaseResponse => r.body)
     );
   }
 

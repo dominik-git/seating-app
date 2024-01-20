@@ -16,7 +16,6 @@ import { MatButtonModule } from '@angular/material/button';
 import { PlaceSelectorComponent } from '../../../shared/components/place-selector/place-selector.component';
 import { ReservePlacesContainerStore } from './reserve-places-container.store';
 import { SvgFileSelectorModel } from '../../../../api/models/svg-file-model';
-import { PlaceModel } from '../../../../api/models/place-model';
 import { DatePlaceSelectorComponent } from '../../components/date-place-selector/date-place-selector.component';
 import { NgxSkeletonLoaderModule } from 'ngx-skeleton-loader';
 import { provideComponentStore } from '@ngrx/component-store';
@@ -76,10 +75,7 @@ export class ReservePlaceContainerComponent {
     this.reservePlacesContainerStore.changeDate$(date);
   }
 
-  onPlaceSelected(data: {
-    placeId: string;
-    fixedPlace: PlaceModel | null;
-  }): void {
+  onPlaceSelected(data: any): void {
     if (data.fixedPlace) {
       return;
     }

@@ -16,7 +16,6 @@ import { EditPlacesContainerStore } from './edit-places-container.store';
 import { GenericSvgComponent } from '../../../shared/components/generic-svg/generic-svg.component';
 import { SvgFileSelectorModel } from '../../../../api/models/svg-file-model';
 import { EditPlaceComponent } from '../../components/edit-place/edit-place.component';
-import { PlaceModel } from '../../../../api/models/place-model';
 import { NgxSkeletonLoaderModule } from 'ngx-skeleton-loader';
 import { provideComponentStore } from '@ngrx/component-store';
 
@@ -51,7 +50,7 @@ export class EditPlacesContainerComponent {
   copy: any;
   isLoadingCombined$ = this.editPlacesContainerStore.isLoadingCombined$;
   isLoadingFloors$ = this.editPlacesContainerStore.selectIsLoadingFloors;
-  fixedPlaces$ = this.editPlacesContainerStore.selectFixedPlaces$;
+  allPlaces$ = this.editPlacesContainerStore.selectAllPlaces$;
   selectedPlace$ = this.editPlacesContainerStore.selectSelectedPlace$;
   selectedPlaceSvg$ = this.editPlacesContainerStore.selectSelectedPlaceSvg$;
   selectPlacesName$ = this.editPlacesContainerStore.selectPlacesName$;
@@ -69,10 +68,7 @@ export class EditPlacesContainerComponent {
     this.editPlacesContainerStore.changePlace$(state);
   }
 
-  onPlaceSelected(data: {
-    placeId: string;
-    fixedPlace: PlaceModel | null;
-  }): void {
+  onPlaceSelected(data: any): void {
     this.editPlacesContainerStore.handlePlaceSelection(data);
   }
 }

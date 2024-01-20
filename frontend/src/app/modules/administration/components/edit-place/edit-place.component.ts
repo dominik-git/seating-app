@@ -10,7 +10,9 @@ import { GenericSvgComponent } from '../../../shared/components/generic-svg/gene
 import { SvgFileModel } from '../../../../api/models/svg-file-model';
 import { SeatTooltipComponent } from '../../../shared/components/seat-tooltip/seat-tooltip.component';
 import { FloorFiveSvgComponent } from '../../../shared/components/floor-five-svg/floor-five-svg.component';
-import { PlaceModel } from '../../../../api/models/place-model';
+import { BookingPlaceWithBookingsViewModel } from '../../../../api-generated/models/booking-place-with-bookings-view-model';
+import { BookingPlaceTypeEnum } from '../../../../api-generated/models/booking-place-type-enum';
+import { AssignPlace } from '../../models/assign-place';
 
 @Component({
   selector: 'app-edit-place',
@@ -21,16 +23,15 @@ import { PlaceModel } from '../../../../api/models/place-model';
 })
 export class EditPlaceComponent implements AfterViewInit {
   private readonly fixedClass = 'fixedPlace';
+
   @ViewChild(GenericSvgComponent) genericSvgComponent: GenericSvgComponent;
   @ViewChild(SeatTooltipComponent, { static: false })
   seatTooltip: SeatTooltipComponent;
-  @Input() svgData: SvgFileModel;
-  @Input() fixedPlaces: PlaceModel[];
 
-  @Output() placeAction = new EventEmitter<{
-    placeId: string;
-    fixedPlace: PlaceModel | null;
-  }>();
+  @Input() svgData: SvgFileModel;
+  @Input() allPlaces: BookingPlaceWithBookingsViewModel[];
+
+  @Output() placeSelected = new EventEmitter<AssignPlace>();
 
   selectedSvgImage: any;
 
@@ -40,65 +41,95 @@ export class EditPlaceComponent implements AfterViewInit {
   }
 
   private initializeSvgElements(): void {
-    this.updateSvgElements();
-  }
-
-  private updateSvgElements(): void {
-    const svgPlacesContainer =
-      this.selectedSvgImage.querySelector('#Bookable_Slots');
-
+    const svgPlacesContainer = this.getPlacesContainer();
     if (!svgPlacesContainer) return;
 
-    // Clone the container to remove all event listeners
-    const clone = svgPlacesContainer.cloneNode(true);
-    svgPlacesContainer.parentNode.replaceChild(clone, svgPlacesContainer);
+    const clone = this.cloneSvgContainer(svgPlacesContainer);
+    this.updateAndAttachListeners(clone);
+  }
 
-    // Update the state of each element and re-attach event listeners
-    Array.from(clone.children).forEach((element: HTMLElement) => {
-      this.updateElementState(element);
-      this.addEventListeners(element);
+  private getPlacesContainer(): Element | null {
+    return this.selectedSvgImage.querySelector('#Bookable_Slots');
+  }
+
+  private cloneSvgContainer(container: Element) {
+    const clone = container.cloneNode(true);
+    container.parentNode.replaceChild(clone, container);
+    return clone;
+  }
+
+  private updateAndAttachListeners(container): void {
+    Array.from(container.children).forEach((element: HTMLElement) => {
+      const place = this.findPlaceForElement(element);
+      this.updateElementState(element, place);
+      this.attachEventListeners(element, place);
     });
   }
 
-  private addEventListeners(element: HTMLElement): void {
-    const fixedPlace = this.findFixedPlaceById(element.id);
-
-    element.addEventListener('click', () =>
-      this.onPlaceClick(element, fixedPlace)
-    );
-    element.addEventListener('mouseover', () =>
-      this.onPlaceMouseover(element, fixedPlace)
-    );
-    element.addEventListener('mouseleave', () => this.onPlaceMouseleave());
+  private findPlaceForElement(
+    element: HTMLElement
+  ): BookingPlaceWithBookingsViewModel | undefined {
+    return this.allPlaces.find(item => item.name === element.id);
   }
 
-  private updateElementState(element: HTMLElement): void {
-    const isFixed = this.fixedPlaces.some(
-      place => place.placeId === element.id
-    );
-    element.classList.toggle(this.fixedClass, isFixed);
-    element.style.fill = isFixed ? '#D7063B' : '#7ed321';
+  private updateElementState(
+    element: HTMLElement,
+    place: BookingPlaceWithBookingsViewModel | undefined
+  ): void {
+    if (place) {
+      element.classList.toggle(
+        this.fixedClass,
+        place.type === BookingPlaceTypeEnum.$0
+      );
+      element.style.fill =
+        place.type === BookingPlaceTypeEnum.$0 ? '#D7063B' : '#7ed321';
+      element.setAttribute('data-place', JSON.stringify(place));
+    }
   }
 
-  private onPlaceClick(element: HTMLElement, fixedPlace: PlaceModel): void {
-    this.placeAction.emit({ placeId: element.id, fixedPlace });
+  private attachEventListeners(
+    element: HTMLElement,
+    place: BookingPlaceWithBookingsViewModel | undefined
+  ): void {
+    if (place) {
+      element.addEventListener('click', () =>
+        this.onPlaceClick(element, place)
+      );
+      element.addEventListener('mouseover', () =>
+        this.onPlaceMouseover(element, place)
+      );
+      element.addEventListener('mouseleave', () => this.onPlaceMouseleave());
+    }
   }
 
-  private onPlaceMouseover(element: HTMLElement, fixedPlace: PlaceModel): void {
-    if (!fixedPlace) return;
+  private onPlaceClick(
+    element: HTMLElement,
+    place: BookingPlaceWithBookingsViewModel
+  ): void {
+    this.placeSelected.emit({
+      name: place.name,
+      id: place.id,
+      type: place.type,
+      reservedForId: place.reservedForId || null,
+    });
+  }
+
+  private onPlaceMouseover(
+    element: HTMLElement,
+    place: BookingPlaceWithBookingsViewModel
+  ): void {
+    if (place.type === BookingPlaceTypeEnum.$1) {
+      return;
+    }
     const { top, right } = element.getBoundingClientRect();
     this.seatTooltip.showTooltip(
       right + window.scrollX,
       top + window.scrollY - 50,
-      fixedPlace
+      place.reservedForId
     );
   }
 
   private onPlaceMouseleave(): void {
     this.seatTooltip.hideTooltip();
-  }
-
-  private findFixedPlaceById(id: string): PlaceModel {
-    return this.fixedPlaces.find(place => place.placeId === id);
   }
 }

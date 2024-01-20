@@ -13,16 +13,21 @@ import {
   tap,
   withLatestFrom,
 } from 'rxjs/operators';
-import { BookingResourceService } from '../../../../api/booking/booking-resource.service';
 import { PlaceModel } from '../../../../api/models/place-model';
 import { PlacesStore } from '../../../shared/services/places.store';
 import { SvgFileSelectorModel } from '../../../../api/models/svg-file-model';
 import { MatDialog } from '@angular/material/dialog';
 import { AssignFixedPlaceDialog } from '../../components/assign-place-modal/assign-fixed-place-dialog';
 import { UsersStore } from '../../../shared/services/users.store';
+import { BookingService } from '../../../../api-generated/services/booking.service';
+import { BookingPlaceWithBookingsViewModelListBaseResponse } from '../../../../api-generated/models/booking-place-with-bookings-view-model-list-base-response';
+import { BookingPlaceWithBookingsViewModel } from '../../../../api-generated/models/booking-place-with-bookings-view-model';
+import { BookingPlaceTypeEnum } from '../../../../api-generated/models/booking-place-type-enum';
+import { AssignPlace } from '../../models/assign-place';
+import { BookingTypeRequest } from '../../../../api-generated/models/booking-type-request';
 
 export interface EditPlacesState {
-  fixedPlaces: PlaceModel[];
+  allPlaces: BookingPlaceWithBookingsViewModel[];
   selectedPlace: SvgFileSelectorModel;
   isLoading: boolean;
 }
@@ -33,13 +38,13 @@ export class EditPlacesContainerStore
   implements OnStoreInit
 {
   constructor(
-    private bookingResourceService: BookingResourceService,
+    private bookingService: BookingService,
     private readonly placesStore: PlacesStore,
     private readonly dialog: MatDialog,
     private readonly usersStore: UsersStore
   ) {
     super({
-      fixedPlaces: [],
+      allPlaces: [],
       selectedPlace: null,
       isLoading: false,
     });
@@ -53,9 +58,15 @@ export class EditPlacesContainerStore
 
   readonly selectUsers$ = this.usersStore.selectUsers$;
 
-  readonly selectFixedPlaces$: Observable<PlaceModel[]> = this.select(
-    state => state.fixedPlaces
-  );
+  readonly selectFixedPlaces$: Observable<BookingPlaceWithBookingsViewModel[]> =
+    this.select(state => state.allPlaces).pipe(
+      map(places =>
+        places.filter(place => place.type === BookingPlaceTypeEnum.$0)
+      )
+    );
+
+  readonly selectAllPlaces$: Observable<BookingPlaceWithBookingsViewModel[]> =
+    this.select(state => state.allPlaces);
 
   readonly selectIsLoadingEditingPage$: Observable<boolean> = this.select(
     state => state.isLoading
@@ -100,32 +111,27 @@ export class EditPlacesContainerStore
     (selectedPlace$: Observable<SvgFileSelectorModel>) =>
       selectedPlace$.pipe(
         tap(selectedPlace => this.setSelectedPlace(selectedPlace)),
-        switchMap(selectedPlace => this.fetchFixedPlaces(selectedPlace.name))
+        switchMap(selectedPlace => this.fetchFixedPlaces(selectedPlace.id))
       )
   );
 
-  readonly handlePlaceSelection = this.effect<{
-    placeId: string;
-    fixedPlace: PlaceModel | null;
-  }>(placeSelection$ =>
+  readonly handlePlaceSelection = this.effect<AssignPlace>(placeSelection$ =>
     placeSelection$.pipe(
       withLatestFrom(this.selectUsers$), // Combine the latest users data
-      tap(([{ placeId, fixedPlace }, users]) => {
+      tap(([placeData, users]) => {
         this.setLoading(true);
         const dialogRef = this.dialog.open(AssignFixedPlaceDialog, {
-          data: { placeId, fixedPlace, users }, // Pass users data along with place data
+          data: { placeData, users }, // Pass users data along with place data
         });
 
-        dialogRef.afterClosed().subscribe(response => {
-          if (response) {
-            if (response.assigned) {
-              this.assignFixedPlace(response.fixedPlace);
-            } else {
-              this.unAssignFixedPlace(response.fixedPlace);
+        dialogRef
+          .afterClosed()
+          .subscribe((response: BookingTypeRequest | null) => {
+            if (response) {
+              this.changePlaceType(response).subscribe();
             }
-          }
-          this.setLoading(false);
-        });
+            // this.setLoading(false);
+          });
       })
     )
   );
@@ -150,7 +156,7 @@ export class EditPlacesContainerStore
       // Continue with additional actions if necessary
       switchMap(([isLoading, places]) => {
         // Fetch more data based on the selected place
-        return this.fetchFixedPlaces(places[0].name);
+        return this.fetchFixedPlaces(places[0].id);
       }),
       // Handle any errors
       catchError(error => {
@@ -162,11 +168,12 @@ export class EditPlacesContainerStore
 
   // REDUCERS
   readonly setFixedPlaces = this.updater(
-    (state, fixedPlaces: PlaceModel[]) => ({
-      ...state,
-      fixedPlaces,
-      isLoading: false,
-    })
+    (state, allPlaces: BookingPlaceWithBookingsViewModel[]) => {
+      const fixedPlace = allPlaces.filter(place => {
+        return place.type === BookingPlaceTypeEnum.$0;
+      });
+      return { ...state, allPlaces, isLoading: false };
+    }
   );
 
   readonly setSelectedPlace = this.updater(
@@ -183,42 +190,55 @@ export class EditPlacesContainerStore
   }));
 
   readonly assignFixedPlace = this.updater((state, fixedPlace: PlaceModel) => {
-    const exists = state.fixedPlaces.some(
-      place => place.placeId === fixedPlace.placeId
-    );
-    if (!exists) {
-      return {
-        ...state,
-        isLoading: false,
-        fixedPlaces: [...state.fixedPlaces, fixedPlace],
-      };
-    }
+    // const exists = state.fixedPlaces.some(
+    //   place => place.placeId === fixedPlace.placeId
+    // );
+    // if (!exists) {
+    //   return {
+    //     ...state,
+    //     isLoading: false,
+    //     fixedPlaces: [...state.fixedPlaces, fixedPlace],
+    //   };
+    // }
     return state;
   });
 
   readonly unAssignFixedPlace = this.updater(
     (state, fixedPlace: PlaceModel) => ({
+      // ...state,
+      // isLoading: false,
+      // fixedPlaces: state.fixedPlaces.filter(
+      //   place => place.placeId !== fixedPlace.placeId
+      // ),
       ...state,
-      isLoading: false,
-      fixedPlaces: state.fixedPlaces.filter(
-        place => place.placeId !== fixedPlace.placeId
-      ),
     })
   );
 
   // Private method to handle fetching of fixed places
-  private fetchFixedPlaces(selectedPlace: string): Observable<PlaceModel[]> {
-    return this.bookingResourceService.getFixedPlaces(selectedPlace).pipe(
-      tapResponse(
-        places => {
-          this.setFixedPlaces(places);
-        },
-        error => {
-          this.setLoading(false);
-          return EMPTY;
-        }
-      ),
-      catchError(() => EMPTY)
-    );
+  private fetchFixedPlaces(
+    floorId: number
+  ): Observable<BookingPlaceWithBookingsViewModelListBaseResponse> {
+    return this.bookingService
+      .apiBookingGetAllByFloorIdFloorIdGet$Json({ floorId })
+      .pipe(
+        tapResponse(
+          places => {
+            this.setFixedPlaces(places.data);
+          },
+          error => {
+            this.setLoading(false);
+            return EMPTY;
+          }
+        ),
+        catchError(() => EMPTY)
+      );
+  }
+
+  private changePlaceType(data: BookingTypeRequest) {
+    return this.bookingService
+      .apiBookingChangeTypePut$Plain({ body: data })
+      .pipe(
+        switchMap(() => this.fetchFixedPlaces(this.get().selectedPlace.id))
+      );
   }
 }

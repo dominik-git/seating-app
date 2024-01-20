@@ -7,6 +7,7 @@ export { BookingPlaceViewModelBaseResponse } from './models/booking-place-view-m
 export { BookingPlaceViewModelIEnumerableBaseResponse } from './models/booking-place-view-model-i-enumerable-base-response';
 export { BookingPlaceWithBookingsViewModel } from './models/booking-place-with-bookings-view-model';
 export { BookingPlaceWithBookingsViewModelBaseResponse } from './models/booking-place-with-bookings-view-model-base-response';
+export { BookingPlaceWithBookingsViewModelListBaseResponse } from './models/booking-place-with-bookings-view-model-list-base-response';
 export { BookingStateEnum } from './models/booking-state-enum';
 export { BookingsViewModel } from './models/bookings-view-model';
 export { BookingTypeRequest } from './models/booking-type-request';

@@ -6,13 +6,13 @@ import { filter, map } from 'rxjs/operators';
 import { StrictHttpResponse } from '../../strict-http-response';
 import { RequestBuilder } from '../../request-builder';
 
-import { BookingPlaceWithBookingsViewModelBaseResponse } from '../../models/booking-place-with-bookings-view-model-base-response';
+import { BookingPlaceWithBookingsViewModelListBaseResponse } from '../../models/booking-place-with-bookings-view-model-list-base-response';
 
 export interface ApiBookingGetAllByFloorIdFloorIdGet$Plain$Params {
   floorId: number;
 }
 
-export function apiBookingGetAllByFloorIdFloorIdGet$Plain(http: HttpClient, rootUrl: string, params: ApiBookingGetAllByFloorIdFloorIdGet$Plain$Params, context?: HttpContext): Observable<StrictHttpResponse<BookingPlaceWithBookingsViewModelBaseResponse>> {
+export function apiBookingGetAllByFloorIdFloorIdGet$Plain(http: HttpClient, rootUrl: string, params: ApiBookingGetAllByFloorIdFloorIdGet$Plain$Params, context?: HttpContext): Observable<StrictHttpResponse<BookingPlaceWithBookingsViewModelListBaseResponse>> {
   const rb = new RequestBuilder(rootUrl, apiBookingGetAllByFloorIdFloorIdGet$Plain.PATH, 'get');
   if (params) {
     rb.path('floorId', params.floorId, {});
@@ -23,7 +23,7 @@ export function apiBookingGetAllByFloorIdFloorIdGet$Plain(http: HttpClient, root
   ).pipe(
     filter((r: any): r is HttpResponse<any> => r instanceof HttpResponse),
     map((r: HttpResponse<any>) => {
-      return r as StrictHttpResponse<BookingPlaceWithBookingsViewModelBaseResponse>;
+      return r as StrictHttpResponse<BookingPlaceWithBookingsViewModelListBaseResponse>;
     })
   );
 }

@@ -12,8 +12,8 @@
   <ng-container *ngIf="(selectedPlaceSvg$ |async) as svgData">
     <div class="floor-content">
 
-      <app-edit-place [svgData]="svgData" [fixedPlaces]="fixedPlaces$ | async"
-                      (placeAction)="onPlaceSelected($event)"/>
+      <app-edit-place [svgData]="svgData" [allPlaces]="allPlaces$ | async"
+                      (placeSelected)="onPlaceSelected($event)"/>
     </div>
 
   </ng-container>

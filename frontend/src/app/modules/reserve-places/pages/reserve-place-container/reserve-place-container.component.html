@@ -13,8 +13,8 @@
 <ng-container *ngIf="(isLoadingCombined$ | async) == false; else showSkeleton">
   <ng-container *ngIf="(selectedPlaceSvg$ |async) as svgData">
     <div class="floor-content">
-      <app-edit-place [svgData]="svgData" [fixedPlaces]="fixedReservedPlaces$ | async"
-                      (placeAction)="onPlaceSelected($event)"/>
+      <app-edit-place [svgData]="svgData" [allPlaces]="fixedReservedPlaces$ | async"
+                      (placeSelected)="onPlaceSelected($event)"/>
     </div>
   </ng-container>
 </ng-container>
