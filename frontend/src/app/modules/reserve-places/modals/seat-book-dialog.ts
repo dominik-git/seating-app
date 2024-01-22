@@ -103,17 +103,17 @@ export class SeatBookDialog implements OnInit {
     }));
 
     this.loading = false;
-    // this.bookingService
-    //   .apiBookingGetByBookingPlaceIdWithDateRangeGet$Json({
-    //     BookingPlaceId: this.data.placeId,
-    //     DateFrom: startDate.toUTCString(),
-    //     DateTo: endDate.toUTCString(),
-    //   })
-    //   .subscribe(response => {
-    //     // this.loading = false;
-    //     // this.bookings = response.bookings;
-    //     console.log(response.data);
-    //   });
+    this.bookingService
+      .apiBookingGetByBookingPlaceIdWithDateRangeGet$Json({
+        BookingPlaceId: this.data.placeId,
+        DateFrom: startDate.toISOString(),
+        DateTo: endDate.toISOString(),
+      })
+      .subscribe(response => {
+        // this.loading = false;
+        // this.bookings = response.bookings;
+        console.log(response.data);
+      });
 
     // this.loading = true;
     // this.bookingService
