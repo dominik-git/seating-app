@@ -1,4 +1,5 @@
 ﻿using BookingApp.Enums;
+using BookingApp.Models;
 
 namespace BookingApp.ViewModels
 {
@@ -13,5 +14,7 @@ namespace BookingApp.ViewModels
         public DateTime? AvailableFrom { get; set; }
         public DateTime? AvailableTo { get; set; }
         public int FloorId { get; set; }
+        public int? ReservedForUserId { get; set; }
+        public UserViewModel ReservedForUserVm { get; set; }
     }
 }

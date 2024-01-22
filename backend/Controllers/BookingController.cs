@@ -6,6 +6,7 @@ using BookingApp.Enums;
 using BookingApp.Identity;
 using BookingApp.Models;
 using BookingApp.ViewModels;
+using GoogleApi.Entities.Search.Video.Common;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -31,8 +32,9 @@ public class BookingController : BaseController
     [ProducesResponseType(typeof(BaseResponse<IEnumerable<BookingPlaceViewModel>>), 200)]
     public async Task<IActionResult> GetAllBookingPlaces()
     {
-        var bookingPlaceDaos = await _repository.GetBookingsAsync();
-        return ReturnResponse(new BaseResponse<IEnumerable<BookingPlaceViewModel>>(_mapper.Map<IEnumerable<BookingPlaceViewModel>>(bookingPlaceDaos)));
+        var bookingPlaceDaos = await _repository.GetBookingPlacesAsync();
+        var result = await GetBookingPlaceViewModels(bookingPlaceDaos);
+        return ReturnResponse(new BaseResponse<IEnumerable<BookingPlaceViewModel>>(result));
     }
 
     [HttpGet("GetAllByFloorAndDate")]
@@ -40,10 +42,28 @@ public class BookingController : BaseController
     public async Task<IActionResult> GetAllByFloorAndDate([FromQuery] int floorId, [FromQuery] DateTime? bookingDate)
     {
         var bookingPlaceDaos = await _repository.GetBookingPlacesWithBookingsByFloorIdAsync(floorId, bookingDate);
+
+        var bookingPlacesVm = new List<BookingPlaceWithBookingsViewModel>();
+        foreach (var item in bookingPlaceDaos)
+        {
+            bookingPlacesVm.Add(new BookingPlaceWithBookingsViewModel
+            {
+                Id = item.Id,
+                Name = item.Name,
+                Type = item.Type,
+                ItemType = item.ItemType,
+                AvailableForBooking = item.AvailableForBooking,
+                FloorId = item.FloorId,
+                Bookings = await GetBookingViewModels(item.Bookings),
+                AvailableFrom = item.AvailableFrom,
+                AvailableTo = item.AvailableTo,
+                ReservedForUserId = item.ReservedForId,
+            });
+        }
         var result = new FloorViewModel
         {
             Id = floorId,
-            BookingPlaces = _mapper.Map<List<BookingPlaceWithBookingsViewModel>>(bookingPlaceDaos)
+            BookingPlaces = bookingPlacesVm
         };
         return ReturnResponse(new BaseResponse<FloorViewModel>(result));
     }
@@ -60,7 +80,10 @@ public class BookingController : BaseController
             return NotFound();
         }
 
-        return ReturnResponse(new BaseResponse<BookingPlaceViewModel>(_mapper.Map<BookingPlaceViewModel>(bookingPlaceDao)));
+        var result = _mapper.Map<BookingPlaceViewModel>(bookingPlaceDao);
+        result.ReservedForUserVm = result.ReservedForUserId != null ? await GetUserViewModel(result.ReservedForUserId.Value) : null;
+
+        return ReturnResponse(new BaseResponse<BookingPlaceViewModel>(result));
     }
 
     [HttpGet("GetBookingById/{id}")]
@@ -73,8 +96,9 @@ public class BookingController : BaseController
         {
             return NotFound();
         }
-
-        return ReturnResponse(new BaseResponse<BookingViewModel>(_mapper.Map<BookingViewModel>(bookingDao)));
+        var result = _mapper.Map<BookingViewModel>(bookingDao);
+        result.BookedByUserVm = await GetUserViewModel(result.BookedById.Value);
+        return ReturnResponse(new BaseResponse<BookingViewModel>());
     }
 
     [HttpGet("GetByBookingPlaceIdWithDate/{id}")]
@@ -91,8 +115,9 @@ public class BookingController : BaseController
             ItemType = bookingPlace.ItemType,
             AvailableForBooking = bookingPlace.AvailableForBooking,
             FloorId = bookingPlace.FloorId,
+            ReservedForUserVm = bookingPlace.ReservedForId != null ? await GetUserViewModel(bookingPlace.ReservedForId.Value) : null,
 
-            Bookings = _mapper.Map<List<BookingViewModel>>(bookingDaos)
+            Bookings = await GetBookingViewModels(bookingDaos),
         };
 
         return ReturnResponse(new BaseResponse<BookingPlaceWithBookingsViewModel>(result));
@@ -395,7 +420,7 @@ public class BookingController : BaseController
 
         try
         {
-            await _repository.DeleteBookingAsync(id);            
+            await _repository.DeleteBookingAsync(id);
         }
         catch (Exception ex)
         {
@@ -414,7 +439,112 @@ public class BookingController : BaseController
         {
             return HandleError(new Exception(), "Booking not found");
         }
+        var result = new List<BookingPlaceWithBookingsViewModel>();
+
+        foreach (var item in bookingPlaceList)
+        {
+            var bookingPlace = new BookingPlaceWithBookingsViewModel
+            {
+                Id = item.Id,
+                Name = item.Name,
+                Type = item.Type,
+                ItemType = item.ItemType,
+                AvailableForBooking = item.AvailableForBooking,
+                FloorId = item.FloorId,
+                Bookings = await GetBookingViewModels(item.Bookings),
+                AvailableFrom = item.AvailableFrom,
+                AvailableTo = item.AvailableTo,
+                ReservedForUserId = item.ReservedForId,
+            };
+            if (item.ReservedForId != null)
+            {
+                bookingPlace.ReservedForUserVm = await GetUserViewModel(bookingPlace.ReservedForUserId.Value);
+            }
+        }
+
+        return ReturnResponse(new BaseResponse<List<BookingPlaceWithBookingsViewModel>>(result));
+    }
+    [HttpGet("GetByBookingPlaceIdWithDateRange")]
+    [ProducesResponseType(typeof(BaseResponse<BookingPlaceWithBookingsViewModel>), 200)]
+    public async Task<IActionResult> GetByBookingPlaceIdWithDateRange([FromQuery] BookingRequestWithDateRange request)
+    {
+        var bookingPlace = await _repository.GetBookingPlaceAsync(request.BookingPlaceId);
+        if (bookingPlace == null)
+        {
+            return HandleError(new Exception(), "Booking place not found");
+        }
+        var bookingDaos = await _repository.GetBookingByBookingPlaceIdWithDateRangeAsync(request.BookingPlaceId, request.DateFrom, request.DateTo);
         
-        return ReturnResponse(new BaseResponse<List<BookingPlaceWithBookingsViewModel>>(_mapper.Map<List<BookingPlaceWithBookingsViewModel>>(bookingPlaceList)));
+        var result = new BookingPlaceWithBookingsViewModel
+        {
+            Id = bookingPlace.Id,
+            Name = bookingPlace.Name,
+            Type = bookingPlace.Type,
+            ItemType = bookingPlace.ItemType,
+            AvailableForBooking = bookingPlace.AvailableForBooking,
+            FloorId = bookingPlace.FloorId,
+            ReservedForUserVm = bookingPlace.ReservedForId != null ? await GetUserViewModel(bookingPlace.ReservedForId.Value) : null,
+            Bookings = await GetBookingViewModels(bookingDaos),
+        };
+
+        return ReturnResponse(new BaseResponse<BookingPlaceWithBookingsViewModel>(result));
+    }
+
+    private async Task<List<BookingViewModel>> GetBookingViewModels(ICollection<BookingDao> bookingDaos)
+    {
+        var bookingViewModels = new List<BookingViewModel>();
+        foreach (var bookingDao in bookingDaos)
+        {
+            var bookingViewModel = await GetBookingViewModel(bookingDao);
+            bookingViewModels.Add(bookingViewModel);
+        }
+        return bookingViewModels;
+    }
+
+    private async Task<BookingViewModel> GetBookingViewModel(BookingDao bookingDao)
+    {
+        return new BookingViewModel
+        {
+            BookingId = bookingDao.Id,
+            BookingDate = bookingDao.BookingDate,
+            BookingPlaceId = bookingDao.BookingPlaceId,
+            State = bookingDao.State,
+            BookedById = bookingDao.BookedById,
+            BookedByUserVm = await GetUserViewModel(bookingDao.BookedById),
+        };
+    }
+
+    private async Task<List<BookingPlaceViewModel>> GetBookingPlaceViewModels(IEnumerable<BookingPlaceDao> bookingPlaceDaos)
+    {
+        var bookingPlaceViewModels = new List<BookingPlaceViewModel>();
+        foreach (var bookingPlaceDao in bookingPlaceDaos)
+        {
+            var bookingPlaceViewModel = await GetBookingPlaceViewModel(bookingPlaceDao);
+            bookingPlaceViewModels.Add(bookingPlaceViewModel);
+        }
+        return bookingPlaceViewModels;
+    }
+
+    private async Task<BookingPlaceViewModel> GetBookingPlaceViewModel(BookingPlaceDao bookingPlaceDao)
+    {
+        return new BookingPlaceViewModel
+        {
+            Id = bookingPlaceDao.Id,
+            Name = bookingPlaceDao.Name,
+            Type = bookingPlaceDao.Type,
+            ItemType = bookingPlaceDao.ItemType,
+            AvailableForBooking = bookingPlaceDao.AvailableForBooking,
+            AvailableFrom = bookingPlaceDao.AvailableFrom,
+            AvailableTo = bookingPlaceDao.AvailableTo,
+            FloorId = bookingPlaceDao.FloorId,
+            ReservedForUserId = bookingPlaceDao.ReservedForId,
+            ReservedForUserVm = bookingPlaceDao.ReservedForId != null ? await GetUserViewModel(bookingPlaceDao.ReservedForId.Value) : null,
+        };
+    }
+
+    private async Task<UserViewModel> GetUserViewModel(int userId)
+    {
+        var user = await _userManager.FindByIdAsync(userId.ToString());
+        return _mapper.Map<UserViewModel>(user);
     }
 }
