@@ -51,6 +51,10 @@ import { apiBookingGetByBookingPlaceIdWithDateIdGet$Json } from '../fn/booking/a
 import { ApiBookingGetByBookingPlaceIdWithDateIdGet$Json$Params } from '../fn/booking/api-booking-get-by-booking-place-id-with-date-id-get-json';
 import { apiBookingGetByBookingPlaceIdWithDateIdGet$Plain } from '../fn/booking/api-booking-get-by-booking-place-id-with-date-id-get-plain';
 import { ApiBookingGetByBookingPlaceIdWithDateIdGet$Plain$Params } from '../fn/booking/api-booking-get-by-booking-place-id-with-date-id-get-plain';
+import { apiBookingGetByBookingPlaceIdWithDateRangeGet$Json } from '../fn/booking/api-booking-get-by-booking-place-id-with-date-range-get-json';
+import { ApiBookingGetByBookingPlaceIdWithDateRangeGet$Json$Params } from '../fn/booking/api-booking-get-by-booking-place-id-with-date-range-get-json';
+import { apiBookingGetByBookingPlaceIdWithDateRangeGet$Plain } from '../fn/booking/api-booking-get-by-booking-place-id-with-date-range-get-plain';
+import { ApiBookingGetByBookingPlaceIdWithDateRangeGet$Plain$Params } from '../fn/booking/api-booking-get-by-booking-place-id-with-date-range-get-plain';
 import { apiBookingIdDelete$Json } from '../fn/booking/api-booking-id-delete-json';
 import { ApiBookingIdDelete$Json$Params } from '../fn/booking/api-booking-id-delete-json';
 import { apiBookingIdDelete$Plain } from '../fn/booking/api-booking-id-delete-plain';
@@ -710,6 +714,53 @@ export class BookingService extends BaseService {
   apiBookingGetAllByFloorIdFloorIdGet$Json(params: ApiBookingGetAllByFloorIdFloorIdGet$Json$Params, context?: HttpContext): Observable<BookingPlaceWithBookingsViewModelListBaseResponse> {
     return this.apiBookingGetAllByFloorIdFloorIdGet$Json$Response(params, context).pipe(
       map((r: StrictHttpResponse<BookingPlaceWithBookingsViewModelListBaseResponse>): BookingPlaceWithBookingsViewModelListBaseResponse => r.body)
+    );
+  }
+
+  /** Path part for operation `apiBookingGetByBookingPlaceIdWithDateRangeGet()` */
+  static readonly ApiBookingGetByBookingPlaceIdWithDateRangeGetPath = '/api/Booking/GetByBookingPlaceIdWithDateRange';
+
+  /**
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `apiBookingGetByBookingPlaceIdWithDateRangeGet$Plain()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  apiBookingGetByBookingPlaceIdWithDateRangeGet$Plain$Response(params?: ApiBookingGetByBookingPlaceIdWithDateRangeGet$Plain$Params, context?: HttpContext): Observable<StrictHttpResponse<BookingPlaceWithBookingsViewModelBaseResponse>> {
+    return apiBookingGetByBookingPlaceIdWithDateRangeGet$Plain(this.http, this.rootUrl, params, context);
+  }
+
+  /**
+   * This method provides access only to the response body.
+   * To access the full response (for headers, for example), `apiBookingGetByBookingPlaceIdWithDateRangeGet$Plain$Response()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  apiBookingGetByBookingPlaceIdWithDateRangeGet$Plain(params?: ApiBookingGetByBookingPlaceIdWithDateRangeGet$Plain$Params, context?: HttpContext): Observable<BookingPlaceWithBookingsViewModelBaseResponse> {
+    return this.apiBookingGetByBookingPlaceIdWithDateRangeGet$Plain$Response(params, context).pipe(
+      map((r: StrictHttpResponse<BookingPlaceWithBookingsViewModelBaseResponse>): BookingPlaceWithBookingsViewModelBaseResponse => r.body)
+    );
+  }
+
+  /**
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `apiBookingGetByBookingPlaceIdWithDateRangeGet$Json()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  apiBookingGetByBookingPlaceIdWithDateRangeGet$Json$Response(params?: ApiBookingGetByBookingPlaceIdWithDateRangeGet$Json$Params, context?: HttpContext): Observable<StrictHttpResponse<BookingPlaceWithBookingsViewModelBaseResponse>> {
+    return apiBookingGetByBookingPlaceIdWithDateRangeGet$Json(this.http, this.rootUrl, params, context);
+  }
+
+  /**
+   * This method provides access only to the response body.
+   * To access the full response (for headers, for example), `apiBookingGetByBookingPlaceIdWithDateRangeGet$Json$Response()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  apiBookingGetByBookingPlaceIdWithDateRangeGet$Json(params?: ApiBookingGetByBookingPlaceIdWithDateRangeGet$Json$Params, context?: HttpContext): Observable<BookingPlaceWithBookingsViewModelBaseResponse> {
+    return this.apiBookingGetByBookingPlaceIdWithDateRangeGet$Json$Response(params, context).pipe(
+      map((r: StrictHttpResponse<BookingPlaceWithBookingsViewModelBaseResponse>): BookingPlaceWithBookingsViewModelBaseResponse => r.body)
     );
   }
 

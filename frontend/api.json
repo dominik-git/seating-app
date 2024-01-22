@@ -647,6 +647,61 @@
         }
       }
     },
+    "/api/Booking/GetByBookingPlaceIdWithDateRange": {
+      "get": {
+        "tags": [
+          "Booking"
+        ],
+        "parameters": [
+          {
+            "name": "BookingPlaceId",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "DateFrom",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "DateTo",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/BookingPlaceWithBookingsViewModelBaseResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BookingPlaceWithBookingsViewModelBaseResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BookingPlaceWithBookingsViewModelBaseResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/Floor": {
       "get": {
         "tags": [
@@ -998,6 +1053,14 @@
           "floorId": {
             "type": "integer",
             "format": "int32"
+          },
+          "reservedForUserId": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "reservedForUserVm": {
+            "$ref": "#/components/schemas/UserViewModel"
           }
         },
         "additionalProperties": false
@@ -1094,10 +1157,13 @@
             "type": "integer",
             "format": "int32"
           },
-          "reservedForId": {
+          "reservedForUserId": {
             "type": "integer",
             "format": "int32",
             "nullable": true
+          },
+          "reservedForUserVm": {
+            "$ref": "#/components/schemas/UserViewModel"
           },
           "bookings": {
             "type": "array",
@@ -1216,6 +1282,9 @@
             "type": "integer",
             "format": "int32",
             "nullable": true
+          },
+          "bookedByUserVm": {
+            "$ref": "#/components/schemas/UserViewModel"
           }
         },
         "additionalProperties": false

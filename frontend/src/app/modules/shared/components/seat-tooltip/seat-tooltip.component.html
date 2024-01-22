@@ -5,15 +5,15 @@
 
 <div id="mypopup" [style.top.px]="top" [style.left.px]="left" [style.display]="display">
   <div>
-    {{person?.seatId}}
+    {{person?.firstName}}
   </div>
   <div class="d-flex">
     <img
       class="avatar mat-elevation-z8"
-      src="https://source.unsplash.com/c_GmwfHBDzk/200x200"
+      src="{{person?.profilePicture}}"
     />
     <div>
-      <div>{{person}}</div>
+      <div>{{person?.fullName}}</div>
 
     </div>
   </div>

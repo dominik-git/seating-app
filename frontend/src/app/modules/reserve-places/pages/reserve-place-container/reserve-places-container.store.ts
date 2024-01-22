@@ -158,15 +158,15 @@ export class ReservePlacesContainerStore
       )
   );
 
-  readonly handlePlaceSelection = this.effect<{ placeId: string }>(placeId$ =>
+  readonly handlePlaceSelection = this.effect<{ placeId: number }>(placeId$ =>
     placeId$.pipe(
       withLatestFrom(this.select(state => state.selectedDate)),
       tap(([placeId, selectedDate]) => {
         this.setLoading(true); // Set loading to true immediately
         const dialogRef = this.dialog.open(SeatBookDialog, {
           data: {
-            selectedDate: selectedDate,
-            selectedDesk: placeId,
+            selectedDate,
+            placeId,
           },
         });
 

@@ -110,7 +110,7 @@ export class EditPlaceComponent implements AfterViewInit {
       name: place.name,
       id: place.id,
       type: place.type,
-      reservedForId: place.reservedForId || null,
+      user: place.reservedForUserVm || null,
     });
   }
 
@@ -125,7 +125,7 @@ export class EditPlaceComponent implements AfterViewInit {
     this.seatTooltip.showTooltip(
       right + window.scrollX,
       top + window.scrollY - 50,
-      place.reservedForId
+      place.reservedForUserVm
     );
   }
 

@@ -82,11 +82,11 @@ export class AssignFixedPlaceDialog implements OnInit {
       name: new FormControl(''),
     });
 
-    if (this.data?.placeData?.reservedForId) {
-      const foundUser = this.data.users.find(
-        user => user.id === this.data.placeData.reservedForId
-      );
-      this.assignForm.patchValue({ assignee: foundUser });
+    if (this.data?.placeData?.user) {
+      // const foundUser = this.data.users.find(
+      //   user => user.id === this.data.placeData.reservedForId
+      // );
+      this.assignForm.patchValue({ assignee: this.data?.placeData?.user });
     }
     this.assignForm.patchValue({
       type: this.data.placeData.type,

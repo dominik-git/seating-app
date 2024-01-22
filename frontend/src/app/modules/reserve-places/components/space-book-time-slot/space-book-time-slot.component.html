@@ -3,7 +3,7 @@
     <span class="available" [class.reserved-slot]="isPlaceReserved()"></span>
     <div class="slot-details">
       <div class="date">{{ day.date | dateDay: true }}</div>
-      <div *ngIf="day?.name">Booked by {{ day.name }}</div>
+      <!--      <div *ngIf="day?.name">Booked by {{ day.name }}</div>-->
     </div>
   </div>
   <div class="right">

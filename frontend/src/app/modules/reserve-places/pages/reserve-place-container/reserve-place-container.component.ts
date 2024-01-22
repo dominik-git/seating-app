@@ -19,6 +19,7 @@ import { SvgFileSelectorModel } from '../../../../api/models/svg-file-model';
 import { DatePlaceSelectorComponent } from '../../components/date-place-selector/date-place-selector.component';
 import { NgxSkeletonLoaderModule } from 'ngx-skeleton-loader';
 import { provideComponentStore } from '@ngrx/component-store';
+import { AssignPlace } from '../../../administration/models/assign-place';
 
 @Component({
   selector: 'app-reserve-place-container',
@@ -74,12 +75,12 @@ export class ReservePlaceContainerComponent {
     this.reservePlacesContainerStore.changeDate$(date);
   }
 
-  onPlaceSelected(data: any): void {
-    if (data.fixedPlace) {
-      return;
-    }
+  onPlaceSelected(data: AssignPlace): void {
+    // if (data.fixedPlace) {
+    //   return;
+    // }
     this.reservePlacesContainerStore.handlePlaceSelection({
-      placeId: data.placeId,
+      placeId: data.id,
     });
 
     // let dialogRef = this.dialog.open(SeatBookDialog, {

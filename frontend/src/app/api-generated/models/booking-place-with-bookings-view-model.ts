@@ -3,6 +3,7 @@
 import { BookingPlaceItemTypeEnum } from '../models/booking-place-item-type-enum';
 import { BookingPlaceTypeEnum } from '../models/booking-place-type-enum';
 import { BookingViewModel } from '../models/booking-view-model';
+import { UserViewModel } from '../models/user-view-model';
 export interface BookingPlaceWithBookingsViewModel {
   availableForBooking?: boolean;
   availableFrom?: string | null;
@@ -12,6 +13,7 @@ export interface BookingPlaceWithBookingsViewModel {
   id?: number;
   itemType?: BookingPlaceItemTypeEnum;
   name?: string | null;
-  reservedForId?: number | null;
+  reservedForUserId?: number | null;
+  reservedForUserVm?: UserViewModel;
   type?: BookingPlaceTypeEnum;
 }

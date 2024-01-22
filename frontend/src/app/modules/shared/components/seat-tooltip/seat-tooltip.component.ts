@@ -1,4 +1,5 @@
 import { Component, Input } from '@angular/core';
+import { UserViewModel } from '../../../../api-generated/models/user-view-model';
 
 @Component({
   selector: 'app-seat-tooltip',
@@ -10,7 +11,7 @@ export class SeatTooltipComponent {
   @Input() display: string = 'none';
   @Input() left: number = 0;
   @Input() top: number = 0;
-  @Input() person = null;
+  @Input() person: UserViewModel = null;
 
   showTooltip(x: number, y: number, person: any): void {
     this.left = x;

@@ -23,7 +23,7 @@ export class BookingResourceService {
       response = generateFixedDesk(701, 730);
     }
 
-    let obs = new Observable<PlaceModel[]>((subscriber) => {
+    let obs = new Observable<PlaceModel[]>(subscriber => {
       setTimeout(() => {
         subscriber.next(response);
         subscriber.complete();
@@ -43,7 +43,7 @@ export class BookingResourceService {
       response = generateFixedDesk(701, 730);
     }
 
-    let obs = new Observable<PlaceModel[]>((subscriber) => {
+    let obs = new Observable<PlaceModel[]>(subscriber => {
       setTimeout(() => {
         subscriber.next(response);
         subscriber.complete();
@@ -55,7 +55,7 @@ export class BookingResourceService {
   bookSeatPlace(dates: any, deskId: number) {
     console.log('date:' + dates, 'state: ' + deskId);
 
-    let obs = new Observable((subscriber) => {
+    let obs = new Observable(subscriber => {
       setTimeout(() => {
         subscriber.next(true);
         subscriber.complete();
@@ -67,7 +67,7 @@ export class BookingResourceService {
   getDesksInDateRange(date: Date, deskId: string) {
     let response: any = this.dates(date);
 
-    let obs = new Observable((subscriber) => {
+    let obs = new Observable(subscriber => {
       setTimeout(() => {
         subscriber.next(response);
         subscriber.complete();
@@ -79,7 +79,7 @@ export class BookingResourceService {
   getReservedItemsInDateRange(date: Date) {
     let response: any = this.getReservedItemsResponse(date);
 
-    let obs = new Observable((subscriber) => {
+    let obs = new Observable(subscriber => {
       setTimeout(() => {
         subscriber.next(response);
         subscriber.complete();
@@ -99,13 +99,6 @@ export class BookingResourceService {
       let dayObj: { date?: Date; name?: string; state?: ChairTypeEnum } = {};
 
       dayObj.date = new Date(currentDateNew);
-
-      if (Math.floor(Math.random() * (1 - 0 + 1)) == 1) {
-        dayObj.name = 'John Snow';
-        dayObj.state = ChairTypeEnum.reserved;
-      } else {
-        dayObj.state = ChairTypeEnum.free;
-      }
 
       week.push(dayObj);
       currentDateNew.setDate(currentDateNew.getDate() + 1);
