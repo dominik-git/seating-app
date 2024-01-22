@@ -471,7 +471,7 @@ public class BookingController : BaseController
         var bookingPlace = await _repository.GetBookingPlaceAsync(request.BookingPlaceId);
         if (bookingPlace == null)
         {
-            return HandleError(new Exception(), "Booking place not found");
+            return HandleError(new Exception("Booking place not found"));
         }
         var bookingDaos = await _repository.GetBookingByBookingPlaceIdWithDateRangeAsync(request.BookingPlaceId, request.DateFrom, request.DateTo);
         
