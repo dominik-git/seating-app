@@ -1,4 +1,5 @@
 ﻿using BookingApp.Enums;
+using BookingApp.Models;
 
 namespace BookingApp.ViewModels
 {
@@ -9,5 +10,6 @@ namespace BookingApp.ViewModels
         public BookingStateEnum State { get; set; }
         public DateTime BookingDate { get; set; }  
         public int? BookedById { get; set; }
+        public UserViewModel BookedByUserVm { get; set; }
     }
 }

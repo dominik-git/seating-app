@@ -23,11 +23,7 @@ namespace BookingApp.Repositories
 
         public async Task<BookingPlaceDao> GetBookingPlaceAsync(int id)
         {
-            var bookingPlace = await _context.BookingPlaces.FindAsync(id);
-            if (bookingPlace == null)
-            {
-                throw new Exception("Entity not found");
-            }
+            var bookingPlace = await _context.BookingPlaces.FindAsync(id);           
             return bookingPlace;
         }
 
@@ -173,6 +169,13 @@ namespace BookingApp.Repositories
             return await _context.Bookings
                 .Include(item => item.BookingPlace)
                 .Where(item => item.BookingPlaceId == bookingPlaceId && item.BookingDate.Date > todaysDate && item.BookingDate.Date < endDate).ToListAsync();
+        }
+
+        public async Task<List<BookingDao>> GetBookingByBookingPlaceIdWithDateRangeAsync(int bookingPlaceId, DateTime from, DateTime to)
+        {            
+            return await _context.Bookings
+                .Include(item => item.BookingPlace)
+                .Where(item => item.BookingPlaceId == bookingPlaceId && item.BookingDate > from && item.BookingDate.Date < to).ToListAsync();
         }
 
         public async Task<BookingDao> CreateBookingAsync(BookingDao booking)
