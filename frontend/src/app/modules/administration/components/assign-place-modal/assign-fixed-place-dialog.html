@@ -47,8 +47,16 @@
         </form>
       </mat-dialog-content>
       <mat-dialog-actions align="end">
+
+        <button
+          mat-raised-button
+          color="primary"
+          (click)="assignPlace()"
+
+        >
+          Create
+        </button>
         <button mat-button mat-dialog-close>Cancel</button>
-        <button mat-button (click)="assignPlace()">Assign</button>
       </mat-dialog-actions>
     </div>
   </div>

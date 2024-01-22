@@ -55,8 +55,7 @@ export class ReservePlaceContainerComponent {
   desks: any[];
   isLoadingCombined$ = this.reservePlacesContainerStore.isLoadingCombined$;
   isLoadingFloors$ = this.reservePlacesContainerStore.selectIsLoadingFloors;
-  fixedReservedPlaces$ =
-    this.reservePlacesContainerStore.selectFixedReservedPlaces$;
+  allPlaces$ = this.reservePlacesContainerStore.selectAllPlaces$;
   selectedPlaceSvg$ = this.reservePlacesContainerStore.selectSelectedPlaceSvg$;
   selectPlacesName$ = this.reservePlacesContainerStore.selectPlacesName$;
   selectedDate$ = this.reservePlacesContainerStore.selectSelectedDate$;

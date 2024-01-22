@@ -13,7 +13,6 @@ import {
   tap,
   withLatestFrom,
 } from 'rxjs/operators';
-import { BookingResourceService } from '../../../../api/booking/booking-resource.service';
 import { PlaceModel } from '../../../../api/models/place-model';
 import { PlacesStore } from '../../../shared/services/places.store';
 import { SvgFileSelectorModel } from '../../../../api/models/svg-file-model';
@@ -24,9 +23,12 @@ import {
 } from '../../../../models/booking.model';
 import { MatDialog } from '@angular/material/dialog';
 import { SeatBookDialog } from '../../modals/seat-book-dialog';
+import { BookingPlaceWithBookingsViewModel } from '../../../../api-generated/models/booking-place-with-bookings-view-model';
+import { BookingService } from '../../../../api-generated/services/booking.service';
+import { FloorViewModelBaseResponse } from '../../../../api-generated/models/floor-view-model-base-response';
 
 export interface ReservePlacesState {
-  fixedReservedPlaces: PlaceModel[];
+  allPlaces: BookingPlaceWithBookingsViewModel[];
   bookedDesks: BookDeskDay[];
   bookedParkingPlace: BookParkingPlaceDay[];
   selectedDesk: any;
@@ -43,12 +45,12 @@ export class ReservePlacesContainerStore
   implements OnStoreInit
 {
   constructor(
-    private readonly bookingResourceService: BookingResourceService,
+    private bookingService: BookingService,
     private readonly placesStore: PlacesStore,
     private readonly dialog: MatDialog
   ) {
     super({
-      fixedReservedPlaces: [],
+      allPlaces: [],
       bookedDesks: [],
       bookedParkingPlace: [],
       selectedDesk: null,
@@ -73,9 +75,8 @@ export class ReservePlacesContainerStore
   readonly selectSelectedPlaceFilter$: Observable<SvgFileSelectorModel> =
     this.select(state => state.selectedPlaceFilter);
 
-  readonly selectFixedReservedPlaces$: Observable<PlaceModel[]> = this.select(
-    state => state.fixedReservedPlaces
-  );
+  readonly selectAllPlaces$: Observable<BookingPlaceWithBookingsViewModel[]> =
+    this.select(state => state.allPlaces);
 
   readonly selectIsLoadingReservePlacePage$: Observable<boolean> = this.select(
     state => state.isLoading
@@ -134,7 +135,7 @@ export class ReservePlacesContainerStore
       // Continue with additional actions if necessary
       switchMap(([isLoading, places, date]) => {
         // Fetch more data based on the selected place
-        return this.fetchPlaces(places[0].name, date);
+        return this.fetchPlaces(places[0].id, date);
       }),
       // Handle any errors
       catchError(error => {
@@ -152,7 +153,7 @@ export class ReservePlacesContainerStore
           this.setSelectedPlace(selectedPlaceFilter)
         ),
         switchMap(([selectedPlaceFilter, selectedDate]) =>
-          this.fetchPlaces(selectedPlaceFilter.name, selectedDate)
+          this.fetchPlaces(selectedPlaceFilter.id, selectedDate)
         )
       )
   );
@@ -184,12 +185,17 @@ export class ReservePlacesContainerStore
         this.setSelectedDate(selectedDate)
       ),
       switchMap(([selectedDate, selectedPlaceFilter]) =>
-        this.fetchPlaces(selectedPlaceFilter.name, selectedDate)
+        this.fetchPlaces(selectedPlaceFilter.id, selectedDate)
       )
     )
   );
 
   // REDUCERS
+  readonly setPlaces = this.updater(
+    (state, allPlaces: BookingPlaceWithBookingsViewModel[]) => {
+      return { ...state, allPlaces, isLoading: false };
+    }
+  );
   readonly setFixedReservedPlaces = this.updater(
     (state, fixedReservedPlaces: PlaceModel[]) => ({
       ...state,
@@ -219,15 +225,18 @@ export class ReservePlacesContainerStore
 
   // Private method to handle fetching of fixed places
   private fetchPlaces(
-    selectedPlaceName: string,
-    selectedDate: Date
-  ): Observable<PlaceModel[]> {
-    return this.bookingResourceService
-      .getDesks(selectedDate, selectedPlaceName)
+    floorId: number,
+    bookingDate: Date
+  ): Observable<FloorViewModelBaseResponse> {
+    return this.bookingService
+      .apiBookingGetAllByFloorAndDateGet$Json({
+        floorId,
+        bookingDate: bookingDate.toUTCString(),
+      })
       .pipe(
         tapResponse(
           places => {
-            this.setFixedReservedPlaces(places);
+            this.setPlaces(places.data.bookingPlaces ?? []);
           },
           error => {
             this.setLoading(false);
