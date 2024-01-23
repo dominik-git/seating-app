@@ -163,8 +163,8 @@ public class BookingController : BaseController
         }
     }
 
-    [Authorize(Policy = IdentityData.AdminUserPolicyName)]
-    [HttpPut("Admin/CreateOrUpdate")]
+    
+    [HttpPut("CreateOrUpdateBookings")]
     [ProducesResponseType(typeof(BaseResponse<bool>), 200)]
     public async Task<IActionResult> CreateOrUpdateBookings(BookingsViewModel request)
     {
