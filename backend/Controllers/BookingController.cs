@@ -168,8 +168,9 @@ public class BookingController : BaseController
     [ProducesResponseType(typeof(BaseResponse<bool>), 200)]
     public async Task<IActionResult> CreateOrUpdateBookings(BookingsViewModel request)
     {
-        var userEmail = this.User.Claims.FirstOrDefault(item => item.Type == "email")?.Value;
-        bool isAdmin = string.IsNullOrEmpty(this.User.FindFirstValue("admin")) && bool.Parse(this.User.FindFirstValue("admin"));
+        var userEmail = this.User.FindFirstValue(ClaimTypes.Email) ?? "";
+        var admin = this.User.FindFirstValue("admin") ?? "false";
+        bool isAdmin = bool.Parse(admin);
         var user = await _userManager.FindByEmailAsync(userEmail);
         if (user == null)
         {

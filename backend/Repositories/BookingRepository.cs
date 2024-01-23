@@ -168,14 +168,14 @@ namespace BookingApp.Repositories
             var endDate = todaysDate.AddDays(DefaultDaysForBooking);
             return await _context.Bookings
                 .Include(item => item.BookingPlace)
-                .Where(item => item.BookingPlaceId == bookingPlaceId && item.BookingDate.Date > todaysDate && item.BookingDate.Date < endDate).ToListAsync();
+                .Where(item => item.BookingPlaceId == bookingPlaceId && item.BookingDate.Date >= todaysDate && item.BookingDate.Date <= endDate).ToListAsync();
         }
 
         public async Task<List<BookingDao>> GetBookingByBookingPlaceIdWithDateRangeAsync(int bookingPlaceId, DateTime from, DateTime to)
         {            
             return await _context.Bookings
                 .Include(item => item.BookingPlace)
-                .Where(item => item.BookingPlaceId == bookingPlaceId && item.BookingDate > from && item.BookingDate.Date < to).ToListAsync();
+                .Where(item => item.BookingPlaceId == bookingPlaceId && item.BookingDate >= from && item.BookingDate.Date <= to).ToListAsync();
         }
 
         public async Task<BookingDao> CreateBookingAsync(BookingDao booking)
