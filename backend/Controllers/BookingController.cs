@@ -173,7 +173,7 @@ public class BookingController : BaseController
         var user = await _userManager.FindByEmailAsync(userEmail);
         if (user == null)
         {
-            return HandleError(new Exception(), "User not found");
+            return HandleError(new Exception("User not found"));
         }
         foreach (var bookingVm in request.Bookings)
         {
@@ -191,7 +191,7 @@ public class BookingController : BaseController
             {
                 if (existingBooking.BookedById != user.Id)
                 {
-                    return HandleError(new Exception(), "Already reserved");
+                    return HandleError(new Exception("Already reserved"));
                 }
                 try
                 {
