@@ -1,11 +1,9 @@
 .dialog-wrapper {
-  min-height: 400px;
-  min-width: 400px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+    min-height: 400px;
+    min-width: 400px;
+    display: flex;
 }
 
 .hidden {
-  display: none;
+    display: none;
 }

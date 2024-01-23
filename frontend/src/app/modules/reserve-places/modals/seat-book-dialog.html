@@ -1,58 +1,55 @@
-<ng-container *ngIf="loading=== false; else showSkeleton">
-  <mat-dialog-content class="mat-typography">
+<mat-dialog-content class="mat-typography">
     <div class="dialog-wrapper flex-col">
-      <app-week-picker
-        [selectedDateInput]="data.selectedDate"
-        (selectedDateRangeOutput)="onSelectDateRangeOutput($event)"
-      ></app-week-picker>
-      <div>
-        <app-space-book-time-slot
-          *ngFor="let day of days"
-          [day]="day"
-          (selectDay)="onDaySelect($event)"
-          (unSelectDay)="onDayUnSelect($event)"
+        <app-week-picker
+                [selectedDateInput]="data.selectedDate"
+                (selectedDateRangeOutput)="onSelectDateRangeOutput($event)"
+        ></app-week-picker>
+        <ng-container *ngIf="(loading$ | async )=== false; else showSkeleton">
+            <ng-container *ngIf="(days$ | async) as days">
+                <app-space-book-time-slot
+                        *ngFor="let day of days"
+                        [day]="day"
+                        (selectDay)="onDaySelect($event)"
+                        (unSelectDay)="onDayUnSelect($event)"
 
-        ></app-space-book-time-slot>
-      </div>
-
-      <mat-dialog-actions align="end">
-        <button mat-button mat-dialog-close>Cancel</button>
-        <button mat-button (click)="closeDialog()" cdkFocusInitial>
-          Reserve
-        </button>
-      </mat-dialog-actions>
+                ></app-space-book-time-slot>
+            </ng-container>
+            <mat-dialog-actions align="end">
+                <button mat-button mat-dialog-close>Cancel</button>
+                <button mat-button (click)="closeDialog()" cdkFocusInitial>
+                    Reserve
+                </button>
+            </mat-dialog-actions>
+        </ng-container>
     </div>
-  </mat-dialog-content>
-</ng-container>
+</mat-dialog-content>
+
 
 <ng-template #showSkeleton>
 
-  <div class="dialog-wrapper">
-    <mat-dialog-content>
-      <div class="flex flex-col">
+    <div class="flex flex-col">
         <ngx-skeleton-loader
-          [theme]="{height: '81px', width:'100%'}"
+                [theme]="{height: '79px', width:'100%'}"
         ></ngx-skeleton-loader>
         <ngx-skeleton-loader
-          [theme]="{height: '81px', width:'100%'}"
+                [theme]="{height: '79px', width:'100%'}"
         ></ngx-skeleton-loader>
         <ngx-skeleton-loader
-          [theme]="{height: '81px', width:'100%'}"
+                [theme]="{height: '79px', width:'100%'}"
         ></ngx-skeleton-loader>
         <ngx-skeleton-loader
-          [theme]="{height: '81px', width:'100%'}"
+                [theme]="{height: '79px', width:'100%'}"
         ></ngx-skeleton-loader>
         <ngx-skeleton-loader
-          [theme]="{height: '81px', width:'100%'}"
+                [theme]="{height: '79px', width:'100%'}"
         ></ngx-skeleton-loader>
         <ngx-skeleton-loader
-          [theme]="{height: '81px', width:'100%'}"
+                [theme]="{height: '79px', width:'100%'}"
         ></ngx-skeleton-loader>
         <ngx-skeleton-loader
-          [theme]="{height: '81px', width:'100%'}"
+                [theme]="{height: '79px', width:'100%'}"
         ></ngx-skeleton-loader>
-      </div>
-    </mat-dialog-content>
-  </div>
+    </div>
+
 
 </ng-template>

@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject } from '@angular/core';
 import {
   MAT_DIALOG_DATA,
   MatDialogActions,
@@ -10,11 +10,12 @@ import { MatButtonModule } from '@angular/material/button';
 import { SpaceBookTimeSlotComponent } from '../components/space-book-time-slot/space-book-time-slot.component';
 import { WeekPickerComponent } from '../../shared/components/week-picker/week-picker.component';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { NgFor, NgIf } from '@angular/common';
+import { AsyncPipe, NgFor, NgIf } from '@angular/common';
 import { NgxSkeletonLoaderModule } from 'ngx-skeleton-loader';
-import { eachDayOfInterval, endOfWeek, startOfWeek } from 'date-fns';
 import { BookingViewModel } from '../../../api-generated/models/booking-view-model';
-import { BookingService } from '../../../api-generated/services/booking.service';
+import { SeatBookingStore } from './seat-book.dialog.store';
+import { Observable } from 'rxjs';
+import { tap } from 'rxjs/operators';
 
 export interface BookingDay {
   date: Date;
@@ -39,125 +40,52 @@ export interface BookingDay {
     MatButtonModule,
     MatDialogClose,
     NgxSkeletonLoaderModule,
+    AsyncPipe,
   ],
+  providers: [SeatBookingStore],
 })
-export class SeatBookDialog implements OnInit {
-  weekDays: Date[];
-  bookings: BookingViewModel[] = [];
-  loading = false;
-  days: BookingDay[];
+export class SeatBookDialog {
+  days$ = this.seatBookingStore.selectDays$.pipe(
+    tap(data => console.log(data, 'asdas'))
+  );
+  loading$: Observable<boolean>;
 
   constructor(
     public dialogRef: MatDialogRef<SeatBookDialog>,
     @Inject(MAT_DIALOG_DATA)
-    public data: { selectedDate: Date; placeId: number },
-    private bookingService: BookingService
-  ) {}
+    public data: {
+      selectedDate: Date;
+      placeId: number;
+    },
+    private seatBookingStore: SeatBookingStore
+  ) {
+    this.seatBookingStore.setParams({
+      selectedDate: this.data.selectedDate,
+      selectedPlaceId: this.data.placeId,
+    });
+    this.loading$ = seatBookingStore.select(state => state.loading);
+  }
 
   ngOnInit() {
-    this.loading = true;
-    const startDate = startOfWeek(this.data.selectedDate, { weekStartsOn: 1 });
-    const endDate = endOfWeek(this.data.selectedDate, { weekStartsOn: 1 });
-    this.weekDays = eachDayOfInterval({ start: startDate, end: endDate });
-    this.days = [
-      {
-        date: this.weekDays[0],
-        bookedByCurrentUser: false,
-        isSelected: false,
-      },
-      {
-        date: this.weekDays[1],
-        bookedByCurrentUser: false,
-        isSelected: false,
-      },
-      {
-        date: this.weekDays[2],
-        bookedByCurrentUser: false,
-        isSelected: false,
-      },
-      {
-        date: this.weekDays[3],
-        bookedByCurrentUser: false,
-        isSelected: false,
-      },
-      {
-        date: this.weekDays[4],
-        bookedByCurrentUser: false,
-        isSelected: false,
-      },
-      {
-        date: this.weekDays[5],
-        bookedByCurrentUser: false,
-        isSelected: false,
-      },
-      {
-        date: this.weekDays[6],
-        bookedByCurrentUser: false,
-        isSelected: false,
-      },
-    ];
-
-    this.days = this.days.map(day => ({
-      ...day,
-      bookings: this.findBookingsForDate(day.date),
-    }));
-
-    this.loading = false;
-    this.bookingService
-      .apiBookingGetByBookingPlaceIdWithDateRangeGet$Json({
-        BookingPlaceId: this.data.placeId,
-        DateFrom: startDate.toISOString(),
-        DateTo: endDate.toISOString(),
-      })
-      .subscribe(response => {
-        // this.loading = false;
-        // this.bookings = response.bookings;
-        console.log(response.data);
-      });
-
-    // this.loading = true;
-    // this.bookingService
-    //   .apiBookingGetByBookingPlaceIdWithDateRangeGet$Json(this.data.selectedDate, this.data.selectedDesk)
-    //   .subscribe(response => {
-    //     this.loading = false;
-    //     this.seatsInWeek = response as SeatsInRange[];
-    //   });
+    this.seatBookingStore.setParams({
+      selectedPlaceId: this.data.placeId,
+      selectedDate: this.data.selectedDate,
+    });
   }
 
   closeDialog() {
-    // this.dialogRef.close({ days: this.bookedDays });
+    this.dialogRef.close();
   }
 
   onSelectDateRangeOutput(daysInWeek: Date[]) {
-    // this.loading = true;
-    // this.bookingService
-    //   .apiBookingGetByBookingPlaceIdWithDateRangeGet$Json(daysInWeek[0], this.data.selectedDesk)
-    //   .subscribe(response => {
-    //     this.loading = false;
-    //     this.seatsInWeek = response as SeatsInRange[];
-    //   });
-  }
-
-  findBookingsForDate(date) {
-    // Logic to find bookings for a given date
-    // For example, filter from a bookings array
-    return this.bookings.filter(booking => booking.bookingDate === date);
+    this.seatBookingStore.changeWeek(daysInWeek);
   }
 
   onDaySelect(date: Date) {
-    // this.bookedDays.push(date);
+    this.seatBookingStore.toggleDaySelection(date);
   }
 
   onDayUnSelect(date: Date) {
-    // this.bookedDays = this.bookedDays.filter(
-    //   dayItem => dayItem.getDate() !== date.getDate()
-    // );
-  }
-
-  isDaySelected(day: Date) {
-    // const foundDate = this.bookedDays.find(date => {
-    //   return date.getTime() == day.getTime();
-    // });
-    // return !!foundDate;
+    this.seatBookingStore.toggleDaySelection(date);
   }
 }

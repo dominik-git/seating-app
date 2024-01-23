@@ -1,80 +1,41 @@
-import {
-  AfterViewInit,
-  Component,
-  EventEmitter,
-  Input,
-  OnInit,
-  Output,
-} from '@angular/core';
-import * as moment from 'moment';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { DateDayPipe } from '../../pipes/date-day.pipe';
 import { MatIconModule } from '@angular/material/icon';
+import { WeekService } from '../../services/week.service';
 
 @Component({
-    selector: 'app-week-picker',
-    templateUrl: './week-picker.component.html',
-    styleUrls: ['./week-picker.component.scss'],
-    standalone: true,
-    imports: [MatIconModule, DateDayPipe],
+  selector: 'app-week-picker',
+  templateUrl: './week-picker.component.html',
+  styleUrls: ['./week-picker.component.scss'],
+  standalone: true,
+  imports: [MatIconModule, DateDayPipe],
 })
-export class WeekPickerComponent implements OnInit, AfterViewInit {
-  daysInWeek: Date[];
+export class WeekPickerComponent implements OnInit {
   @Input() selectedDateInput: Date;
   @Output() selectedDateRangeOutput = new EventEmitter<Date[]>();
 
-  constructor() {}
+  daysInWeek: Date[];
+
+  constructor(private weekService: WeekService) {}
 
   ngOnInit(): void {
-
-    this.daysInWeek = this.dates(this.selectedDateInput);
-
+    this.daysInWeek = this.weekService.getWeekDaysForDate(
+      this.selectedDateInput
+    );
+    this.emitWeekDays();
   }
 
-
-  ngAfterViewInit(): void {
+  emitWeekDays(): void {
     this.selectedDateRangeOutput.emit(this.daysInWeek);
   }
 
   increaseWeek(): void {
-    const firstDayInWeek = this.daysInWeek[0];
-    firstDayInWeek.setDate(firstDayInWeek.getDate() + 7);
-    this.daysInWeek = this.dates(firstDayInWeek);
-    this.selectedDateRangeOutput.emit(this.daysInWeek);
+    this.daysInWeek = this.weekService.getNextWeek(this.daysInWeek[0]);
+    this.emitWeekDays();
   }
 
   decreaseWeek(): void {
-    const firstDayInWeek = this.daysInWeek[0];
-    if (!this.isPastDate(firstDayInWeek)) {
-      const dateFrom = moment(firstDayInWeek).subtract(7, 'd').toDate();
-      this.daysInWeek = this.dates(dateFrom);
-      this.selectedDateRangeOutput.emit(this.daysInWeek);
-    } else {
-      this.daysInWeek = this.dates(new Date());
-      this.selectedDateRangeOutput.emit(this.daysInWeek);
-    }
+    this.daysInWeek = this.weekService.getPreviousWeek(this.daysInWeek[0]);
+    this.emitWeekDays();
   }
-
-
-  dates(currentDate: Date) {
-    const week = [];
-    // Starting Monday not Sunday
-    currentDate.setDate(currentDate.getDate() - currentDate.getDay() + 1);
-    for (let i = 0; i < 7; i++) {
-      week.push(new Date(currentDate));
-      currentDate.setDate(currentDate.getDate() + 1);
-    }
-    return week;
-  }
-
-  private isPastDate(firstDateInWeek: Date): boolean {
-    const days = this.dates(new Date());
-
-    if (days[0] >= firstDateInWeek) {
-      return true;
-    }
-    return false;
-  }
-
-
-
 }

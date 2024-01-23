@@ -158,7 +158,7 @@ export class ReservePlacesContainerStore
       )
   );
 
-  readonly handlePlaceSelection = this.effect<{ placeId: number }>(placeId$ =>
+  readonly handlePlaceSelection = this.effect<number>(placeId$ =>
     placeId$.pipe(
       withLatestFrom(this.select(state => state.selectedDate)),
       tap(([placeId, selectedDate]) => {

@@ -79,9 +79,7 @@ export class ReservePlaceContainerComponent {
     // if (data.fixedPlace) {
     //   return;
     // }
-    this.reservePlacesContainerStore.handlePlaceSelection({
-      placeId: data.id,
-    });
+    this.reservePlacesContainerStore.handlePlaceSelection(data.id);
 
     // let dialogRef = this.dialog.open(SeatBookDialog, {
     //   data: {

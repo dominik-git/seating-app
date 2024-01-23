@@ -39,8 +39,3 @@ export class SpaceBookTimeSlotComponent implements OnInit {
     return false;
   }
 }
-
-export class SelectedDay {
-  date: any;
-  checked: boolean;
-}
