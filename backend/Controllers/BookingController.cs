@@ -139,16 +139,16 @@ public class BookingController : BaseController
         var user = await _userManager.FindByEmailAsync(userEmail);
         if (user == null)
         {
-            return HandleError(new Exception(), "User not found");
+            return HandleError(new Exception("User not found"));
         }
         var bookingItem = await _repository.GetBookingPlaceAsync(id);
         if (bookingItem == null)
         {
-            return HandleError(new Exception(), "Booking item not found");
+            return HandleError(new Exception("Booking item not found"));
         }
         if (!isAdmin || user.Id != bookingItem.ReservedForId)
         {
-            return HandleError(new Exception(), "You are not allowed to udate this entity");
+            return HandleError(new Exception("You are not allowed to udate this entity"));
         }
         try
         {
@@ -237,12 +237,12 @@ public class BookingController : BaseController
         var user = await _userManager.FindByEmailAsync(userEmail);
         if (user == null)
         {
-            return HandleError(new Exception(), "User not found");
+            return HandleError(new Exception("User not found"));
         }
 
         if (bookingVm.BookingDate < DateTime.UtcNow)
         {
-            return HandleError(new Exception(), "Invalid booking date");
+            return HandleError(new Exception("Invalid booking date"));
         }
 
         var bookingPlace = await _repository.GetBookingPlaceAsync(bookingVm.BookingPlaceId);
@@ -252,14 +252,14 @@ public class BookingController : BaseController
             bookingPlace.ReservedForId.HasValue &&
             bookingPlace.ReservedForId != user.Id)
             {
-                return HandleError(new Exception(), "Booking place reserved");
+                return HandleError(new Exception("Booking place reserved"));
             }
 
             if (bookingPlace.AvailableForBooking &&
                 bookingVm.BookingDate < bookingPlace.AvailableFrom &&
                 bookingVm.BookingDate > bookingPlace.AvailableTo)
             {
-                return HandleError(new Exception(), "This booking place is reserved for day you choosed.");
+                return HandleError(new Exception("This booking place is reserved for day you choosed."));
             }
         }
 
@@ -277,7 +277,7 @@ public class BookingController : BaseController
         {
             if (existingBooking.BookedById != user.Id)
             {
-                return HandleError(new Exception(), "Already reserved by another user");
+                return HandleError(new Exception("Already reserved by another user"));
             }
             try
             {
@@ -358,7 +358,7 @@ public class BookingController : BaseController
         var user = await _userManager.FindByEmailAsync(userEmail);
         if (user == null)
         {
-            return HandleError(new Exception(), "User not found");
+            return HandleError(new Exception("User not found"));
         }
         var bookingPlaceDao = _mapper.Map<BookingPlaceDao>(bookingPlaceViewModel);
         bookingPlaceDao.CreatedById = (int)user.Id;
@@ -393,7 +393,7 @@ public class BookingController : BaseController
         var BookingPlaceViewModel = await _repository.GetBookingPlaceAsync(id);
         if (BookingPlaceViewModel == null)
         {
-            HandleError(new Exception(), "Booking place not found");
+            HandleError(new Exception("Booking place not found"));
         }
 
         try
@@ -415,7 +415,7 @@ public class BookingController : BaseController
         var BookingPlaceViewModel = await _repository.GetBookingAsync(id);
         if (BookingPlaceViewModel == null)
         {
-            return HandleError(new Exception(), "Booking not found");
+            return HandleError(new Exception("Booking not found"));
         }
 
         try
@@ -437,7 +437,7 @@ public class BookingController : BaseController
         var bookingPlaceList = await _repository.GetBookingPlacesWithBookingsByFloorIdAsync(floorId, null);
         if (bookingPlaceList == null)
         {
-            return HandleError(new Exception(), "Booking not found");
+            return HandleError(new Exception("Booking not found"));
         }
         var result = new List<BookingPlaceWithBookingsViewModel>();
 
