@@ -17,6 +17,7 @@ import { AuthGuardService } from './modules/shared/guards/auth.guard';
 import { AuthService } from './api-generated/services/auth.service';
 import { switchMap } from 'rxjs/operators';
 import { UsersStore } from './modules/shared/services/users.store';
+import { JwtService } from './modules/shared/utils/Jwt';
 
 @Component({
   selector: 'app-root',
@@ -44,7 +45,8 @@ export class AppComponent implements OnInit {
     private router: Router,
     private authGuardService: AuthGuardService,
     private authService: AuthService,
-    private usersStore: UsersStore
+    private usersStore: UsersStore,
+    private jwtService: JwtService
   ) {
     this.socialAuthService.authState
       .pipe(
@@ -57,10 +59,12 @@ export class AppComponent implements OnInit {
         })
       )
       .subscribe(response => {
-        console.log(response);
         if (response.data['token']) {
           localStorage.setItem('authToken', response.data['token']); // Store token
           this.authGuardService.token = response.data['token'];
+          this.usersStore.setUser(
+            this.jwtService.decodeToken(response.data['token'])
+          );
           this.authGuardService.signedIn.next(true);
           this.router.navigate(['/app/seating']);
         }

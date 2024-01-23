@@ -384,7 +384,7 @@
         }
       }
     },
-    "/api/Booking/Admin/CreateOrUpdate": {
+    "/api/Booking/CreateOrUpdateBookings": {
       "put": {
         "tags": [
           "Booking"

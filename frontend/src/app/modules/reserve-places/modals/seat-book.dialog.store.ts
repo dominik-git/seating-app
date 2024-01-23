@@ -1,10 +1,17 @@
 import { Injectable } from '@angular/core';
 import { ComponentStore, tapResponse } from '@ngrx/component-store';
 import { EMPTY, Observable } from 'rxjs';
-import { catchError, delay, switchMap, tap } from 'rxjs/operators';
+import {
+  catchError,
+  delay,
+  switchMap,
+  tap,
+  withLatestFrom,
+} from 'rxjs/operators';
 import { BookingService } from '../../../api-generated/services/booking.service';
 import { BookingViewModel } from '../../../api-generated/models/booking-view-model';
 import { BookingDay } from './seat-book-dialog';
+import { BookingStateEnum } from '../../../api-generated/models/booking-state-enum';
 
 export interface SeatBookingState {
   selectedWeek: Date[];
@@ -34,6 +41,7 @@ export class SeatBookingStore extends ComponentStore<SeatBookingState> {
   readonly selectSelectedPlaceId$ = this.select(state => state.selectedPlaceId);
 
   readonly selectDays$ = this.select(state => state.days);
+  readonly selectedBookedDays$ = this.select(state => state.bookedDays);
 
   readonly setWeekDays = this.updater((state, selectedWeek: Date[]) => ({
     ...state,
@@ -115,6 +123,44 @@ export class SeatBookingStore extends ComponentStore<SeatBookingState> {
   });
 
   // Effects
+
+  // Effect to handle the creation or update of bookings
+  readonly createOrUpdateBookings = this.effect<void>(
+    (request$: Observable<void>) =>
+      request$.pipe(
+        tap(() => this.setLoading(true)),
+        withLatestFrom(this.selectedBookedDays$, this.selectSelectedPlaceId$),
+        switchMap(([_, bookedDays, placeId]) => {
+          const bookings = this.mapBookingRequest(bookedDays, placeId);
+
+          return this.bookingService
+            .apiBookingCreateOrUpdateBookingsPut$Json({
+              body: {
+                bookings: bookings,
+              },
+            })
+            .pipe(
+              tapResponse(
+                () => {
+                  // Handle successful booking update
+                  this.setLoading(false);
+                  // Additional actions if required
+                },
+                error => {
+                  // Handle error
+                  console.error('Error updating bookings:', error);
+                  this.setLoading(false);
+                }
+              ),
+              catchError(() => {
+                this.setLoading(false);
+                return EMPTY;
+              })
+            );
+        })
+      )
+  );
+
   readonly changeWeek = this.effect<Date[]>((weekDays$: Observable<Date[]>) =>
     weekDays$.pipe(
       tap(selectedWeek => this.setWeekDays(selectedWeek)),
@@ -165,5 +211,19 @@ export class SeatBookingStore extends ComponentStore<SeatBookingState> {
         ),
       };
     });
+  }
+
+  private mapBookingRequest(
+    bookedDays: Date[],
+    selectedPlaceId: number
+  ): BookingViewModel[] {
+    const request = bookedDays.map(day => {
+      return {
+        bookingDate: day.toISOString(),
+        bookingPlaceId: selectedPlaceId,
+        state: BookingStateEnum.$1,
+      };
+    });
+    return request;
   }
 }

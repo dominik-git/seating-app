@@ -116,7 +116,6 @@ export class ReservePlacesContainerStore
 
   readonly setDefaultPlace$ = this.effect<void>(trigger$ =>
     trigger$.pipe(
-      // Trigger this effect, ignoring the emitted values of trigger$
       switchMap(() =>
         combineLatest([
           this.selectIsLoadingFloors,

@@ -9,10 +9,6 @@ import { BaseService } from '../base-service';
 import { ApiConfiguration } from '../api-configuration';
 import { StrictHttpResponse } from '../strict-http-response';
 
-import { apiBookingAdminCreateOrUpdatePut$Json } from '../fn/booking/api-booking-admin-create-or-update-put-json';
-import { ApiBookingAdminCreateOrUpdatePut$Json$Params } from '../fn/booking/api-booking-admin-create-or-update-put-json';
-import { apiBookingAdminCreateOrUpdatePut$Plain } from '../fn/booking/api-booking-admin-create-or-update-put-plain';
-import { ApiBookingAdminCreateOrUpdatePut$Plain$Params } from '../fn/booking/api-booking-admin-create-or-update-put-plain';
 import { apiBookingBookingPlaceIdDelete$Json } from '../fn/booking/api-booking-booking-place-id-delete-json';
 import { ApiBookingBookingPlaceIdDelete$Json$Params } from '../fn/booking/api-booking-booking-place-id-delete-json';
 import { apiBookingBookingPlaceIdDelete$Plain } from '../fn/booking/api-booking-booking-place-id-delete-plain';
@@ -27,6 +23,10 @@ import { apiBookingChangeTypePut$Plain } from '../fn/booking/api-booking-change-
 import { ApiBookingChangeTypePut$Plain$Params } from '../fn/booking/api-booking-change-type-put-plain';
 import { apiBookingChangeTypesPut } from '../fn/booking/api-booking-change-types-put';
 import { ApiBookingChangeTypesPut$Params } from '../fn/booking/api-booking-change-types-put';
+import { apiBookingCreateOrUpdateBookingsPut$Json } from '../fn/booking/api-booking-create-or-update-bookings-put-json';
+import { ApiBookingCreateOrUpdateBookingsPut$Json$Params } from '../fn/booking/api-booking-create-or-update-bookings-put-json';
+import { apiBookingCreateOrUpdateBookingsPut$Plain } from '../fn/booking/api-booking-create-or-update-bookings-put-plain';
+import { ApiBookingCreateOrUpdateBookingsPut$Plain$Params } from '../fn/booking/api-booking-create-or-update-bookings-put-plain';
 import { apiBookingCreateOrUpdatePut$Json } from '../fn/booking/api-booking-create-or-update-put-json';
 import { ApiBookingCreateOrUpdatePut$Json$Params } from '../fn/booking/api-booking-create-or-update-put-json';
 import { apiBookingCreateOrUpdatePut$Plain } from '../fn/booking/api-booking-create-or-update-put-plain';
@@ -457,49 +457,49 @@ export class BookingService extends BaseService {
     );
   }
 
-  /** Path part for operation `apiBookingAdminCreateOrUpdatePut()` */
-  static readonly ApiBookingAdminCreateOrUpdatePutPath = '/api/Booking/Admin/CreateOrUpdate';
+  /** Path part for operation `apiBookingCreateOrUpdateBookingsPut()` */
+  static readonly ApiBookingCreateOrUpdateBookingsPutPath = '/api/Booking/CreateOrUpdateBookings';
 
   /**
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `apiBookingAdminCreateOrUpdatePut$Plain()` instead.
+   * To access only the response body, use `apiBookingCreateOrUpdateBookingsPut$Plain()` instead.
    *
    * This method sends `application/*+json` and handles request body of type `application/*+json`.
    */
-  apiBookingAdminCreateOrUpdatePut$Plain$Response(params?: ApiBookingAdminCreateOrUpdatePut$Plain$Params, context?: HttpContext): Observable<StrictHttpResponse<BooleanBaseResponse>> {
-    return apiBookingAdminCreateOrUpdatePut$Plain(this.http, this.rootUrl, params, context);
+  apiBookingCreateOrUpdateBookingsPut$Plain$Response(params?: ApiBookingCreateOrUpdateBookingsPut$Plain$Params, context?: HttpContext): Observable<StrictHttpResponse<BooleanBaseResponse>> {
+    return apiBookingCreateOrUpdateBookingsPut$Plain(this.http, this.rootUrl, params, context);
   }
 
   /**
    * This method provides access only to the response body.
-   * To access the full response (for headers, for example), `apiBookingAdminCreateOrUpdatePut$Plain$Response()` instead.
+   * To access the full response (for headers, for example), `apiBookingCreateOrUpdateBookingsPut$Plain$Response()` instead.
    *
    * This method sends `application/*+json` and handles request body of type `application/*+json`.
    */
-  apiBookingAdminCreateOrUpdatePut$Plain(params?: ApiBookingAdminCreateOrUpdatePut$Plain$Params, context?: HttpContext): Observable<BooleanBaseResponse> {
-    return this.apiBookingAdminCreateOrUpdatePut$Plain$Response(params, context).pipe(
+  apiBookingCreateOrUpdateBookingsPut$Plain(params?: ApiBookingCreateOrUpdateBookingsPut$Plain$Params, context?: HttpContext): Observable<BooleanBaseResponse> {
+    return this.apiBookingCreateOrUpdateBookingsPut$Plain$Response(params, context).pipe(
       map((r: StrictHttpResponse<BooleanBaseResponse>): BooleanBaseResponse => r.body)
     );
   }
 
   /**
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `apiBookingAdminCreateOrUpdatePut$Json()` instead.
+   * To access only the response body, use `apiBookingCreateOrUpdateBookingsPut$Json()` instead.
    *
    * This method sends `application/*+json` and handles request body of type `application/*+json`.
    */
-  apiBookingAdminCreateOrUpdatePut$Json$Response(params?: ApiBookingAdminCreateOrUpdatePut$Json$Params, context?: HttpContext): Observable<StrictHttpResponse<BooleanBaseResponse>> {
-    return apiBookingAdminCreateOrUpdatePut$Json(this.http, this.rootUrl, params, context);
+  apiBookingCreateOrUpdateBookingsPut$Json$Response(params?: ApiBookingCreateOrUpdateBookingsPut$Json$Params, context?: HttpContext): Observable<StrictHttpResponse<BooleanBaseResponse>> {
+    return apiBookingCreateOrUpdateBookingsPut$Json(this.http, this.rootUrl, params, context);
   }
 
   /**
    * This method provides access only to the response body.
-   * To access the full response (for headers, for example), `apiBookingAdminCreateOrUpdatePut$Json$Response()` instead.
+   * To access the full response (for headers, for example), `apiBookingCreateOrUpdateBookingsPut$Json$Response()` instead.
    *
    * This method sends `application/*+json` and handles request body of type `application/*+json`.
    */
-  apiBookingAdminCreateOrUpdatePut$Json(params?: ApiBookingAdminCreateOrUpdatePut$Json$Params, context?: HttpContext): Observable<BooleanBaseResponse> {
-    return this.apiBookingAdminCreateOrUpdatePut$Json$Response(params, context).pipe(
+  apiBookingCreateOrUpdateBookingsPut$Json(params?: ApiBookingCreateOrUpdateBookingsPut$Json$Params, context?: HttpContext): Observable<BooleanBaseResponse> {
+    return this.apiBookingCreateOrUpdateBookingsPut$Json$Response(params, context).pipe(
       map((r: StrictHttpResponse<BooleanBaseResponse>): BooleanBaseResponse => r.body)
     );
   }

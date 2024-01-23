@@ -9,12 +9,12 @@ import { RequestBuilder } from '../../request-builder';
 import { BookingsViewModel } from '../../models/bookings-view-model';
 import { BooleanBaseResponse } from '../../models/boolean-base-response';
 
-export interface ApiBookingAdminCreateOrUpdatePut$Json$Params {
+export interface ApiBookingCreateOrUpdateBookingsPut$Json$Params {
       body?: BookingsViewModel
 }
 
-export function apiBookingAdminCreateOrUpdatePut$Json(http: HttpClient, rootUrl: string, params?: ApiBookingAdminCreateOrUpdatePut$Json$Params, context?: HttpContext): Observable<StrictHttpResponse<BooleanBaseResponse>> {
-  const rb = new RequestBuilder(rootUrl, apiBookingAdminCreateOrUpdatePut$Json.PATH, 'put');
+export function apiBookingCreateOrUpdateBookingsPut$Json(http: HttpClient, rootUrl: string, params?: ApiBookingCreateOrUpdateBookingsPut$Json$Params, context?: HttpContext): Observable<StrictHttpResponse<BooleanBaseResponse>> {
+  const rb = new RequestBuilder(rootUrl, apiBookingCreateOrUpdateBookingsPut$Json.PATH, 'put');
   if (params) {
     rb.body(params.body, 'application/*+json');
   }
@@ -29,4 +29,4 @@ export function apiBookingAdminCreateOrUpdatePut$Json(http: HttpClient, rootUrl:
   );
 }
 
-apiBookingAdminCreateOrUpdatePut$Json.PATH = '/api/Booking/Admin/CreateOrUpdate';
+apiBookingCreateOrUpdateBookingsPut$Json.PATH = '/api/Booking/CreateOrUpdateBookings';

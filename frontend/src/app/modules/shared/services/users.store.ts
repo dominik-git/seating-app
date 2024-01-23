@@ -7,15 +7,17 @@ import { catchError, switchMap, tap } from 'rxjs/operators';
 import { UserViewModel } from '../../../api-generated/models/user-view-model';
 import { UserService } from '../../../api-generated/services/user.service';
 
-export interface PlacesStoreState {
+export interface UsersStoreState {
+  currentUser: any;
   users: UserViewModel[];
   isLoading: boolean;
 }
 
 @Injectable()
-export class UsersStore extends ComponentStore<PlacesStoreState> {
+export class UsersStore extends ComponentStore<UsersStoreState> {
   constructor(private readonly userService: UserService) {
     super({
+      currentUser: null,
       users: [],
       isLoading: false,
     });
@@ -55,6 +57,13 @@ export class UsersStore extends ComponentStore<PlacesStoreState> {
       ...state,
       users,
       isLoading: false,
+    };
+  });
+
+  readonly setUser = this.updater((state, user: any) => {
+    return {
+      ...state,
+      user,
     };
   });
 

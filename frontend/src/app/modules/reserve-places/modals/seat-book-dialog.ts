@@ -74,7 +74,8 @@ export class SeatBookDialog {
   }
 
   closeDialog() {
-    this.dialogRef.close();
+    this.seatBookingStore.createOrUpdateBookings();
+    // this.dialogRef.close();
   }
 
   onSelectDateRangeOutput(daysInWeek: Date[]) {
