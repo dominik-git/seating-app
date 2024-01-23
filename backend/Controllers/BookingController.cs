@@ -460,6 +460,8 @@ public class BookingController : BaseController
             {
                 bookingPlace.ReservedForUserVm = await GetUserViewModel(bookingPlace.ReservedForUserId.Value);
             }
+
+            result.Add(bookingPlace);
         }
 
         return ReturnResponse(new BaseResponse<List<BookingPlaceWithBookingsViewModel>>(result));
