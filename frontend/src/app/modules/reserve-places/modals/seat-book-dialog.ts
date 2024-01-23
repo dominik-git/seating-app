@@ -89,4 +89,9 @@ export class SeatBookDialog {
   onDayUnSelect(date: Date) {
     this.seatBookingStore.toggleDaySelection(date);
   }
+
+  trackByDay(index: number, day: BookingDay): any {
+    // Create a unique identifier based on the date and isSelected state
+    return `${day.date.getTime()}_${day.isSelected}`;
+  }
 }
