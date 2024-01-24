@@ -6,7 +6,6 @@ using BookingApp.Enums;
 using BookingApp.Identity;
 using BookingApp.Models;
 using BookingApp.ViewModels;
-using GoogleApi.Entities.Search.Video.Common;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -35,6 +34,21 @@ public class BookingController : BaseController
         var bookingPlaceDaos = await _repository.GetBookingPlacesAsync();
         var result = await GetBookingPlaceViewModels(bookingPlaceDaos);
         return ReturnResponse(new BaseResponse<IEnumerable<BookingPlaceViewModel>>(result));
+    }
+
+    [HttpGet("GetAllByUserId")]
+    [ProducesResponseType(typeof(BaseResponse<IEnumerable<BookingViewModel>>), 200)]
+    public async Task<IActionResult> GetAllByUserId()
+    {
+        var userEmail = this.User.FindFirstValue(ClaimTypes.Email) ?? "";
+        var user = await _userManager.FindByEmailAsync(userEmail);
+        if (user == null)
+        {
+            return HandleError(new Exception("User not found"));
+        }
+        var bookingPlaceDaos = await _repository.GetAllByUserId(Convert.ToInt16(user.Id));
+        var result = await GetBookingViewModels(bookingPlaceDaos);
+        return ReturnResponse(new BaseResponse<IEnumerable<BookingViewModel>>(result, result.Count));
     }
 
     [HttpGet("GetAllByFloorAndDate")]
@@ -163,7 +177,7 @@ public class BookingController : BaseController
         }
     }
 
-    
+
     [HttpPut("CreateOrUpdateBookings")]
     [ProducesResponseType(typeof(BaseResponse<bool>), 200)]
     public async Task<IActionResult> CreateOrUpdateBookings(BookingsViewModel request)
@@ -477,7 +491,7 @@ public class BookingController : BaseController
             return HandleError(new Exception("Booking place not found"));
         }
         var bookingDaos = await _repository.GetBookingByBookingPlaceIdWithDateRangeAsync(request.BookingPlaceId, request.DateFrom, request.DateTo);
-        
+
         var result = new BookingPlaceWithBookingsViewModel
         {
             Id = bookingPlace.Id,

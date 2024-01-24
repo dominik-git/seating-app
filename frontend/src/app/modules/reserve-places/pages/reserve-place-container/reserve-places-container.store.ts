@@ -230,7 +230,7 @@ export class ReservePlacesContainerStore
     return this.bookingService
       .apiBookingGetAllByFloorAndDateGet$Json({
         floorId,
-        bookingDate: bookingDate.toUTCString(),
+        bookingDate: bookingDate.toISOString(),
       })
       .pipe(
         tapResponse(

@@ -238,8 +238,23 @@ namespace BookingApp.Repositories
             var query = await _context.BookingPlaces
                 .Include(x => x.Floor)
                 .Include(item => item.Bookings                
-                    .Where(y => !bookingDate.HasValue || y.BookingDate.Date == bookingDate.Value.Date))
+                    .Where(y => !bookingDate.HasValue || y.BookingDate.Date >= bookingDate.Value.Date || y.BookingDate.Date <= bookingDate.Value.Date))
                 .Where(item => item.FloorId == floorId)
+                .ToListAsync();
+
+            return query;
+        }
+
+        public Task<List<BookingDao>> GetAllByUserId(int userId)
+        {
+            if (userId == default)
+            {
+                throw new Exception("UserId is required");
+            }
+            var query = _context.Bookings
+                .Include(x => x.BookingPlace)
+                .ThenInclude(x => x.Floor)
+                .Where(y => y.BookedById == userId && y.BookingDate.Month == DateTime.UtcNow.Month)
                 .ToListAsync();
 
             return query;
