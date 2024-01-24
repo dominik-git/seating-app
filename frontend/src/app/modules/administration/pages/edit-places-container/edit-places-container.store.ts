@@ -129,8 +129,9 @@ export class EditPlacesContainerStore
           .subscribe((response: BookingTypeRequest | null) => {
             if (response) {
               this.changePlaceType(response).subscribe();
+            } else {
+              this.setLoading(false);
             }
-            // this.setLoading(false);
           });
       })
     )

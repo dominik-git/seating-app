@@ -1,0 +1,8 @@
+<div [style.top.px]="top" [style.left.px]="left" [style.display]="display">
+  <ng-container *ngFor="let booking of place.bookings ">
+    <div>
+      <div>{{booking.bookingDate}}</div>
+      <div>{{booking.bookedByUserVm.fullName}}</div>
+    </div>
+  </ng-container>
+</div>

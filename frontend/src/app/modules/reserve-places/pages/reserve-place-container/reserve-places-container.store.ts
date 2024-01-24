@@ -159,8 +159,8 @@ export class ReservePlacesContainerStore
 
   readonly handlePlaceSelection = this.effect<number>(placeId$ =>
     placeId$.pipe(
-      withLatestFrom(this.select(state => state.selectedDate)),
-      tap(([placeId, selectedDate]) => {
+      withLatestFrom(this.selectSelectedDate$, this.selectSelectedPlaceFilter$),
+      tap(([placeId, selectedDate, selectedFloor]) => {
         this.setLoading(true); // Set loading to true immediately
         const dialogRef = this.dialog.open(SeatBookDialog, {
           data: {
@@ -169,10 +169,22 @@ export class ReservePlacesContainerStore
           },
         });
 
-        dialogRef.afterClosed().subscribe(response => {
-          // Logic to handle the response
-          this.setLoading(false); // Set loading to false after dialog closes
-        });
+        dialogRef
+          .afterClosed()
+          .pipe(
+            filter(response => !!response), // Proceed only if there's a response
+            switchMap(() => {
+              // Fetch updated places based on the selected floor and date
+              return this.fetchPlaces(selectedFloor.id, selectedDate);
+            }),
+            tap(() => this.setLoading(false)), // Set loading to false after updating
+            catchError(error => {
+              console.error('Error fetching places:', error);
+              this.setLoading(false);
+              return EMPTY;
+            })
+          )
+          .subscribe();
       })
     )
   );

@@ -13,7 +13,7 @@
     <div class="floor-content">
 
       <app-edit-place [svgData]="svgData" [allPlaces]="allPlaces$ | async"
-                      (placeSelected)="onPlaceSelected($event)"/>
+                      (placeSelected)="onPlaceSelected($event)" [isAdminView]="true"/>
     </div>
 
   </ng-container>

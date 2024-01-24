@@ -10,8 +10,9 @@ import {
 } from 'rxjs/operators';
 import { BookingService } from '../../../api-generated/services/booking.service';
 import { BookingViewModel } from '../../../api-generated/models/booking-view-model';
-import { BookingDay } from './seat-book-dialog';
+import { BookingDay, SeatBookDialog } from './seat-book-dialog';
 import { BookingStateEnum } from '../../../api-generated/models/booking-state-enum';
+import { MatDialogRef } from '@angular/material/dialog';
 
 export interface SeatBookingState {
   selectedWeek: Date[];
@@ -25,7 +26,10 @@ export interface SeatBookingState {
 
 @Injectable()
 export class SeatBookingStore extends ComponentStore<SeatBookingState> {
-  constructor(private bookingService: BookingService) {
+  constructor(
+    private bookingService: BookingService,
+    private dialogRef: MatDialogRef<SeatBookDialog>
+  ) {
     super({
       selectedWeek: [],
       bookings: [],
@@ -144,6 +148,7 @@ export class SeatBookingStore extends ComponentStore<SeatBookingState> {
                 () => {
                   // Handle successful booking update
                   this.setLoading(false);
+                  this.dialogRef.close(true);
                   // Additional actions if required
                 },
                 error => {
@@ -177,7 +182,9 @@ export class SeatBookingStore extends ComponentStore<SeatBookingState> {
           .pipe(
             delay(300),
             tapResponse(
-              response => this.setBookingsAndUpdateDays(response.data.bookings),
+              response => {
+                this.setBookingsAndUpdateDays(response.data.bookings);
+              },
               error => {
                 console.error('Error fetching bookings:', error);
                 this.setLoading(false);

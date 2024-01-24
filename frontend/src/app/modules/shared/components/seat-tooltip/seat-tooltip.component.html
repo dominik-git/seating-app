@@ -4,17 +4,20 @@
 <!--</div>-->
 
 <div id="mypopup" [style.top.px]="top" [style.left.px]="left" [style.display]="display">
-  <div>
-    {{person?.firstName}}
-  </div>
-  <div class="d-flex">
-    <img
-      class="avatar mat-elevation-z8"
-      src="{{person?.profilePicture}}"
-    />
-    <div>
-      <div>{{person?.fullName}}</div>
-
+  <!-- Section for displaying person information -->
+  <ng-container *ngIf="person; else showBookings">
+    <div class="tooltip-section">
+      <div>{{ person.fullName }}</div>
+      <!-- Include other person information you want to display -->
     </div>
-  </div>
+  </ng-container>
+
+  <!-- Section for displaying booking information -->
+  <ng-template #showBookings>
+    <div *ngFor="let booking of bookings" class="tooltip-section">
+      <div>Booking Date: {{ booking.bookingDate | date }}</div>
+      <div>Reserved by: {{ booking.bookedByUserVm?.fullName }}</div>
+      <!-- Include other booking information you want to display -->
+    </div>
+  </ng-template>
 </div>

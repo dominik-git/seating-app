@@ -13,11 +13,17 @@ import { FloorFiveSvgComponent } from '../../../shared/components/floor-five-svg
 import { BookingPlaceWithBookingsViewModel } from '../../../../api-generated/models/booking-place-with-bookings-view-model';
 import { BookingPlaceTypeEnum } from '../../../../api-generated/models/booking-place-type-enum';
 import { AssignPlace } from '../../models/assign-place';
+import { BookingTooltipComponent } from '../booking-tooltip/booking-tooltip.component';
 
 @Component({
   selector: 'app-edit-place',
   standalone: true,
-  imports: [GenericSvgComponent, SeatTooltipComponent, FloorFiveSvgComponent],
+  imports: [
+    GenericSvgComponent,
+    SeatTooltipComponent,
+    FloorFiveSvgComponent,
+    BookingTooltipComponent,
+  ],
   templateUrl: './edit-place.component.html',
   styleUrl: './edit-place.component.scss',
 })
@@ -128,15 +134,26 @@ export class EditPlaceComponent implements AfterViewInit {
     element: HTMLElement,
     place: BookingPlaceWithBookingsViewModel
   ): void {
-    if (place.type === BookingPlaceTypeEnum.$1) {
-      return;
-    }
     const { top, right } = element.getBoundingClientRect();
-    this.seatTooltip.showTooltip(
-      right + window.scrollX,
-      top + window.scrollY - 50,
-      place.reservedForUserVm
-    );
+    if (place.type === BookingPlaceTypeEnum.$0) {
+      // Show user tooltip for fixed places
+      this.seatTooltip.showTooltip(
+        right + window.scrollX,
+        top + window.scrollY - 50,
+        place.reservedForUserVm
+      );
+    } else if (
+      place.type === BookingPlaceTypeEnum.$1 &&
+      place.bookings?.length > 0 &&
+      !this.isAdminView
+    ) {
+      // Show booking tooltip for hybrid places with bookings
+      this.seatTooltip.showBookingTooltip(
+        right + window.scrollX,
+        top + window.scrollY - 50,
+        place.bookings
+      );
+    }
   }
 
   private onPlaceMouseleave(): void {
