@@ -2,7 +2,7 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { DateDayPipe } from '../../../shared/pipes/date-day.pipe';
 import { FormsModule } from '@angular/forms';
 import { MatCheckboxModule } from '@angular/material/checkbox';
-import { NgIf } from '@angular/common';
+import { JsonPipe, NgForOf, NgIf } from '@angular/common';
 import { BookingDay } from '../../modals/seat-book-dialog';
 
 @Component({
@@ -10,7 +10,14 @@ import { BookingDay } from '../../modals/seat-book-dialog';
   templateUrl: './space-book-time-slot.component.html',
   styleUrls: ['./space-book-time-slot.component.scss'],
   standalone: true,
-  imports: [NgIf, MatCheckboxModule, FormsModule, DateDayPipe],
+  imports: [
+    NgIf,
+    MatCheckboxModule,
+    FormsModule,
+    DateDayPipe,
+    NgForOf,
+    JsonPipe,
+  ],
 })
 export class SpaceBookTimeSlotComponent implements OnInit {
   @Input() day: BookingDay;

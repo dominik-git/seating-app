@@ -198,17 +198,18 @@ export class SeatBookingStore extends ComponentStore<SeatBookingState> {
     bookedDays: Date[]
   ): BookingDay[] {
     return selectedWeek.map(date => {
-      const bookingForDay = bookings.filter(
-        booking =>
+      const bookingForDay = bookings.filter(booking => {
+        return (
           new Date(booking.bookingDate).toDateString() === date.toDateString()
-      );
+        );
+      });
       return {
         date: date,
         bookings: bookingForDay,
         bookedByCurrentUser: false, // Logic to determine this
-        isSelected: bookedDays.some(
-          bookedDate => bookedDate.toDateString() === date.toDateString()
-        ),
+        isSelected: bookedDays.some(bookedDate => {
+          return bookedDate.toDateString() === date.toDateString();
+        }),
       };
     });
   }

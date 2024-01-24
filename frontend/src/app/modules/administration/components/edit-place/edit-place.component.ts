@@ -30,6 +30,7 @@ export class EditPlaceComponent implements AfterViewInit {
 
   @Input() svgData: SvgFileModel;
   @Input() allPlaces: BookingPlaceWithBookingsViewModel[];
+  @Input() isAdminView = false;
 
   @Output() placeSelected = new EventEmitter<AssignPlace>();
 
@@ -77,12 +78,21 @@ export class EditPlaceComponent implements AfterViewInit {
     place: BookingPlaceWithBookingsViewModel | undefined
   ): void {
     if (place) {
-      element.classList.toggle(
-        this.fixedClass,
-        place.type === BookingPlaceTypeEnum.$0
-      );
-      element.style.fill =
-        place.type === BookingPlaceTypeEnum.$0 ? '#D7063B' : '#7ed321';
+      const isFixed = place.type === BookingPlaceTypeEnum.$0;
+      const isHybridWithBookings =
+        place.type === BookingPlaceTypeEnum.$1 &&
+        place.bookings &&
+        place.bookings.length > 0;
+
+      element.classList.toggle(this.fixedClass, isFixed);
+      if (isFixed) {
+        element.style.fill = '#D7063B'; // Red for fixed places
+      } else if (isHybridWithBookings) {
+        element.style.fill = '#808080'; // Grey for hybrid places with bookings
+      } else {
+        element.style.fill = '#7ed321'; // Green otherwise
+      }
+
       element.setAttribute('data-place', JSON.stringify(place));
     }
   }

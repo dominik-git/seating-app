@@ -73,6 +73,10 @@ export class SeatBookDialog {
     });
   }
 
+  cancelDialog() {
+    this.dialogRef.close();
+  }
+
   closeDialog() {
     this.seatBookingStore.createOrUpdateBookings();
     // this.dialogRef.close();

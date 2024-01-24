@@ -4,6 +4,7 @@
       [selectedDateInput]="data.selectedDate"
       (selectedDateRangeOutput)="onSelectDateRangeOutput($event)"
     ></app-week-picker>
+    {{ this.data.placeId}}
     <ng-container *ngIf="(loading$ | async )=== false; else showSkeleton">
       <ng-container *ngIf="(days$ | async) as days">
         <app-space-book-time-slot
@@ -16,7 +17,7 @@
         ></app-space-book-time-slot>
       </ng-container>
       <mat-dialog-actions align="end">
-        <button mat-button mat-dialog-close>Cancel</button>
+        <button mat-button (click)="cancelDialog()">Cancel</button>
         <button mat-button (click)="closeDialog()" cdkFocusInitial>
           Reserve
         </button>

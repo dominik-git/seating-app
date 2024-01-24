@@ -1,10 +1,9 @@
 <div class="card">
-    <div class="left">
-        <span class="available" [class.reserved-slot]="isPlaceReserved()"></span>
-        <div class="slot-details">
-            <div class="date">{{ day.date | dateDay: true }}</div>
-            <!--      <div *ngIf="day?.name">Booked by {{ day.name }}</div>-->
-        </div>
+  <div class="left">
+    <span class="available" [class.reserved-slot]="isPlaceReserved()"></span>
+    <div class="slot-details">
+      <div class="date">{{ day.date | dateDay: true }}</div>
+      <!--      <div *ngIf="day?.name">Booked by {{ day.name }}</div>-->
     </div>
     <div class="right">
         <div>
@@ -16,4 +15,15 @@
             ></mat-checkbox>
         </div>
     </div>
+  </div>
+  <div class="right">
+    <div>
+      <mat-checkbox
+        class="example-margin"
+        (change)="onDateSelect($event)"
+        [disabled]="isPlaceReserved()"
+        [(ngModel)]="day.isSelected"
+      ></mat-checkbox>
+    </div>
+  </div>
 </div>
