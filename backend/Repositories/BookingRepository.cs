@@ -238,7 +238,7 @@ namespace BookingApp.Repositories
             var query = await _context.BookingPlaces
                 .Include(x => x.Floor)
                 .Include(item => item.Bookings                
-                    .Where(y => !bookingDate.HasValue || y.BookingDate.Date >= bookingDate.Value.Date || y.BookingDate.Date <= bookingDate.Value.Date))
+                    .Where(y => !bookingDate.HasValue || y.BookingDate.Date == bookingDate.Value.Date))
                 .Where(item => item.FloorId == floorId)
                 .ToListAsync();
 
