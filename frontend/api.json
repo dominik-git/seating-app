@@ -82,6 +82,35 @@
         }
       }
     },
+    "/api/Booking/GetAllByUserId": {
+      "get": {
+        "tags": [
+          "Booking"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/BookingViewModelIEnumerableBaseResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BookingViewModelIEnumerableBaseResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BookingViewModelIEnumerableBaseResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/Booking/GetAllByFloorAndDate": {
       "get": {
         "tags": [
@@ -1297,6 +1326,37 @@
           },
           "data": {
             "$ref": "#/components/schemas/BookingViewModel"
+          },
+          "responseMessage": {
+            "type": "string",
+            "nullable": true
+          },
+          "totalCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "errors": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "BookingViewModelIEnumerableBaseResponse": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "$ref": "#/components/schemas/RequestExecution"
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/BookingViewModel"
+            },
+            "nullable": true
           },
           "responseMessage": {
             "type": "string",

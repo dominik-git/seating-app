@@ -13,6 +13,7 @@ export { BookingsViewModel } from './models/bookings-view-model';
 export { BookingTypeRequest } from './models/booking-type-request';
 export { BookingViewModel } from './models/booking-view-model';
 export { BookingViewModelBaseResponse } from './models/booking-view-model-base-response';
+export { BookingViewModelIEnumerableBaseResponse } from './models/booking-view-model-i-enumerable-base-response';
 export { BooleanBaseResponse } from './models/boolean-base-response';
 export { CreateFloorWithBookingPlacesRequest } from './models/create-floor-with-booking-places-request';
 export { FloorSimpleViewModel } from './models/floor-simple-view-model';

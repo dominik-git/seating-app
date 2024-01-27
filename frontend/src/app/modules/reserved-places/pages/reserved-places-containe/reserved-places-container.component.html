@@ -1,0 +1,17 @@
+<ng-container *ngIf="!(isLoading$ | async)">
+  <mat-list *ngIf="(bookings$ | async) as bookings">
+    <mat-list-item *ngFor="let booking of bookings">
+      <mat-icon matListIcon>event_seat</mat-icon>
+      <h3 matLine>{{ booking.bookingPlaceId }}</h3>
+      <p matLine>{{ booking.bookingDate | date }}</p>
+      <!-- Replace with actual booking details -->
+
+      <button mat-icon-button (click)="updateBooking(booking)">
+        <mat-icon>edit</mat-icon>
+      </button>
+      <button mat-icon-button (click)="deleteBooking(booking)">
+        <mat-icon>delete</mat-icon>
+      </button>
+    </mat-list-item>
+  </mat-list>
+</ng-container>

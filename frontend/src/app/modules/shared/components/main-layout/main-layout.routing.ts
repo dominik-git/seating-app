@@ -17,8 +17,8 @@ export const APP_ROUTES: Routes = [
         path: 'my-reserved-places',
         loadComponent: () =>
           import(
-            '../../../reserved-places/components/reserved-places/reserved-places.component'
-          ).then(m => m.ReservedPlacesComponent),
+            '../../../reserved-places/pages/reserved-places-containe/reserved-places-container.component'
+          ).then(m => m.ReservedPlacesContainerComponent),
       },
       {
         path: 'edit-places',

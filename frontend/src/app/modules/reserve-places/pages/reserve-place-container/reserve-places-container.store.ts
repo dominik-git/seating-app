@@ -26,6 +26,7 @@ import { SeatBookDialog } from '../../modals/seat-book-dialog';
 import { BookingPlaceWithBookingsViewModel } from '../../../../api-generated/models/booking-place-with-bookings-view-model';
 import { BookingService } from '../../../../api-generated/services/booking.service';
 import { FloorViewModelBaseResponse } from '../../../../api-generated/models/floor-view-model-base-response';
+import { startOfDay } from 'date-fns';
 
 export interface ReservePlacesState {
   allPlaces: BookingPlaceWithBookingsViewModel[];
@@ -58,7 +59,7 @@ export class ReservePlacesContainerStore
       selectedSeatDays: [],
       selectedPlaceFilter: null,
       isLoading: false,
-      selectedDate: new Date(),
+      selectedDate: startOfDay(new Date()),
     });
   }
 
