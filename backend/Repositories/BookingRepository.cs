@@ -259,5 +259,18 @@ namespace BookingApp.Repositories
 
             return query;
         }
+
+        public Task<List<BookingPlaceDao>> GetAllFixedByUserId(int userId)
+        {
+            if (userId == default)
+            {
+                throw new Exception("UserId is required");
+            }
+            var query = _context.BookingPlaces                
+                .Where(y => y.ReservedForId == userId)
+                .ToListAsync();
+
+            return query;
+        }
     }
 }

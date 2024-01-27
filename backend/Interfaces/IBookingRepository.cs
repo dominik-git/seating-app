@@ -24,4 +24,5 @@ public interface IBookingRepository
     Task<List<BookingDao>> GetBookingByBookingPlaceIdWithDateAsync(int bookingPlaceId);
     Task<List<BookingDao>> GetBookingByBookingPlaceIdWithDateRangeAsync(int bookingPlaceId, DateTime from, DateTime to);
     Task<List<BookingDao>> GetAllByUserId(int userId, int month);
+    Task<List<BookingPlaceDao>> GetAllFixedByUserId(int userId);
 }

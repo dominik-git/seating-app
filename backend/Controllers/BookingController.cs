@@ -55,14 +55,16 @@ public class BookingController : BaseController
             return HandleError(new Exception("User not found"));
         }
         var bookingDaos = await _repository.GetAllByUserId(Convert.ToInt16(user.Id), month);
+        var fixedPlaces = await _repository.GetAllFixedByUserId(Convert.ToInt16(user.Id));
         var result = new UserBookingsViewModel
         {
-            UserBookings = new List<UserBookingViewModel>(),
-            BookedByUserVm = _mapper.Map<UserViewModel>(user)
+            UserBookingsVm = new List<UserBookingViewModel>(),
+            BookedByUserVm = _mapper.Map<UserViewModel>(user),
+            UserFixedPlacesVm = await GetBookingPlaceViewModels(fixedPlaces)
         };
         foreach (var item in bookingDaos)
         {
-            result.UserBookings.Add(new UserBookingViewModel
+            result.UserBookingsVm.Add(new UserBookingViewModel
             {
                 BookingId = item.Id,
                 BookingDate = item.BookingDate,
@@ -72,7 +74,7 @@ public class BookingController : BaseController
                 BookingPlaceVm = await GetBookingPlaceViewModel(item.BookingPlace),
             });
         }
-        return ReturnResponse(new BaseResponse<UserBookingsViewModel>(result, result.UserBookings.Count));
+        return ReturnResponse(new BaseResponse<UserBookingsViewModel>(result, result.UserBookingsVm.Count));
     }
 
     [HttpGet("GetAllByFloorAndDate")]
@@ -216,6 +218,28 @@ public class BookingController : BaseController
         }
         foreach (var bookingVm in request.Bookings)
         {
+            if (bookingVm.BookingDate < DateTime.UtcNow)
+            {
+                return HandleError(new Exception("Invalid booking date"));
+            }
+
+            var bookingPlace = await _repository.GetBookingPlaceAsync(bookingVm.BookingPlaceId);
+            if (bookingPlace.Type == BookingPlaceTypeEnum.Fixed)
+            {
+                if (!bookingPlace.AvailableForBooking &&
+                bookingPlace.ReservedForId.HasValue &&
+                bookingPlace.ReservedForId != user.Id)
+                {
+                    return HandleError(new Exception("Booking place reserved"));
+                }
+
+                if (bookingPlace.AvailableForBooking &&
+                    bookingVm.BookingDate < bookingPlace.AvailableFrom ||
+                    bookingVm.BookingDate > bookingPlace.AvailableTo)
+                {
+                    return HandleError(new Exception("This booking place is reserved for day you choosed."));
+                }
+            }
             var existingBooking = await _repository.GetBookingByIdAndBookingDateAsync(bookingVm.BookingId, bookingVm.BookingDate);
             var bookingRequest = new BookingModel
             {
