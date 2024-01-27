@@ -3,6 +3,7 @@
     public enum BookingPlaceTypeEnum
     {
         Fixed,
-        Hybrid
+        Hybrid,
+        Blocked
     }
 }

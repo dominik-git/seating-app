@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace BookingApp.Models
-{    
+namespace BookingApp.ViewModels
+{
     public class UserViewModel
     {
         public long Id { get; set; }

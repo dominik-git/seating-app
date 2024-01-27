@@ -37,18 +37,37 @@ public class BookingController : BaseController
     }
 
     [HttpGet("GetAllByUserId")]
-    [ProducesResponseType(typeof(BaseResponse<IEnumerable<BookingViewModel>>), 200)]
-    public async Task<IActionResult> GetAllByUserId()
+    [ProducesResponseType(typeof(BaseResponse<UserBookingsViewModel>), 200)]
+    public async Task<IActionResult> GetAllByUserId([FromQuery] int month)
     {
+        if (month == default || month > 12)
+        {
+            return HandleError(new Exception("Wrong month"));
+        }
         var userEmail = this.User.FindFirstValue(ClaimTypes.Email) ?? "";
         var user = await _userManager.FindByEmailAsync(userEmail);
         if (user == null)
         {
             return HandleError(new Exception("User not found"));
         }
-        var bookingPlaceDaos = await _repository.GetAllByUserId(Convert.ToInt16(user.Id));
-        var result = await GetBookingViewModels(bookingPlaceDaos);
-        return ReturnResponse(new BaseResponse<IEnumerable<BookingViewModel>>(result, result.Count));
+        var bookingDaos = await _repository.GetAllByUserId(Convert.ToInt16(user.Id), month);
+        var result = new UserBookingsViewModel
+        {
+            BookedByUserVm = _mapper.Map<UserViewModel>(user)
+        };
+        foreach (var item in bookingDaos)
+        {
+            result.UserBookings.Add(new UserBookingViewModel
+            {
+                BookingId = item.Id,
+                BookingDate = item.BookingDate,
+                BookingPlaceId = item.BookingPlaceId,
+                State = item.State,
+                BookedById = item.BookedById,
+                BookingPlaceVm = await GetBookingPlaceViewModel(item.BookingPlace),
+            });
+        }
+        return ReturnResponse(new BaseResponse<UserBookingsViewModel>(result, result.UserBookings.Count));
     }
 
     [HttpGet("GetAllByFloorAndDate")]
@@ -354,6 +373,49 @@ public class BookingController : BaseController
         try
         {
             await _repository.UpdateTypeAsync(request.Id, request.Type, request.ReservedForId);
+        }
+        catch (Exception ex)
+        {
+            HandleError(ex);
+        }
+
+        return ReturnResponse(new BaseResponse<bool>(true));
+    }
+    
+    [HttpPut("ReleaseFixedPlace")]
+    [ProducesResponseType(typeof(BaseResponse<bool>), 200)]
+    public async Task<IActionResult> ReleaseFixedPlace(BookingReleasePlaceRequest request)
+    {
+        var bookingPlace = await _repository.GetBookingPlaceAsync(request.BookingPlaceId);
+        if (bookingPlace == default)
+        {
+            HandleError(new Exception("Booking place not found"));
+        }
+
+        if (bookingPlace.Type != BookingPlaceTypeEnum.Fixed)
+        {
+            HandleError(new Exception("Booking place type is not fixed"));
+        }
+        var userEmail = this.User.FindFirstValue(ClaimTypes.Email) ?? "";
+        var admin = this.User.FindFirstValue("admin") ?? "false";
+        bool isAdmin = bool.Parse(admin);
+        var user = await _userManager.FindByEmailAsync(userEmail);
+        if (user == null)
+        {
+            return HandleError(new Exception("User not found"));
+        }
+
+        if (user.Id != bookingPlace.ReservedForId || !isAdmin)
+        {
+            return HandleError(new Exception("You are not allowed to release this place!"));
+        }
+        
+        try
+        {
+            bookingPlace.AvailableForBooking = true;
+            bookingPlace.AvailableFrom = request.AvailableFrom;
+            bookingPlace.AvailableTo = request.AvailableTo;
+            await _repository.UpdateBookingPlaceAsync(bookingPlace);
         }
         catch (Exception ex)
         {

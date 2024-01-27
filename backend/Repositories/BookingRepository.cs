@@ -245,7 +245,7 @@ namespace BookingApp.Repositories
             return query;
         }
 
-        public Task<List<BookingDao>> GetAllByUserId(int userId)
+        public Task<List<BookingDao>> GetAllByUserId(int userId, int month)
         {
             if (userId == default)
             {
@@ -254,7 +254,7 @@ namespace BookingApp.Repositories
             var query = _context.Bookings
                 .Include(x => x.BookingPlace)
                 .ThenInclude(x => x.Floor)
-                .Where(y => y.BookedById == userId && y.BookingDate.Month == DateTime.UtcNow.Month)
+                .Where(y => y.BookedById == userId && y.BookingDate.Month == month)
                 .ToListAsync();
 
             return query;

@@ -2,13 +2,13 @@
 
 namespace BookingApp.ViewModels
 {
-    public class BookingViewModel
+    public class UserBookingViewModel
     {
         public int BookingId { get; set; }
         public int BookingPlaceId { get; set; }
         public BookingStateEnum State { get; set; }
-        public DateTime BookingDate { get; set; }  
+        public DateTime BookingDate { get; set; }
         public int? BookedById { get; set; }
-        public UserViewModel? BookedByUserVm { get; set; }
+        public BookingPlaceViewModel? BookingPlaceVm { get; set; }
     }
 }

@@ -14,7 +14,7 @@ using System.Text;
 
 namespace BookingApp.Controllers
 {
-    
+
     [ApiController]
     [Route("api/[controller]/[action]")]
 
