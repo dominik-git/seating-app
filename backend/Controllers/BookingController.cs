@@ -6,6 +6,7 @@ using BookingApp.Enums;
 using BookingApp.Identity;
 using BookingApp.Models;
 using BookingApp.ViewModels;
+using GoogleApi.Entities.Search.Common;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -32,7 +33,7 @@ public class BookingController : BaseController
     public async Task<IActionResult> GetAllBookingPlaces()
     {
         var bookingPlaceDaos = await _repository.GetBookingPlacesAsync();
-        var result = await GetBookingPlaceViewModels(bookingPlaceDaos);
+        var result = await GetBookingPlaceViewModels(bookingPlaceDaos, null);
         return ReturnResponse(new BaseResponse<IEnumerable<BookingPlaceViewModel>>(result));
     }
 
@@ -58,23 +59,41 @@ public class BookingController : BaseController
         var fixedPlaces = await _repository.GetAllFixedByUserId(Convert.ToInt16(user.Id));
         var result = new UserBookingsViewModel
         {
-            UserBookingsVm = new List<UserBookingViewModel>(),
+            BookingsVm = new List<UserBookingViewModel>(),
+            ParkingsVm = new List<UserBookingViewModel>(),
+            FixedPlacesVm = await GetBookingPlaceViewModels(fixedPlaces, BookingPlaceItemTypeEnum.SeatingSlot),
+            FixedParkingsVm = await GetBookingPlaceViewModels(fixedPlaces, BookingPlaceItemTypeEnum.ParkingSlot),
             BookedByUserVm = _mapper.Map<UserViewModel>(user),
-            UserFixedPlacesVm = await GetBookingPlaceViewModels(fixedPlaces)
         };
         foreach (var item in bookingDaos)
         {
-            result.UserBookingsVm.Add(new UserBookingViewModel
+            if (item.BookingPlace.ItemType == BookingPlaceItemTypeEnum.SeatingSlot)
             {
-                BookingId = item.Id,
-                BookingDate = item.BookingDate,
-                BookingPlaceId = item.BookingPlaceId,
-                State = item.State,
-                BookedById = item.BookedById,
-                BookingPlaceVm = await GetBookingPlaceViewModel(item.BookingPlace),
-            });
+                result.BookingsVm.Add(new UserBookingViewModel
+                {
+                    BookingId = item.Id,
+                    BookingDate = item.BookingDate,
+                    BookingPlaceId = item.BookingPlaceId,
+                    State = item.State,
+                    BookedById = item.BookedById,
+                    BookingPlaceVm = await GetBookingPlaceViewModel(item.BookingPlace),
+                });
+            }
+
+            if (item.BookingPlace.ItemType == BookingPlaceItemTypeEnum.ParkingSlot)
+            {
+                result.ParkingsVm.Add(new UserBookingViewModel
+                {
+                    BookingId = item.Id,
+                    BookingDate = item.BookingDate,
+                    BookingPlaceId = item.BookingPlaceId,
+                    State = item.State,
+                    BookedById = item.BookedById,
+                    BookingPlaceVm = await GetBookingPlaceViewModel(item.BookingPlace),
+                });
+            }
         }
-        return ReturnResponse(new BaseResponse<UserBookingsViewModel>(result, result.UserBookingsVm.Count));
+        return ReturnResponse(new BaseResponse<UserBookingsViewModel>(result, bookingDaos.Count));
     }
 
     [HttpGet("GetAllByFloorAndDate")]
@@ -423,7 +442,7 @@ public class BookingController : BaseController
 
         return ReturnResponse(new BaseResponse<bool>(true));
     }
-    
+
     [HttpPut("ReleaseFixedPlace")]
     [ProducesResponseType(typeof(BaseResponse<bool>), 200)]
     public async Task<IActionResult> ReleaseFixedPlace(BookingReleasePlaceRequest request)
@@ -451,7 +470,7 @@ public class BookingController : BaseController
         {
             return HandleError(new Exception("You are not allowed to release this place!"));
         }
-        
+
         try
         {
             bookingPlace.AvailableForBooking = true;
@@ -635,13 +654,22 @@ public class BookingController : BaseController
         };
     }
 
-    private async Task<List<BookingPlaceViewModel>> GetBookingPlaceViewModels(IEnumerable<BookingPlaceDao> bookingPlaceDaos)
+    private async Task<List<BookingPlaceViewModel>> GetBookingPlaceViewModels(IEnumerable<BookingPlaceDao> bookingPlaceDaos, BookingPlaceItemTypeEnum? bookingPlaceItemType)
     {
         var bookingPlaceViewModels = new List<BookingPlaceViewModel>();
         foreach (var bookingPlaceDao in bookingPlaceDaos)
         {
             var bookingPlaceViewModel = await GetBookingPlaceViewModel(bookingPlaceDao);
-            bookingPlaceViewModels.Add(bookingPlaceViewModel);
+            if (bookingPlaceItemType != null && bookingPlaceItemType == bookingPlaceViewModel.ItemType)
+            {
+                bookingPlaceViewModels.Add(bookingPlaceViewModel);
+            }
+            
+            if (bookingPlaceItemType == null)
+            {
+                bookingPlaceViewModels.Add(bookingPlaceViewModel);
+            }
+
         }
         return bookingPlaceViewModels;
     }
