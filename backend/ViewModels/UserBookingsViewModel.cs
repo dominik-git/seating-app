@@ -5,7 +5,7 @@ namespace BookingApp.ViewModels
 {
     public class UserBookingsViewModel
     {   
-        public List<UserBookingViewModel> UserBookings { get; set; }
+        public List<UserBookingViewModel> UserBookingsVm { get; set; }
         public UserViewModel? BookedByUserVm { get; set; }
     }
 }

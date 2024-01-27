@@ -40,7 +40,11 @@ public class BookingController : BaseController
     [ProducesResponseType(typeof(BaseResponse<UserBookingsViewModel>), 200)]
     public async Task<IActionResult> GetAllByUserId([FromQuery] int month)
     {
-        if (month == default || month > 12)
+        if (month == default)
+        {
+            month = DateTime.UtcNow.Month;
+        }
+        if (month > 12)
         {
             return HandleError(new Exception("Wrong month"));
         }
@@ -53,6 +57,7 @@ public class BookingController : BaseController
         var bookingDaos = await _repository.GetAllByUserId(Convert.ToInt16(user.Id), month);
         var result = new UserBookingsViewModel
         {
+            UserBookings = new List<UserBookingViewModel>(),
             BookedByUserVm = _mapper.Map<UserViewModel>(user)
         };
         foreach (var item in bookingDaos)
