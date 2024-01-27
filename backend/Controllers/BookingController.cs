@@ -208,6 +208,7 @@ public class BookingController : BaseController
     [ProducesResponseType(typeof(BaseResponse<bool>), 200)]
     public async Task<IActionResult> CreateOrUpdateBookings(BookingsViewModel request)
     {
+        var errors = new List<string>();
         var userEmail = this.User.FindFirstValue(ClaimTypes.Email) ?? "";
         var admin = this.User.FindFirstValue("admin") ?? "false";
         bool isAdmin = bool.Parse(admin);
@@ -220,7 +221,8 @@ public class BookingController : BaseController
         {
             if (bookingVm.BookingDate < DateTime.UtcNow)
             {
-                return HandleError(new Exception("Invalid booking date"));
+                errors.Add($"Invalid booking date, requested date: {bookingVm.BookingDate}");
+                continue;
             }
 
             var bookingPlace = await _repository.GetBookingPlaceAsync(bookingVm.BookingPlaceId);
@@ -230,14 +232,16 @@ public class BookingController : BaseController
                 bookingPlace.ReservedForId.HasValue &&
                 bookingPlace.ReservedForId != user.Id)
                 {
-                    return HandleError(new Exception("Booking place reserved"));
+                    errors.Add($"Booking place reserved ref: {bookingVm.BookingDate}");
+                    continue;
                 }
 
                 if (bookingPlace.AvailableForBooking &&
                     bookingVm.BookingDate < bookingPlace.AvailableFrom ||
                     bookingVm.BookingDate > bookingPlace.AvailableTo)
                 {
-                    return HandleError(new Exception("This booking place is reserved for day you choosed."));
+                    errors.Add($"This booking place is reserved for day you choosed. ref: {bookingVm.BookingDate}");
+                    continue;
                 }
             }
             var existingBooking = await _repository.GetBookingByIdAndBookingDateAsync(bookingVm.BookingId, bookingVm.BookingDate);
@@ -254,7 +258,7 @@ public class BookingController : BaseController
             {
                 if (existingBooking.BookedById != user.Id)
                 {
-                    return HandleError(new Exception("Already reserved"));
+                    errors.Add($"Already reserved for another user ref. date: {bookingVm.BookingDate}");
                 }
                 try
                 {
@@ -262,7 +266,7 @@ public class BookingController : BaseController
                 }
                 catch (Exception ex)
                 {
-                    return HandleError(ex);
+                    errors.Add(ex.Message);
                 }
             }
             else
@@ -282,12 +286,21 @@ public class BookingController : BaseController
                 }
                 catch (Exception ex)
                 {
-                    return HandleError(ex);
+                    errors.Add(ex.Message);
                 }
             }
         }
+        if (errors.Count > 0)
+        {
+            return ReturnResponse(new BaseResponse<string>("Partially successful", "One or more errors occured", errors, RequestExecution.PartiallySuccessful));
+        }
 
-        return ReturnResponse(new BaseResponse<bool>(true));
+        if (errors.Count > 0 && errors.Count == request.Bookings.Count)
+        {
+            HandleError(new Exception(string.Join('*', errors)));
+        }
+
+        return ReturnResponse(new BaseResponse<bool>(true, request.Bookings.Count));
     }
 
     [HttpPut("CreateOrUpdate")]

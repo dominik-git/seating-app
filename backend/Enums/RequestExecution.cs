@@ -4,6 +4,7 @@
     {
         Successful = 1,
         Failed,
-        Error
+        Error,
+        PartiallySuccessful
     }
 }
