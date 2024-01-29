@@ -227,20 +227,18 @@ public class BookingController : BaseController
                 continue;
             }
 
-            var bookingPlace = await _repository.GetBookingPlaceAsync(bookingVm.BookingPlaceId);
+            var bookingPlace = await _repository.GetBookingPlaceAsync(bookingVm.BookingPlaceId);           
             if (bookingPlace.Type == BookingPlaceTypeEnum.Fixed)
             {
-                if (!bookingPlace.AvailableForBooking &&
-                bookingPlace.ReservedForId.HasValue &&
+                if (bookingPlace.ReservedForId.HasValue &&
                 bookingPlace.ReservedForId != user.Id)
                 {
                     errors.Add($"Booking place reserved ref: {bookingVm.BookingDate}");
                     continue;
                 }
 
-                if (bookingPlace.AvailableForBooking &&
-                    bookingVm.BookingDate < bookingPlace.AvailableFrom ||
-                    bookingVm.BookingDate > bookingPlace.AvailableTo)
+                var bookings = await _repository.GetBookingByBookingPlaceIdWithDateAsync(bookingVm.BookingPlaceId, bookingVm.BookingDate);
+                if (bookings == null || bookings.First(x => x.State != BookingStateEnum.Available) != null)
                 {
                     errors.Add($"This booking place is reserved for day you choosed. ref: {bookingVm.BookingDate}");
                     continue;
