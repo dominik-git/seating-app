@@ -18,5 +18,6 @@ public class AutoMapperProfile : Profile
         CreateMap<FloorDao, FloorSimpleViewModel>();
         CreateMap<FloorSimpleViewModel, FloorDao>();
         CreateMap<User, UserViewModel>();
+        CreateMap<UserModel, UserViewModel>();
     }
 }

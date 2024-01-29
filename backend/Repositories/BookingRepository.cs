@@ -162,13 +162,11 @@ namespace BookingApp.Repositories
             return await _context.Bookings.Where(item => item.BookingPlaceId == bookingPlaceId).ToListAsync();
         }
 
-        public async Task<List<BookingDao>> GetBookingByBookingPlaceIdWithDateAsync(int bookingPlaceId)
+        public async Task<List<BookingDao>> GetBookingByBookingPlaceIdWithDateAsync(int bookingPlaceId, DateTime dateTime)
         {
-            var todaysDate = DateTime.UtcNow.Date;
-            var endDate = todaysDate.AddDays(DefaultDaysForBooking);
             return await _context.Bookings
                 .Include(item => item.BookingPlace)
-                .Where(item => item.BookingPlaceId == bookingPlaceId && item.BookingDate.Date >= todaysDate && item.BookingDate.Date <= endDate).ToListAsync();
+                .Where(item => item.BookingPlaceId == bookingPlaceId && item.BookingDate.Date == dateTime.Date).ToListAsync();
         }
 
         public async Task<List<BookingDao>> GetBookingByBookingPlaceIdWithDateRangeAsync(int bookingPlaceId, DateTime from, DateTime to)
@@ -266,7 +264,8 @@ namespace BookingApp.Repositories
             {
                 throw new Exception("UserId is required");
             }
-            var query = _context.BookingPlaces                
+            var query = _context.BookingPlaces
+                .Include(x => x.Bookings)
                 .Where(y => y.ReservedForId == userId)
                 .ToListAsync();
 
