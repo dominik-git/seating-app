@@ -51,6 +51,23 @@ namespace BookingApp.Services
 
             return new BaseResponse<JwtResponseViewModel>(data);
         }
+
+        public async Task<UserModel> GetCurrentUser(ClaimsPrincipal claims)
+        {
+            var userEmail = claims.FindFirstValue(ClaimTypes.Email) ?? "";
+            var admin = claims.FindFirstValue("admin") ?? "false";
+            bool isAdmin = bool.Parse(admin);
+            var user = await _userManager.FindByEmailAsync(userEmail) ?? throw new Exception("User not found");
+            return new UserModel
+            {
+                Id = user.Id,
+                Email = user.Email,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                IsAdmin = isAdmin
+            };
+        }
+
         private string CreateJwtToken(User user)
         {
 

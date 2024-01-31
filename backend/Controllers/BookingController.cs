@@ -4,13 +4,12 @@ using BookingApp.Controllers;
 using BookingApp.Daos;
 using BookingApp.Enums;
 using BookingApp.Identity;
+using BookingApp.Interfaces;
 using BookingApp.Models;
 using BookingApp.ViewModels;
-using GoogleApi.Entities.Search.Common;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
 
 [Route("api/[controller]")]
 [Authorize]
@@ -20,11 +19,17 @@ public class BookingController : BaseController
     private readonly IBookingRepository _repository;
     private readonly IMapper _mapper;
     private readonly UserManager<User> _userManager;
-    public BookingController(IBookingRepository repository, IMapper mapper, UserManager<User> userManager)
+    private readonly IAuthService _authService;
+    public BookingController(
+        IBookingRepository repository,
+        IMapper mapper,
+        UserManager<User> userManager,
+        IAuthService authService)
     {
         _repository = repository;
         _mapper = mapper;
         _userManager = userManager;
+        _authService = authService;
     }
 
     // GET: api/Booking
@@ -34,7 +39,7 @@ public class BookingController : BaseController
     {
         var bookingPlaceDaos = await _repository.GetBookingPlacesAsync();
         var result = await GetBookingPlaceViewModels(bookingPlaceDaos, null);
-        return ReturnResponse(new BaseResponse<IEnumerable<BookingPlaceViewModel>>(result));
+        return ReturnResponse(new BaseResponse<IEnumerable<BookingPlaceWithBookingsViewModel>>(result));
     }
 
     [HttpGet("GetAllByUserId")]
@@ -49,12 +54,8 @@ public class BookingController : BaseController
         {
             return HandleError(new Exception("Wrong month"));
         }
-        var userEmail = this.User.FindFirstValue(ClaimTypes.Email) ?? "";
-        var user = await _userManager.FindByEmailAsync(userEmail);
-        if (user == null)
-        {
-            return HandleError(new Exception("User not found"));
-        }
+
+        var user = await _authService.GetCurrentUser(User);
         var bookingDaos = await _repository.GetAllByUserId(Convert.ToInt16(user.Id), month);
         var fixedPlaces = await _repository.GetAllFixedByUserId(Convert.ToInt16(user.Id));
         var result = new UserBookingsViewModel
@@ -111,11 +112,8 @@ public class BookingController : BaseController
                 Name = item.Name,
                 Type = item.Type,
                 ItemType = item.ItemType,
-                AvailableForBooking = item.AvailableForBooking,
                 FloorId = item.FloorId,
                 Bookings = await GetBookingViewModels(item.Bookings),
-                AvailableFrom = item.AvailableFrom,
-                AvailableTo = item.AvailableTo,
                 ReservedForUserId = item.ReservedForId,
             });
         }
@@ -164,7 +162,7 @@ public class BookingController : BaseController
     [ProducesResponseType(typeof(BaseResponse<BookingPlaceWithBookingsViewModel>), 200)]
     public async Task<IActionResult> GetByBookingPlaceIdWithDate(int id)
     {
-        var bookingDaos = await _repository.GetBookingByBookingPlaceIdWithDateAsync(id);
+        var bookingDaos = await _repository.GetBookingByBookingPlaceIdWithDateAsync(id, DateTime.UtcNow);
         var bookingPlace = await _repository.GetBookingPlaceAsync(id);
         var result = new BookingPlaceWithBookingsViewModel
         {
@@ -172,7 +170,6 @@ public class BookingController : BaseController
             Name = bookingPlace.Name,
             Type = bookingPlace.Type,
             ItemType = bookingPlace.ItemType,
-            AvailableForBooking = bookingPlace.AvailableForBooking,
             FloorId = bookingPlace.FloorId,
             ReservedForUserVm = bookingPlace.ReservedForId != null ? await GetUserViewModel(bookingPlace.ReservedForId.Value) : null,
 
@@ -192,20 +189,13 @@ public class BookingController : BaseController
             return BadRequest();
         }
 
-        var userEmail = this.User.FindFirstValue(ClaimTypes.Email) ?? "";
-        var admin = this.User.FindFirstValue("admin") ?? "false";
-        bool isAdmin = bool.Parse(admin);
-        var user = await _userManager.FindByEmailAsync(userEmail);
-        if (user == null)
-        {
-            return HandleError(new Exception("User not found"));
-        }
+        var user = await _authService.GetCurrentUser(User);
         var bookingItem = await _repository.GetBookingPlaceAsync(id);
         if (bookingItem == null)
         {
             return HandleError(new Exception("Booking item not found"));
         }
-        if (!isAdmin || user.Id != bookingItem.ReservedForId)
+        if (!user.IsAdmin || user.Id != bookingItem.ReservedForId)
         {
             return HandleError(new Exception("You are not allowed to udate this entity"));
         }
@@ -228,14 +218,7 @@ public class BookingController : BaseController
     public async Task<IActionResult> CreateOrUpdateBookings(BookingsViewModel request)
     {
         var errors = new List<string>();
-        var userEmail = this.User.FindFirstValue(ClaimTypes.Email) ?? "";
-        var admin = this.User.FindFirstValue("admin") ?? "false";
-        bool isAdmin = bool.Parse(admin);
-        var user = await _userManager.FindByEmailAsync(userEmail);
-        if (user == null)
-        {
-            return HandleError(new Exception("User not found"));
-        }
+        var user = await _authService.GetCurrentUser(User);
         foreach (var bookingVm in request.Bookings)
         {
             if (bookingVm.BookingDate < DateTime.UtcNow)
@@ -244,20 +227,18 @@ public class BookingController : BaseController
                 continue;
             }
 
-            var bookingPlace = await _repository.GetBookingPlaceAsync(bookingVm.BookingPlaceId);
+            var bookingPlace = await _repository.GetBookingPlaceAsync(bookingVm.BookingPlaceId);           
             if (bookingPlace.Type == BookingPlaceTypeEnum.Fixed)
             {
-                if (!bookingPlace.AvailableForBooking &&
-                bookingPlace.ReservedForId.HasValue &&
+                if (bookingPlace.ReservedForId.HasValue &&
                 bookingPlace.ReservedForId != user.Id)
                 {
                     errors.Add($"Booking place reserved ref: {bookingVm.BookingDate}");
                     continue;
                 }
 
-                if (bookingPlace.AvailableForBooking &&
-                    bookingVm.BookingDate < bookingPlace.AvailableFrom ||
-                    bookingVm.BookingDate > bookingPlace.AvailableTo)
+                var bookings = await _repository.GetBookingByBookingPlaceIdWithDateAsync(bookingVm.BookingPlaceId, bookingVm.BookingDate);
+                if (bookings == null || bookings.First(x => x.State != BookingStateEnum.Available) != null)
                 {
                     errors.Add($"This booking place is reserved for day you choosed. ref: {bookingVm.BookingDate}");
                     continue;
@@ -270,7 +251,7 @@ public class BookingController : BaseController
                 State = bookingVm.State,
                 BookingDate = bookingVm.BookingDate.ToUniversalTime(),
                 BookedBy = (int)user.Id,
-                IsAdmin = isAdmin,
+                IsAdmin = user.IsAdmin,
                 BookingPlaceId = bookingVm.BookingPlaceId
             };
             if (existingBooking != null)
@@ -326,15 +307,7 @@ public class BookingController : BaseController
     [ProducesResponseType(typeof(BaseResponse<bool>), 200)]
     public async Task<IActionResult> CreateOrUpdateBooking(BookingViewModel bookingVm)
     {
-        var userEmail = this.User.FindFirstValue(ClaimTypes.Email) ?? "";
-        var admin = this.User.FindFirstValue("admin") ?? "false";
-        bool isAdmin = bool.Parse(admin);
-        var user = await _userManager.FindByEmailAsync(userEmail);
-        if (user == null)
-        {
-            return HandleError(new Exception("User not found"));
-        }
-
+        var user = await _authService.GetCurrentUser(User);
         if (bookingVm.BookingDate < DateTime.UtcNow)
         {
             return HandleError(new Exception("Invalid booking date"));
@@ -343,16 +316,14 @@ public class BookingController : BaseController
         var bookingPlace = await _repository.GetBookingPlaceAsync(bookingVm.BookingPlaceId);
         if (bookingPlace.Type == BookingPlaceTypeEnum.Fixed)
         {
-            if (!bookingPlace.AvailableForBooking &&
-            bookingPlace.ReservedForId.HasValue &&
+            if (bookingPlace.ReservedForId.HasValue &&
             bookingPlace.ReservedForId != user.Id)
             {
                 return HandleError(new Exception("Booking place reserved"));
             }
 
-            if (bookingPlace.AvailableForBooking &&
-                bookingVm.BookingDate < bookingPlace.AvailableFrom &&
-                bookingVm.BookingDate > bookingPlace.AvailableTo)
+            var bookings = await _repository.GetBookingByBookingPlaceIdWithDateAsync(bookingVm.BookingPlaceId, bookingVm.BookingDate);
+            if (bookings == null || bookings.First(x => x.State != BookingStateEnum.Available) != null)
             {
                 return HandleError(new Exception("This booking place is reserved for day you choosed."));
             }
@@ -365,7 +336,7 @@ public class BookingController : BaseController
             State = bookingVm.State,
             BookingDate = bookingVm.BookingDate.ToUniversalTime(),
             BookedBy = (int)user.Id,
-            IsAdmin = isAdmin,
+            IsAdmin = user.IsAdmin,
             BookingPlaceId = bookingVm.BookingPlaceId
         };
         if (existingBooking != null)
@@ -453,30 +424,37 @@ public class BookingController : BaseController
             HandleError(new Exception("Booking place not found"));
         }
 
+        if (request.ReleaseDates == null || request.ReleaseDates.Count == 0)
+        {
+            HandleError(new Exception("Release dates are missing"));
+        }
+
         if (bookingPlace.Type != BookingPlaceTypeEnum.Fixed)
         {
             HandleError(new Exception("Booking place type is not fixed"));
         }
-        var userEmail = this.User.FindFirstValue(ClaimTypes.Email) ?? "";
-        var admin = this.User.FindFirstValue("admin") ?? "false";
-        bool isAdmin = bool.Parse(admin);
-        var user = await _userManager.FindByEmailAsync(userEmail);
-        if (user == null)
-        {
-            return HandleError(new Exception("User not found"));
-        }
+        var user = await _authService.GetCurrentUser(User);
 
-        if (user.Id != bookingPlace.ReservedForId || !isAdmin)
+        if (user.Id != bookingPlace.ReservedForId || !user.IsAdmin)
         {
             return HandleError(new Exception("You are not allowed to release this place!"));
         }
 
         try
         {
-            bookingPlace.AvailableForBooking = true;
-            bookingPlace.AvailableFrom = request.AvailableFrom;
-            bookingPlace.AvailableTo = request.AvailableTo;
-            await _repository.UpdateBookingPlaceAsync(bookingPlace);
+            foreach (var item in request.ReleaseDates)
+            {
+                var booking = new BookingDao
+                {
+                    BookingPlaceId = bookingPlace.Id,
+                    BookedById = (int)user.Id,
+                    CreatedById = (int)user.Id,
+                    BookingDate = item.ToUniversalTime(),
+                    CreatedDate = DateTime.UtcNow,
+                    State = BookingStateEnum.Available,
+                };
+                await _repository.CreateBookingAsync(booking);
+            }
         }
         catch (Exception ex)
         {
@@ -492,12 +470,7 @@ public class BookingController : BaseController
     [ProducesResponseType(typeof(BaseResponse<BookingPlaceViewModel>), 200)]
     public async Task<IActionResult> Post(BookingPlaceViewModel bookingPlaceViewModel)
     {
-        string userEmail = this.User.FindFirstValue(ClaimTypes.Email) ?? "";
-        var user = await _userManager.FindByEmailAsync(userEmail);
-        if (user == null)
-        {
-            return HandleError(new Exception("User not found"));
-        }
+        var user = await _authService.GetCurrentUser(User);
         var bookingPlaceDao = _mapper.Map<BookingPlaceDao>(bookingPlaceViewModel);
         bookingPlaceDao.CreatedById = (int)user.Id;
         try
@@ -528,8 +501,8 @@ public class BookingController : BaseController
     [ProducesResponseType(typeof(BaseResponse<bool>), 200)]
     public async Task<IActionResult> DeleteBookingPlace(int id)
     {
-        var BookingPlaceViewModel = await _repository.GetBookingPlaceAsync(id);
-        if (BookingPlaceViewModel == null)
+        var bookingPlaceViewModel = await _repository.GetBookingPlaceAsync(id);
+        if (bookingPlaceViewModel == null)
         {
             HandleError(new Exception("Booking place not found"));
         }
@@ -545,13 +518,52 @@ public class BookingController : BaseController
         }
     }
 
-    [Authorize(Policy = IdentityData.AdminUserPolicyName)]
     [HttpDelete("{id}")]
     [ProducesResponseType(typeof(BaseResponse<bool>), 200)]
     public async Task<IActionResult> DeleteBooking(int id)
     {
-        var BookingPlaceViewModel = await _repository.GetBookingAsync(id);
-        if (BookingPlaceViewModel == null)
+        var user = await _authService.GetCurrentUser(User);
+        var bookingDao = await _repository.GetBookingAsync(id);
+        if (bookingDao == null)
+        {
+            return HandleError(new Exception("Booking not found"));
+        }
+        var bookingPlace = await _repository.GetBookingPlaceAsync(bookingDao.BookingPlaceId);
+
+        // Check if deleting released booking
+        if (bookingPlace.ReservedForId.HasValue)           
+        {
+            if (bookingPlace.ReservedForId.Value != user.Id || bookingDao.BookedById != user.Id)
+            {
+                return HandleError(new Exception("You are not allowed to delete this booking"));
+            }            
+        } else
+        {
+            // check for basic booking
+            if (bookingDao.BookedById != user.Id)
+            {
+                return HandleError(new Exception("You are not allowed to delete this booking"));
+            }
+        }
+
+        try
+        {
+            await _repository.DeleteBookingAsync(id);
+        }
+        catch (Exception ex)
+        {
+            HandleError(ex);
+        }
+        return ReturnResponse(new BaseResponse<bool>(true));
+    }
+
+    [Authorize(Policy = IdentityData.AdminUserPolicyName)]
+    [HttpDelete("Admin/{id}")]
+    [ProducesResponseType(typeof(BaseResponse<bool>), 200)]
+    public async Task<IActionResult> DeleteBookingByAdmin(int id)
+    {
+        var bookingPlaceViewModel = await _repository.GetBookingAsync(id);
+        if (bookingPlaceViewModel == null)
         {
             return HandleError(new Exception("Booking not found"));
         }
@@ -587,11 +599,8 @@ public class BookingController : BaseController
                 Name = item.Name,
                 Type = item.Type,
                 ItemType = item.ItemType,
-                AvailableForBooking = item.AvailableForBooking,
                 FloorId = item.FloorId,
                 Bookings = await GetBookingViewModels(item.Bookings),
-                AvailableFrom = item.AvailableFrom,
-                AvailableTo = item.AvailableTo,
                 ReservedForUserId = item.ReservedForId,
             };
             if (item.ReservedForId != null)
@@ -621,7 +630,6 @@ public class BookingController : BaseController
             Name = bookingPlace.Name,
             Type = bookingPlace.Type,
             ItemType = bookingPlace.ItemType,
-            AvailableForBooking = bookingPlace.AvailableForBooking,
             FloorId = bookingPlace.FloorId,
             ReservedForUserVm = bookingPlace.ReservedForId != null ? await GetUserViewModel(bookingPlace.ReservedForId.Value) : null,
             Bookings = await GetBookingViewModels(bookingDaos),
@@ -654,9 +662,9 @@ public class BookingController : BaseController
         };
     }
 
-    private async Task<List<BookingPlaceViewModel>> GetBookingPlaceViewModels(IEnumerable<BookingPlaceDao> bookingPlaceDaos, BookingPlaceItemTypeEnum? bookingPlaceItemType)
+    private async Task<List<BookingPlaceWithBookingsViewModel>> GetBookingPlaceViewModels(IEnumerable<BookingPlaceDao> bookingPlaceDaos, BookingPlaceItemTypeEnum? bookingPlaceItemType)
     {
-        var bookingPlaceViewModels = new List<BookingPlaceViewModel>();
+        var bookingPlaceViewModels = new List<BookingPlaceWithBookingsViewModel>();
         foreach (var bookingPlaceDao in bookingPlaceDaos)
         {
             var bookingPlaceViewModel = await GetBookingPlaceViewModel(bookingPlaceDao);
@@ -664,7 +672,7 @@ public class BookingController : BaseController
             {
                 bookingPlaceViewModels.Add(bookingPlaceViewModel);
             }
-            
+
             if (bookingPlaceItemType == null)
             {
                 bookingPlaceViewModels.Add(bookingPlaceViewModel);
@@ -674,20 +682,18 @@ public class BookingController : BaseController
         return bookingPlaceViewModels;
     }
 
-    private async Task<BookingPlaceViewModel> GetBookingPlaceViewModel(BookingPlaceDao bookingPlaceDao)
+    private async Task<BookingPlaceWithBookingsViewModel> GetBookingPlaceViewModel(BookingPlaceDao bookingPlaceDao)
     {
-        return new BookingPlaceViewModel
+        return new BookingPlaceWithBookingsViewModel
         {
             Id = bookingPlaceDao.Id,
             Name = bookingPlaceDao.Name,
             Type = bookingPlaceDao.Type,
             ItemType = bookingPlaceDao.ItemType,
-            AvailableForBooking = bookingPlaceDao.AvailableForBooking,
-            AvailableFrom = bookingPlaceDao.AvailableFrom,
-            AvailableTo = bookingPlaceDao.AvailableTo,
             FloorId = bookingPlaceDao.FloorId,
             ReservedForUserId = bookingPlaceDao.ReservedForId,
             ReservedForUserVm = bookingPlaceDao.ReservedForId != null ? await GetUserViewModel(bookingPlaceDao.ReservedForId.Value) : null,
+            Bookings = await GetBookingViewModels(bookingPlaceDao.Bookings),
         };
     }
 
