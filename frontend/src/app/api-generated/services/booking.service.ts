@@ -9,6 +9,10 @@ import { BaseService } from '../base-service';
 import { ApiConfiguration } from '../api-configuration';
 import { StrictHttpResponse } from '../strict-http-response';
 
+import { apiBookingAdminIdDelete$Json } from '../fn/booking/api-booking-admin-id-delete-json';
+import { ApiBookingAdminIdDelete$Json$Params } from '../fn/booking/api-booking-admin-id-delete-json';
+import { apiBookingAdminIdDelete$Plain } from '../fn/booking/api-booking-admin-id-delete-plain';
+import { ApiBookingAdminIdDelete$Plain$Params } from '../fn/booking/api-booking-admin-id-delete-plain';
 import { apiBookingBookingPlaceIdDelete$Json } from '../fn/booking/api-booking-booking-place-id-delete-json';
 import { ApiBookingBookingPlaceIdDelete$Json$Params } from '../fn/booking/api-booking-booking-place-id-delete-json';
 import { apiBookingBookingPlaceIdDelete$Plain } from '../fn/booking/api-booking-booking-place-id-delete-plain';
@@ -770,6 +774,53 @@ export class BookingService extends BaseService {
   apiBookingPost$Json(params?: ApiBookingPost$Json$Params, context?: HttpContext): Observable<BookingPlaceViewModelBaseResponse> {
     return this.apiBookingPost$Json$Response(params, context).pipe(
       map((r: StrictHttpResponse<BookingPlaceViewModelBaseResponse>): BookingPlaceViewModelBaseResponse => r.body)
+    );
+  }
+
+  /** Path part for operation `apiBookingAdminIdDelete()` */
+  static readonly ApiBookingAdminIdDeletePath = '/api/Booking/Admin/{id}';
+
+  /**
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `apiBookingAdminIdDelete$Plain()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  apiBookingAdminIdDelete$Plain$Response(params: ApiBookingAdminIdDelete$Plain$Params, context?: HttpContext): Observable<StrictHttpResponse<BooleanBaseResponse>> {
+    return apiBookingAdminIdDelete$Plain(this.http, this.rootUrl, params, context);
+  }
+
+  /**
+   * This method provides access only to the response body.
+   * To access the full response (for headers, for example), `apiBookingAdminIdDelete$Plain$Response()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  apiBookingAdminIdDelete$Plain(params: ApiBookingAdminIdDelete$Plain$Params, context?: HttpContext): Observable<BooleanBaseResponse> {
+    return this.apiBookingAdminIdDelete$Plain$Response(params, context).pipe(
+      map((r: StrictHttpResponse<BooleanBaseResponse>): BooleanBaseResponse => r.body)
+    );
+  }
+
+  /**
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `apiBookingAdminIdDelete$Json()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  apiBookingAdminIdDelete$Json$Response(params: ApiBookingAdminIdDelete$Json$Params, context?: HttpContext): Observable<StrictHttpResponse<BooleanBaseResponse>> {
+    return apiBookingAdminIdDelete$Json(this.http, this.rootUrl, params, context);
+  }
+
+  /**
+   * This method provides access only to the response body.
+   * To access the full response (for headers, for example), `apiBookingAdminIdDelete$Json$Response()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  apiBookingAdminIdDelete$Json(params: ApiBookingAdminIdDelete$Json$Params, context?: HttpContext): Observable<BooleanBaseResponse> {
+    return this.apiBookingAdminIdDelete$Json$Response(params, context).pipe(
+      map((r: StrictHttpResponse<BooleanBaseResponse>): BooleanBaseResponse => r.body)
     );
   }
 

@@ -5,9 +5,6 @@ import { BookingPlaceTypeEnum } from '../models/booking-place-type-enum';
 import { BookingViewModel } from '../models/booking-view-model';
 import { UserViewModel } from '../models/user-view-model';
 export interface BookingPlaceWithBookingsViewModel {
-  availableForBooking?: boolean;
-  availableFrom?: string | null;
-  availableTo?: string | null;
   bookings?: Array<BookingViewModel> | null;
   floorId?: number;
   id?: number;

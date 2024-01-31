@@ -694,6 +694,46 @@
         }
       }
     },
+    "/api/Booking/Admin/{id}": {
+      "delete": {
+        "tags": [
+          "Booking"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/BooleanBaseResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BooleanBaseResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BooleanBaseResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/Booking/GetAllByFloorId/{floorId}": {
       "get": {
         "tags": [
@@ -1228,19 +1268,6 @@
           "itemType": {
             "$ref": "#/components/schemas/BookingPlaceItemTypeEnum"
           },
-          "availableForBooking": {
-            "type": "boolean"
-          },
-          "availableFrom": {
-            "type": "string",
-            "format": "date-time",
-            "nullable": true
-          },
-          "availableTo": {
-            "type": "string",
-            "format": "date-time",
-            "nullable": true
-          },
           "floorId": {
             "type": "integer",
             "format": "int32"
@@ -1328,13 +1355,13 @@
             "type": "integer",
             "format": "int32"
           },
-          "availableFrom": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "availableTo": {
-            "type": "string",
-            "format": "date-time"
+          "releaseDates": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "nullable": true
           }
         },
         "additionalProperties": false
@@ -1687,7 +1714,7 @@
             "nullable": true
           },
           "bookingPlaceVm": {
-            "$ref": "#/components/schemas/BookingPlaceViewModel"
+            "$ref": "#/components/schemas/BookingPlaceWithBookingsViewModel"
           }
         },
         "additionalProperties": false
@@ -1712,14 +1739,14 @@
           "fixedPlacesVm": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/BookingPlaceViewModel"
+              "$ref": "#/components/schemas/BookingPlaceWithBookingsViewModel"
             },
             "nullable": true
           },
           "fixedParkingsVm": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/BookingPlaceViewModel"
+              "$ref": "#/components/schemas/BookingPlaceWithBookingsViewModel"
             },
             "nullable": true
           },

@@ -1,12 +1,12 @@
 /* tslint:disable */
 /* eslint-disable */
-import { BookingPlaceViewModel } from '../models/booking-place-view-model';
+import { BookingPlaceWithBookingsViewModel } from '../models/booking-place-with-bookings-view-model';
 import { BookingStateEnum } from '../models/booking-state-enum';
 export interface UserBookingViewModel {
   bookedById?: number | null;
   bookingDate?: string;
   bookingId?: number;
   bookingPlaceId?: number;
-  bookingPlaceVm?: BookingPlaceViewModel;
+  bookingPlaceVm?: BookingPlaceWithBookingsViewModel;
   state?: BookingStateEnum;
 }

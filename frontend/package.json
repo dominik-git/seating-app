@@ -41,6 +41,7 @@
     "jwt-decode": "^4.0.0",
     "moment": "^2.29.1",
     "ng-openapi-gen": "^0.51.0",
+    "ngx-multiple-dates": "^17.0.1",
     "ngx-skeleton-loader": "^8.1.0",
     "panzoom": "^9.4.2",
     "rxjs": "^6.6.7",
