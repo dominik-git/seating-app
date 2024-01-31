@@ -1,9 +1,9 @@
 /* tslint:disable */
 /* eslint-disable */
-import { BookingViewModel } from '../models/booking-view-model';
 import { RequestExecution } from '../models/request-execution';
-export interface BookingViewModelIEnumerableBaseResponse {
-  data?: Array<BookingViewModel> | null;
+import { UserBookingsViewModel } from '../models/user-bookings-view-model';
+export interface UserBookingsViewModelBaseResponse {
+  data?: UserBookingsViewModel;
   errors?: Array<string> | null;
   responseMessage?: string | null;
   status?: RequestExecution;

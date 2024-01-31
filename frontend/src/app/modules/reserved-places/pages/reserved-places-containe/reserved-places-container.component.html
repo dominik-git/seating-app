@@ -1,17 +1,77 @@
 <ng-container *ngIf="!(isLoading$ | async)">
-  <mat-list *ngIf="(bookings$ | async) as bookings">
-    <mat-list-item *ngFor="let booking of bookings">
-      <mat-icon matListIcon>event_seat</mat-icon>
-      <h3 matLine>{{ booking.bookingPlaceId }}</h3>
-      <p matLine>{{ booking.bookingDate | date }}</p>
-      <!-- Replace with actual booking details -->
+  <div class="reserved-places-container">
 
-      <button mat-icon-button (click)="updateBooking(booking)">
-        <mat-icon>edit</mat-icon>
-      </button>
-      <button mat-icon-button (click)="deleteBooking(booking)">
-        <mat-icon>delete</mat-icon>
-      </button>
-    </mat-list-item>
-  </mat-list>
+
+    <section *ngIf="!(isLoading$ | async)">
+      <!-- Fixed Places Section -->
+      <div class="places-section">
+        <h2>Fixed Places</h2>
+        <div class="places-grid">
+          <div class="place-card" *ngFor="let place of selectFixedPlaces$ | async">
+            <app-check-box [id]="place.bookingId"
+                           (checkedChange)="toggleSelection(place.bookingId, $event)">
+            </app-check-box>
+            <div class="booking-details">
+              <p>Date: {{ place.bookingDate | date:'mediumDate' }}</p>
+              <p>Booked By: {{ place.bookedByUserVm?.fullName || 'N/A' }}</p>
+              <p>Status: {{ place.state }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Fixed Parkings Section -->
+      <div class="places-section">
+        <h2>Fixed Parkings</h2>
+        <div class="places-grid">
+          <div class="place-card" *ngFor="let parking of selectFixedParkings$ | async">
+            <app-check-box [id]="parking.bookingId"
+                           (checkedChange)="toggleSelection(parking.bookingId, $event)">
+            </app-check-box>
+            <div class="booking-details">
+              <p>Date: {{ parking.bookingDate | date:'mediumDate' }}</p>
+              <p>Booked By: {{ parking.bookedByUserVm?.fullName || 'N/A' }}</p>
+              <p>Status: {{ parking.state }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Floor Places Section -->
+      <div class="places-section">
+        <h2>Floor Places</h2>
+        <div class="places-grid">
+          <div class="place-card" *ngFor="let floorPlace of selectFloorPlaces$ | async">
+            <app-check-box [id]="floorPlace.bookingId"
+                           (checkedChange)="toggleSelection(floorPlace.bookingId, $event)">
+            </app-check-box>
+            <div class="booking-details">
+              <p>Date: {{ floorPlace.bookingDate | date:'mediumDate' }}</p>
+              <p>Booked By: {{ floorPlace.bookedByUserVm?.fullName || 'N/A' }}</p>
+              <p>Status: {{ floorPlace.state }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Car Places Section -->
+      <div class="places-section">
+        <h2>Car Places</h2>
+        <div class="places-grid">
+          <div class="place-card" *ngFor="let carPlace of selectCarPlaces | async">
+            <app-check-box [id]="carPlace.bookingId"
+                           (checkedChange)="toggleSelection(carPlace.bookingId, $event)">
+            </app-check-box>
+            <div class="booking-details">
+              <p>Date: {{ carPlace.bookingDate | date:'mediumDate' }}</p>
+              <p>Booked By: {{ carPlace.bookedByUserVm?.fullName || 'N/A' }}</p>
+              <p>Status: {{ carPlace.state }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <button (click)="releaseSelected()">Release Selected</button>
+    </section>
+  </div>
 </ng-container>

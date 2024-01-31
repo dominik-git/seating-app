@@ -91,6 +91,7 @@ export class EditFloorStore extends ComponentStore<FloorFormState> {
           bookingPlaces: formData.bookingPlaces.map(id => ({
             name: id,
             type: BookingPlaceTypeEnum.$1,
+            itemType: formData.itemType,
           })),
           description: formData.description,
           name: formData.name,

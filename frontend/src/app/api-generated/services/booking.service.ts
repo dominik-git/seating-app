@@ -71,14 +71,18 @@ import { apiBookingPost$Json } from '../fn/booking/api-booking-post-json';
 import { ApiBookingPost$Json$Params } from '../fn/booking/api-booking-post-json';
 import { apiBookingPost$Plain } from '../fn/booking/api-booking-post-plain';
 import { ApiBookingPost$Plain$Params } from '../fn/booking/api-booking-post-plain';
+import { apiBookingReleaseFixedPlacePut$Json } from '../fn/booking/api-booking-release-fixed-place-put-json';
+import { ApiBookingReleaseFixedPlacePut$Json$Params } from '../fn/booking/api-booking-release-fixed-place-put-json';
+import { apiBookingReleaseFixedPlacePut$Plain } from '../fn/booking/api-booking-release-fixed-place-put-plain';
+import { ApiBookingReleaseFixedPlacePut$Plain$Params } from '../fn/booking/api-booking-release-fixed-place-put-plain';
 import { BookingPlaceViewModelBaseResponse } from '../models/booking-place-view-model-base-response';
 import { BookingPlaceViewModelIEnumerableBaseResponse } from '../models/booking-place-view-model-i-enumerable-base-response';
 import { BookingPlaceWithBookingsViewModelBaseResponse } from '../models/booking-place-with-bookings-view-model-base-response';
 import { BookingPlaceWithBookingsViewModelListBaseResponse } from '../models/booking-place-with-bookings-view-model-list-base-response';
 import { BookingViewModelBaseResponse } from '../models/booking-view-model-base-response';
-import { BookingViewModelIEnumerableBaseResponse } from '../models/booking-view-model-i-enumerable-base-response';
 import { BooleanBaseResponse } from '../models/boolean-base-response';
 import { FloorViewModelBaseResponse } from '../models/floor-view-model-base-response';
+import { UserBookingsViewModelBaseResponse } from '../models/user-bookings-view-model-base-response';
 
 @Injectable({ providedIn: 'root' })
 export class BookingService extends BaseService {
@@ -142,7 +146,7 @@ export class BookingService extends BaseService {
    *
    * This method doesn't expect any request body.
    */
-  apiBookingGetAllByUserIdGet$Plain$Response(params?: ApiBookingGetAllByUserIdGet$Plain$Params, context?: HttpContext): Observable<StrictHttpResponse<BookingViewModelIEnumerableBaseResponse>> {
+  apiBookingGetAllByUserIdGet$Plain$Response(params?: ApiBookingGetAllByUserIdGet$Plain$Params, context?: HttpContext): Observable<StrictHttpResponse<UserBookingsViewModelBaseResponse>> {
     return apiBookingGetAllByUserIdGet$Plain(this.http, this.rootUrl, params, context);
   }
 
@@ -152,9 +156,9 @@ export class BookingService extends BaseService {
    *
    * This method doesn't expect any request body.
    */
-  apiBookingGetAllByUserIdGet$Plain(params?: ApiBookingGetAllByUserIdGet$Plain$Params, context?: HttpContext): Observable<BookingViewModelIEnumerableBaseResponse> {
+  apiBookingGetAllByUserIdGet$Plain(params?: ApiBookingGetAllByUserIdGet$Plain$Params, context?: HttpContext): Observable<UserBookingsViewModelBaseResponse> {
     return this.apiBookingGetAllByUserIdGet$Plain$Response(params, context).pipe(
-      map((r: StrictHttpResponse<BookingViewModelIEnumerableBaseResponse>): BookingViewModelIEnumerableBaseResponse => r.body)
+      map((r: StrictHttpResponse<UserBookingsViewModelBaseResponse>): UserBookingsViewModelBaseResponse => r.body)
     );
   }
 
@@ -164,7 +168,7 @@ export class BookingService extends BaseService {
    *
    * This method doesn't expect any request body.
    */
-  apiBookingGetAllByUserIdGet$Json$Response(params?: ApiBookingGetAllByUserIdGet$Json$Params, context?: HttpContext): Observable<StrictHttpResponse<BookingViewModelIEnumerableBaseResponse>> {
+  apiBookingGetAllByUserIdGet$Json$Response(params?: ApiBookingGetAllByUserIdGet$Json$Params, context?: HttpContext): Observable<StrictHttpResponse<UserBookingsViewModelBaseResponse>> {
     return apiBookingGetAllByUserIdGet$Json(this.http, this.rootUrl, params, context);
   }
 
@@ -174,9 +178,9 @@ export class BookingService extends BaseService {
    *
    * This method doesn't expect any request body.
    */
-  apiBookingGetAllByUserIdGet$Json(params?: ApiBookingGetAllByUserIdGet$Json$Params, context?: HttpContext): Observable<BookingViewModelIEnumerableBaseResponse> {
+  apiBookingGetAllByUserIdGet$Json(params?: ApiBookingGetAllByUserIdGet$Json$Params, context?: HttpContext): Observable<UserBookingsViewModelBaseResponse> {
     return this.apiBookingGetAllByUserIdGet$Json$Response(params, context).pipe(
-      map((r: StrictHttpResponse<BookingViewModelIEnumerableBaseResponse>): BookingViewModelIEnumerableBaseResponse => r.body)
+      map((r: StrictHttpResponse<UserBookingsViewModelBaseResponse>): UserBookingsViewModelBaseResponse => r.body)
     );
   }
 
@@ -671,6 +675,53 @@ export class BookingService extends BaseService {
    */
   apiBookingChangeTypePut$Json(params?: ApiBookingChangeTypePut$Json$Params, context?: HttpContext): Observable<BooleanBaseResponse> {
     return this.apiBookingChangeTypePut$Json$Response(params, context).pipe(
+      map((r: StrictHttpResponse<BooleanBaseResponse>): BooleanBaseResponse => r.body)
+    );
+  }
+
+  /** Path part for operation `apiBookingReleaseFixedPlacePut()` */
+  static readonly ApiBookingReleaseFixedPlacePutPath = '/api/Booking/ReleaseFixedPlace';
+
+  /**
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `apiBookingReleaseFixedPlacePut$Plain()` instead.
+   *
+   * This method sends `application/*+json` and handles request body of type `application/*+json`.
+   */
+  apiBookingReleaseFixedPlacePut$Plain$Response(params?: ApiBookingReleaseFixedPlacePut$Plain$Params, context?: HttpContext): Observable<StrictHttpResponse<BooleanBaseResponse>> {
+    return apiBookingReleaseFixedPlacePut$Plain(this.http, this.rootUrl, params, context);
+  }
+
+  /**
+   * This method provides access only to the response body.
+   * To access the full response (for headers, for example), `apiBookingReleaseFixedPlacePut$Plain$Response()` instead.
+   *
+   * This method sends `application/*+json` and handles request body of type `application/*+json`.
+   */
+  apiBookingReleaseFixedPlacePut$Plain(params?: ApiBookingReleaseFixedPlacePut$Plain$Params, context?: HttpContext): Observable<BooleanBaseResponse> {
+    return this.apiBookingReleaseFixedPlacePut$Plain$Response(params, context).pipe(
+      map((r: StrictHttpResponse<BooleanBaseResponse>): BooleanBaseResponse => r.body)
+    );
+  }
+
+  /**
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `apiBookingReleaseFixedPlacePut$Json()` instead.
+   *
+   * This method sends `application/*+json` and handles request body of type `application/*+json`.
+   */
+  apiBookingReleaseFixedPlacePut$Json$Response(params?: ApiBookingReleaseFixedPlacePut$Json$Params, context?: HttpContext): Observable<StrictHttpResponse<BooleanBaseResponse>> {
+    return apiBookingReleaseFixedPlacePut$Json(this.http, this.rootUrl, params, context);
+  }
+
+  /**
+   * This method provides access only to the response body.
+   * To access the full response (for headers, for example), `apiBookingReleaseFixedPlacePut$Json$Response()` instead.
+   *
+   * This method sends `application/*+json` and handles request body of type `application/*+json`.
+   */
+  apiBookingReleaseFixedPlacePut$Json(params?: ApiBookingReleaseFixedPlacePut$Json$Params, context?: HttpContext): Observable<BooleanBaseResponse> {
+    return this.apiBookingReleaseFixedPlacePut$Json$Response(params, context).pipe(
       map((r: StrictHttpResponse<BooleanBaseResponse>): BooleanBaseResponse => r.body)
     );
   }

@@ -1,14 +1,17 @@
 import { Injectable } from '@angular/core';
 import { ComponentStore } from '@ngrx/component-store';
-import { FloorService } from '../../../../api-generated/services/floor.service';
 import { MatDialog } from '@angular/material/dialog';
 import { EMPTY, Observable } from 'rxjs';
 import { catchError, switchMap, tap } from 'rxjs/operators';
 import { BookingService } from '../../../../api-generated/services/booking.service';
 import { BookingViewModel } from '../../../../api-generated/models/booking-view-model';
+import { UserBookingsViewModel } from '../../../../api-generated/models/user-bookings-view-model';
 
 export interface ReservedPlacesState {
-  bookings: BookingViewModel[];
+  fixedPlaces: BookingViewModel[];
+  fixedParkings: BookingViewModel[];
+  floorPlaces: BookingViewModel[];
+  carPlaces: BookingViewModel[];
   error: any;
   isLoading: boolean;
 }
@@ -16,11 +19,17 @@ export interface ReservedPlacesState {
 @Injectable()
 export class ReservedPlacesStore extends ComponentStore<ReservedPlacesState> {
   constructor(
-    private readonly floorService: FloorService,
     private readonly bookingService: BookingService,
     public dialog: MatDialog
   ) {
-    super({ bookings: [], isLoading: false, error: null });
+    super({
+      fixedPlaces: [],
+      fixedParkings: [],
+      floorPlaces: [],
+      carPlaces: [],
+      isLoading: false,
+      error: null,
+    });
   }
 
   // SELECTORS
@@ -28,16 +37,22 @@ export class ReservedPlacesStore extends ComponentStore<ReservedPlacesState> {
   readonly selectIsLoading$: Observable<boolean> = this.select(
     state => state.isLoading
   );
-  readonly selectBookings$ = this.select(state => state.bookings);
+  readonly selectFixedPlaces$ = this.select(state => state.fixedPlaces);
+  readonly selectFixedParkings$ = this.select(state => state.fixedParkings);
+  readonly selectFloorPlaces$ = this.select(state => state.floorPlaces);
+  readonly selectCarPlaces = this.select(state => state.carPlaces);
   readonly error$: Observable<string | null> = this.select(
     state => state.error
   );
 
   // UPDATERS
   readonly setBookings = this.updater(
-    (state, bookings: BookingViewModel[]) => ({
+    (state, bookings: UserBookingsViewModel) => ({
       ...state,
-      bookings,
+      fixedPlaces: bookings.fixedPlacesVm,
+      fixedParkings: bookings.fixedParkingsVm,
+      floorPlaces: bookings.bookingsVm,
+      carPlaces: bookings.parkingsVm,
       isLoading: false,
     })
   );

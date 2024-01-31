@@ -87,23 +87,33 @@
         "tags": [
           "Booking"
         ],
+        "parameters": [
+          {
+            "name": "month",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "Success",
             "content": {
               "text/plain": {
                 "schema": {
-                  "$ref": "#/components/schemas/BookingViewModelIEnumerableBaseResponse"
+                  "$ref": "#/components/schemas/UserBookingsViewModelBaseResponse"
                 }
               },
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/BookingViewModelIEnumerableBaseResponse"
+                  "$ref": "#/components/schemas/UserBookingsViewModelBaseResponse"
                 }
               },
               "text/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/BookingViewModelIEnumerableBaseResponse"
+                  "$ref": "#/components/schemas/UserBookingsViewModelBaseResponse"
                 }
               }
             }
@@ -588,6 +598,54 @@
         }
       }
     },
+    "/api/Booking/ReleaseFixedPlace": {
+      "put": {
+        "tags": [
+          "Booking"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BookingReleasePlaceRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BookingReleasePlaceRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/BookingReleasePlaceRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/BooleanBaseResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BooleanBaseResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BooleanBaseResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/Booking": {
       "post": {
         "tags": [
@@ -1041,7 +1099,8 @@
       "BookingPlaceTypeEnum": {
         "enum": [
           0,
-          1
+          1,
+          2
         ],
         "type": "integer",
         "format": "int32"
@@ -1262,6 +1321,24 @@
         },
         "additionalProperties": false
       },
+      "BookingReleasePlaceRequest": {
+        "type": "object",
+        "properties": {
+          "bookingPlaceId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "availableFrom": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "availableTo": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "additionalProperties": false
+      },
       "BookingStateEnum": {
         "enum": [
           0,
@@ -1326,37 +1403,6 @@
           },
           "data": {
             "$ref": "#/components/schemas/BookingViewModel"
-          },
-          "responseMessage": {
-            "type": "string",
-            "nullable": true
-          },
-          "totalCount": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "errors": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
-            "nullable": true
-          }
-        },
-        "additionalProperties": false
-      },
-      "BookingViewModelIEnumerableBaseResponse": {
-        "type": "object",
-        "properties": {
-          "status": {
-            "$ref": "#/components/schemas/RequestExecution"
-          },
-          "data": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/BookingViewModel"
-            },
-            "nullable": true
           },
           "responseMessage": {
             "type": "string",
@@ -1611,10 +1657,104 @@
         "enum": [
           1,
           2,
-          3
+          3,
+          4
         ],
         "type": "integer",
         "format": "int32"
+      },
+      "UserBookingViewModel": {
+        "type": "object",
+        "properties": {
+          "bookingId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "bookingPlaceId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "state": {
+            "$ref": "#/components/schemas/BookingStateEnum"
+          },
+          "bookingDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "bookedById": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "bookingPlaceVm": {
+            "$ref": "#/components/schemas/BookingPlaceViewModel"
+          }
+        },
+        "additionalProperties": false
+      },
+      "UserBookingsViewModel": {
+        "type": "object",
+        "properties": {
+          "parkingsVm": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/UserBookingViewModel"
+            },
+            "nullable": true
+          },
+          "bookingsVm": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/UserBookingViewModel"
+            },
+            "nullable": true
+          },
+          "fixedPlacesVm": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/BookingPlaceViewModel"
+            },
+            "nullable": true
+          },
+          "fixedParkingsVm": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/BookingPlaceViewModel"
+            },
+            "nullable": true
+          },
+          "bookedByUserVm": {
+            "$ref": "#/components/schemas/UserViewModel"
+          }
+        },
+        "additionalProperties": false
+      },
+      "UserBookingsViewModelBaseResponse": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "$ref": "#/components/schemas/RequestExecution"
+          },
+          "data": {
+            "$ref": "#/components/schemas/UserBookingsViewModel"
+          },
+          "responseMessage": {
+            "type": "string",
+            "nullable": true
+          },
+          "totalCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "errors": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
       },
       "UserViewModel": {
         "type": "object",

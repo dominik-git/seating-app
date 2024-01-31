@@ -31,3 +31,5 @@ obj/
 .idea/workspace.xml
 .idea/prettier.xml
 .idea/vcs.xml
+*.xml
+*.xml

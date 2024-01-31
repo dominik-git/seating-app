@@ -1,13 +1,13 @@
 import { Component } from '@angular/core';
 import { ReservedPlacesStore } from './reserved-places-container.store';
 import { MatDialog } from '@angular/material/dialog';
-import { BookingViewModel } from '../../../../api-generated/models/booking-view-model';
 import { MatListModule } from '@angular/material/list';
 import { MatIconModule } from '@angular/material/icon';
 import { AsyncPipe, DatePipe, NgForOf, NgIf } from '@angular/common';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatButtonModule } from '@angular/material/button';
-import { Observable } from 'rxjs';
+import { FormBuilder, FormGroup, FormsModule } from '@angular/forms';
+import { CheckboxComponent } from '../../../shared/components/form/check-box/check-box.component';
 
 @Component({
   selector: 'app-reserved-places-container',
@@ -21,31 +21,42 @@ import { Observable } from 'rxjs';
     NgForOf,
     NgIf,
     DatePipe,
+    FormsModule,
+    CheckboxComponent,
   ],
   templateUrl: './reserved-places-container.component.html',
   styleUrl: './reserved-places-container.component.scss',
   providers: [ReservedPlacesStore],
 })
 export class ReservedPlacesContainerComponent {
-  bookings$: Observable<BookingViewModel[]> =
-    this.reservedPlacesStore.selectBookings$;
+  selectFixedPlaces$ = this.reservedPlacesStore.selectFixedPlaces$;
+  selectFixedParkings$ = this.reservedPlacesStore.selectFixedParkings$;
+  selectFloorPlaces$ = this.reservedPlacesStore.selectFloorPlaces$;
+  selectCarPlaces = this.reservedPlacesStore.selectCarPlaces;
   isLoading$ = this.reservedPlacesStore.selectIsLoading$;
+
+  selectedBookings: { [bookingId: number]: boolean } = {};
+  form: FormGroup;
 
   constructor(
     private readonly reservedPlacesStore: ReservedPlacesStore,
-    public dialog: MatDialog // If using dialogs for update/delete
+    public dialog: MatDialog,
+    private fb: FormBuilder
   ) {
     this.reservedPlacesStore.getBookings();
+    this.form = this.fb.group({
+      fixedPlaces: new FormGroup({}),
+      fixedParkings: new FormGroup({}),
+      // ... other form groups
+    });
   }
 
-  updateBooking(booking: BookingViewModel): void {
-    // Logic to open a dialog or navigate to an update page
-    // e.g., this.dialog.open(UpdateBookingDialogComponent, { data: { booking } });
+  toggleSelection(bookingId: number, isSelected: boolean) {
+    this.selectedBookings[bookingId] = isSelected;
   }
 
-  deleteBooking(booking: BookingViewModel): void {
-    // Logic to delete the booking
-    // e.g., call a method from reservedPlacesStore to delete the booking
-    // this.reservedPlacesStore.deleteBooking(booking.id);
+  releaseSelected() {
+    // Example implementation
+    // Iterate over selectedBookings and handle selected items
   }
 }

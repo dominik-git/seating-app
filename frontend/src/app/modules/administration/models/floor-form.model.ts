@@ -1,4 +1,5 @@
 import { FormControl } from '@angular/forms';
+import { BookingPlaceItemTypeEnum } from '../../../api-generated/models/booking-place-item-type-enum';
 
 export interface FloorFormModel {
   description: FormControl<string>;
@@ -6,6 +7,7 @@ export interface FloorFormModel {
   name: FormControl<string>;
   svg: FormControl<string>;
   bookingPlaces?: FormControl<string[]>;
+  itemType: FormControl<BookingPlaceItemTypeEnum>;
 }
 
 export interface FloorFormModelValues {
@@ -14,4 +16,5 @@ export interface FloorFormModelValues {
   name: string;
   svg: string;
   bookingPlaces: string[];
+  itemType: BookingPlaceItemTypeEnum;
 }

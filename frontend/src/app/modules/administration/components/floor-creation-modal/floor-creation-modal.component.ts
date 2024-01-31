@@ -24,6 +24,9 @@ import { MatInputModule } from '@angular/material/input';
 import { NgIf } from '@angular/common';
 import { SafeHtmlPipe } from '../../../shared/pipes/safe-html.pipe';
 import { TranslateModule } from '@ngx-translate/core';
+import { BookingPlaceItemTypeEnum } from '../../../../api-generated/models/booking-place-item-type-enum';
+import { BookingPlaceTypeEnum } from '../../../../api-generated/models/booking-place-type-enum';
+import { MatRadioModule } from '@angular/material/radio';
 
 @Component({
   selector: 'app-floor-creation-modal',
@@ -37,6 +40,7 @@ import { TranslateModule } from '@ngx-translate/core';
     ReactiveFormsModule,
     SafeHtmlPipe,
     TranslateModule,
+    MatRadioModule,
   ],
   templateUrl: './floor-creation-modal.component.html',
   styleUrl: './floor-creation-modal.component.scss',
@@ -67,6 +71,10 @@ export class FloorCreationModalComponent {
       name: new FormControl(this.initialData?.name, Validators.required),
       svg: new FormControl(this.initialData?.svg, Validators.required),
       bookingPlaces: new FormControl([], Validators.required),
+      itemType: new FormControl(
+        BookingPlaceItemTypeEnum.$1,
+        Validators.required
+      ),
     });
   }
 
@@ -121,4 +129,6 @@ export class FloorCreationModalComponent {
       // this.floorFormStore.saveFloor(this.floorForm.value);
     }
   }
+
+  protected readonly BookingPlaceTypeEnum = BookingPlaceTypeEnum;
 }

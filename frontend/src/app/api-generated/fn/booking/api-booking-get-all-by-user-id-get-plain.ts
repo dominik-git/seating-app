@@ -6,14 +6,16 @@ import { filter, map } from 'rxjs/operators';
 import { StrictHttpResponse } from '../../strict-http-response';
 import { RequestBuilder } from '../../request-builder';
 
-import { BookingViewModelIEnumerableBaseResponse } from '../../models/booking-view-model-i-enumerable-base-response';
+import { UserBookingsViewModelBaseResponse } from '../../models/user-bookings-view-model-base-response';
 
 export interface ApiBookingGetAllByUserIdGet$Plain$Params {
+  month?: number;
 }
 
-export function apiBookingGetAllByUserIdGet$Plain(http: HttpClient, rootUrl: string, params?: ApiBookingGetAllByUserIdGet$Plain$Params, context?: HttpContext): Observable<StrictHttpResponse<BookingViewModelIEnumerableBaseResponse>> {
+export function apiBookingGetAllByUserIdGet$Plain(http: HttpClient, rootUrl: string, params?: ApiBookingGetAllByUserIdGet$Plain$Params, context?: HttpContext): Observable<StrictHttpResponse<UserBookingsViewModelBaseResponse>> {
   const rb = new RequestBuilder(rootUrl, apiBookingGetAllByUserIdGet$Plain.PATH, 'get');
   if (params) {
+    rb.query('month', params.month, {});
   }
 
   return http.request(
@@ -21,7 +23,7 @@ export function apiBookingGetAllByUserIdGet$Plain(http: HttpClient, rootUrl: str
   ).pipe(
     filter((r: any): r is HttpResponse<any> => r instanceof HttpResponse),
     map((r: HttpResponse<any>) => {
-      return r as StrictHttpResponse<BookingViewModelIEnumerableBaseResponse>;
+      return r as StrictHttpResponse<UserBookingsViewModelBaseResponse>;
     })
   );
 }
