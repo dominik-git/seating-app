@@ -4,14 +4,16 @@ import { MatDialog } from '@angular/material/dialog';
 import { EMPTY, Observable } from 'rxjs';
 import { catchError, switchMap, tap } from 'rxjs/operators';
 import { BookingService } from '../../../../api-generated/services/booking.service';
-import { BookingViewModel } from '../../../../api-generated/models/booking-view-model';
 import { UserBookingsViewModel } from '../../../../api-generated/models/user-bookings-view-model';
+import { UserBookingViewModel } from '../../../../api-generated/models/user-booking-view-model';
+import { BookingPlaceWithBookingsViewModel } from '../../../../api-generated/models/booking-place-with-bookings-view-model';
+import { ReleaseModalComponent } from '../../modals/release-modal/release-modal.component';
 
 export interface ReservedPlacesState {
-  fixedPlaces: BookingViewModel[];
-  fixedParkings: BookingViewModel[];
-  floorPlaces: BookingViewModel[];
-  carPlaces: BookingViewModel[];
+  fixedPlaces: BookingPlaceWithBookingsViewModel[];
+  fixedParkings: BookingPlaceWithBookingsViewModel[];
+  floorPlaces: UserBookingViewModel[];
+  carPlaces: UserBookingViewModel[];
   error: any;
   isLoading: boolean;
 }
@@ -23,10 +25,10 @@ export class ReservedPlacesStore extends ComponentStore<ReservedPlacesState> {
     public dialog: MatDialog
   ) {
     super({
-      fixedPlaces: [],
-      fixedParkings: [],
-      floorPlaces: [],
-      carPlaces: [],
+      fixedPlaces: null,
+      fixedParkings: null,
+      floorPlaces: null,
+      carPlaces: null,
       isLoading: false,
       error: null,
     });
@@ -86,4 +88,28 @@ export class ReservedPlacesStore extends ComponentStore<ReservedPlacesState> {
       )
     );
   });
+
+  readonly openReleaseModal = this.effect<BookingPlaceWithBookingsViewModel>(
+    place$ =>
+      place$.pipe(
+        tap(place => {
+          const dialogRef = this.dialog.open(ReleaseModalComponent, {
+            data: place,
+            width: '500px',
+          });
+          dialogRef.afterClosed().subscribe(result => {
+            if (result) {
+              this.bookingService
+                .apiBookingReleaseFixedPlacePut$Json({
+                  body: result,
+                })
+                .subscribe(data => {
+                  console.log(data);
+                });
+            }
+          });
+          // Optionally, handle modal close result if needed apiBookingReleaseFixedPlacePut$Json
+        })
+      )
+  );
 }

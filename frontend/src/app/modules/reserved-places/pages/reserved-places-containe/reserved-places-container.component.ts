@@ -8,6 +8,7 @@ import { MatGridListModule } from '@angular/material/grid-list';
 import { MatButtonModule } from '@angular/material/button';
 import { FormBuilder, FormGroup, FormsModule } from '@angular/forms';
 import { CheckboxComponent } from '../../../shared/components/form/check-box/check-box.component';
+import { BookingPlaceWithBookingsViewModel } from '../../../../api-generated/models/booking-place-with-bookings-view-model';
 
 @Component({
   selector: 'app-reserved-places-container',
@@ -53,6 +54,10 @@ export class ReservedPlacesContainerComponent {
 
   toggleSelection(bookingId: number, isSelected: boolean) {
     this.selectedBookings[bookingId] = isSelected;
+  }
+
+  onOpenReleaseModal(place: BookingPlaceWithBookingsViewModel) {
+    this.reservedPlacesStore.openReleaseModal(place);
   }
 
   releaseSelected() {

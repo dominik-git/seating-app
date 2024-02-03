@@ -22,6 +22,8 @@ import {
 import { AuthGuardService } from './app/modules/shared/guards/auth.guard';
 import { AuthInterceptor } from './app/modules/shared/interceptors/AuthInterceptor';
 import { UsersStore } from './app/modules/shared/services/users.store';
+import { MAT_DATE_LOCALE, MatNativeDateModule } from '@angular/material/core';
+import { NgxMultipleDatesModule } from 'ngx-multiple-dates';
 
 if (environment.production) {
   enableProdMode();
@@ -37,6 +39,7 @@ bootstrapApplication(AppComponent, {
     AuthGuardService,
     PlacesStore,
     UsersStore,
+    { provide: MAT_DATE_LOCALE, useValue: 'en-US' },
     {
       provide: 'SocialAuthServiceConfig',
       useValue: {
@@ -59,6 +62,8 @@ bootstrapApplication(AppComponent, {
       AppRoutingModule,
       HttpClientModule,
       BrowserAnimationsModule,
+      MatNativeDateModule, // any of the supported date adapter should be imported
+      NgxMultipleDatesModule, // import to Angular
       StoreDevtoolsModule.instrument({
         maxAge: 25,
         autoPause: true,

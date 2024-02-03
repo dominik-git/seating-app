@@ -1,0 +1,16 @@
+<mat-card>
+  <mat-card-header>
+    <mat-card-title>Reactive</mat-card-title>
+  </mat-card-header>
+  <mat-card-content>
+    <mat-form-field class="full-width">
+      <mat-label>Reactive</mat-label>
+      <ngx-multiple-dates [matDatepicker]="pickerReactive" placeholder="Reactive"
+                          [formControl]="reactiveControl">
+      </ngx-multiple-dates>
+      <mat-datepicker-toggle matPrefix [for]="pickerReactive"></mat-datepicker-toggle>
+      <mat-datepicker #pickerReactive></mat-datepicker>
+    </mat-form-field>
+    <pre>{{ reactiveControl.value | json }}</pre>
+  </mat-card-content>
+</mat-card>
