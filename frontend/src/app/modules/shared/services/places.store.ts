@@ -107,9 +107,9 @@ export class PlacesStore extends ComponentStore<PlacesStoreState> {
       return {
         ...state,
         placesSvg,
+        isLoading: false,
         placesName,
         floors: data,
-        isLoading: false,
       };
     }
   );

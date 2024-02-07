@@ -10,6 +10,7 @@ import {
   filter,
   map,
   switchMap,
+  take,
   tap,
   withLatestFrom,
 } from 'rxjs/operators';
@@ -117,27 +118,28 @@ export class ReservePlacesContainerStore
 
   readonly setDefaultPlace$ = this.effect<void>(trigger$ =>
     trigger$.pipe(
+      // Ensure floors loading state is not loading before proceeding
       switchMap(() =>
-        combineLatest([
-          this.selectIsLoadingFloors,
-          this.placesStore.selectPlacesName$,
-          this.selectSelectedDate$,
-        ])
+        this.selectIsLoadingFloors.pipe(
+          filter(isLoading => !isLoading),
+          take(1) // Ensure we only proceed once after loading is done
+        )
       ),
-      // Proceed only when isLoading is false and places are available
-      filter(
-        ([isLoading, places]) => !isLoading && places && places.length > 0
+      // Use withLatestFrom to get the latest values from places and selected date
+      withLatestFrom(
+        this.placesStore.selectPlacesName$,
+        this.selectSelectedDate$
       ),
-      // Set the selected place to the first item in places
-      tap(([isLoading, places]) => {
-        this.setSelectedPlace(places[0]);
+      // Proceed only if places are available
+      filter(([_, places]) => places && places.length > 0),
+      tap(([_, places, date]) => {
+        // Set the selected place to the first item in places if not already set
+        if (!this.get().selectedPlaceFilter) {
+          this.setSelectedPlace(places[0]);
+        }
+        // Fetch more data based on the selected place and date
+        this.fetchPlaces(places[0].id, date).subscribe();
       }),
-      // Continue with additional actions if necessary
-      switchMap(([isLoading, places, date]) => {
-        // Fetch more data based on the selected place
-        return this.fetchPlaces(places[0].id, date);
-      }),
-      // Handle any errors
       catchError(error => {
         console.error('Error in setDefaultPlace$:', error);
         return EMPTY;

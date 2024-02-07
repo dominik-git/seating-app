@@ -3,7 +3,7 @@
     <mat-spinner *ngIf="loading"></mat-spinner>
     <div [class.hidden]="loading">
       <!--      <h1 mat-dialog-title *ngIf="!data?.fixedPlace">Assign user to place</h1>-->
-      <h1>Place name{{assignForm.controls.name.value}}</h1>
+      <h1>Place name{{ assignForm.controls.name.value }}</h1>
       <mat-dialog-content class="mat-typography">
         <form class="example-form">
           <mat-form-field class="example-full-width" appearance="fill">
@@ -21,10 +21,12 @@
               >
                 <img
                   class="profile-img"
+                  referrerpolicy="no-referrer"
                   *ngIf="option.profilePicture"
                   [src]="option.profilePicture"
                   alt="Profile"
                 />
+
                 {{ option.fullName }}
               </mat-option>
             </mat-autocomplete>
