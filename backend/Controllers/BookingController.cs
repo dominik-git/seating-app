@@ -115,6 +115,7 @@ public class BookingController : BaseController
                 FloorId = item.FloorId,
                 Bookings = await GetBookingViewModels(item.Bookings),
                 ReservedForUserId = item.ReservedForId,
+                ReservedForUserVm = item.ReservedForId != null ? await GetUserViewModel(item.ReservedForId.Value) : null,
             });
         }
         var result = new FloorViewModel
