@@ -7,6 +7,7 @@
   <!-- Section for displaying person information -->
   <ng-container *ngIf="person; else showBookings">
     <div class="tooltip-section">
+      <img [src]="person.profilePicture" alt="" referrerpolicy="no-referrer">
       <div>{{ person.fullName }}</div>
       <!-- Include other person information you want to display -->
     </div>

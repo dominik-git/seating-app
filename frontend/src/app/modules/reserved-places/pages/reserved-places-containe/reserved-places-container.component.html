@@ -35,41 +35,36 @@
         </div>
       </div>
 
-      <!-- Floor Places Section -->
-      <div class="places-section">
-        <h2>Floor Places</h2>
-        <div class="places-grid">
-          <div class="place-card" *ngFor="let floorPlace of selectFloorPlaces$ | async">
-            <app-check-box [id]="floorPlace.bookingId"
-                           (checkedChange)="toggleSelection(floorPlace.bookingId, $event)">
-            </app-check-box>
-            <div class="booking-details">
-              <p>Date: {{ floorPlace.bookingDate | date:'mediumDate' }}</p>
-              <!--              <p>Booked By: {{ floorPlace.bookedByUserVm?.fullName || 'N/A' }}</p>-->
-              <p>Status: {{ floorPlace.state }}</p>
-            </div>
-          </div>
-        </div>
-      </div>
 
-      <!-- Car Places Section -->
-      <div class="places-section">
-        <h2>Car Places</h2>
-        <div class="places-grid">
-          <div class="place-card" *ngFor="let carPlace of selectCarPlaces | async">
-            <app-check-box [id]="carPlace.bookingId"
-                           (checkedChange)="toggleSelection(carPlace.bookingId, $event)">
-            </app-check-box>
-            <div class="booking-details">
-              <p>Date: {{ carPlace.bookingDate | date:'mediumDate' }}</p>
-              <!--              <p>Booked By: {{ carPlace.bookedByUserVm?.fullName || 'N/A' }}</p>-->
-              <p>Status: {{ carPlace.state }}</p>
-            </div>
-          </div>
-        </div>
-      </div>
+      <app-booking-section
+        [sectionTitle]="'Released Floor Places'"
+        [bookings]="releasedFixedFloorPlaces$ | async"
+        (releaseActionTriggered)="deleteReleaseOfFixedPlace($event)"
+      >
+      </app-booking-section>
 
-      <button (click)="releaseSelected()">Release Selected</button>
+      <app-booking-section
+        [sectionTitle]="'Released Fixed Parking'"
+        [bookings]="releasedFixedParking$ | async"
+        (releaseActionTriggered)="deleteReleaseOfFixedPlace($event)"
+      >
+      </app-booking-section>
+
+      <app-booking-section
+        [sectionTitle]="'Floor Bookings'"
+        [bookings]="selectFloorPlaces$ | async"
+        (releaseActionTriggered)="deleteBooking($event)"
+      >
+      </app-booking-section>
+
+      <app-booking-section
+        [sectionTitle]="'Parking Bookings'"
+        [bookings]="selectCarPlaces | async"
+        (releaseActionTriggered)="deleteBooking($event)"
+      >
+      </app-booking-section>
+
+
     </section>
   </div>
 </ng-container>

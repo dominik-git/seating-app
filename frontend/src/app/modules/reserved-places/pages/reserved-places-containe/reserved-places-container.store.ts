@@ -8,10 +8,14 @@ import { UserBookingsViewModel } from '../../../../api-generated/models/user-boo
 import { UserBookingViewModel } from '../../../../api-generated/models/user-booking-view-model';
 import { BookingPlaceWithBookingsViewModel } from '../../../../api-generated/models/booking-place-with-bookings-view-model';
 import { ReleaseModalComponent } from '../../modals/release-modal/release-modal.component';
+import { BookingViewModel } from '../../../../api-generated/models/booking-view-model';
+import { BookingStateEnum } from '../../../../api-generated/models/booking-state-enum';
 
 export interface ReservedPlacesState {
   fixedPlaces: BookingPlaceWithBookingsViewModel[];
   fixedParkings: BookingPlaceWithBookingsViewModel[];
+  releasedFixedParking: BookingViewModel[];
+  releasedFixedFloorPlaces: BookingViewModel[];
   floorPlaces: UserBookingViewModel[];
   carPlaces: UserBookingViewModel[];
   error: any;
@@ -25,10 +29,12 @@ export class ReservedPlacesStore extends ComponentStore<ReservedPlacesState> {
     public dialog: MatDialog
   ) {
     super({
-      fixedPlaces: null,
-      fixedParkings: null,
-      floorPlaces: null,
-      carPlaces: null,
+      fixedPlaces: [],
+      releasedFixedFloorPlaces: [],
+      fixedParkings: [],
+      releasedFixedParking: [],
+      floorPlaces: [],
+      carPlaces: [],
       isLoading: false,
       error: null,
     });
@@ -41,22 +47,42 @@ export class ReservedPlacesStore extends ComponentStore<ReservedPlacesState> {
   );
   readonly selectFixedPlaces$ = this.select(state => state.fixedPlaces);
   readonly selectFixedParkings$ = this.select(state => state.fixedParkings);
+
   readonly selectFloorPlaces$ = this.select(state => state.floorPlaces);
   readonly selectCarPlaces = this.select(state => state.carPlaces);
+
+  readonly selectReleasedFixedFloorPlaces$ = this.select(
+    state => state.releasedFixedFloorPlaces
+  );
+  readonly selectReleasedFixedParking$ = this.select(
+    state => state.releasedFixedParking
+  );
   readonly error$: Observable<string | null> = this.select(
     state => state.error
   );
 
   // UPDATERS
   readonly setBookings = this.updater(
-    (state, bookings: UserBookingsViewModel) => ({
-      ...state,
-      fixedPlaces: bookings.fixedPlacesVm,
-      fixedParkings: bookings.fixedParkingsVm,
-      floorPlaces: bookings.bookingsVm,
-      carPlaces: bookings.parkingsVm,
-      isLoading: false,
-    })
+    (state, bookings: UserBookingsViewModel) => {
+      return {
+        ...state,
+        fixedPlaces: bookings.fixedPlacesVm,
+        fixedParkings: bookings.fixedParkingsVm,
+        floorPlaces: bookings.bookingsVm.filter(
+          floorBooking => floorBooking.state === BookingStateEnum.$1
+        ),
+        releasedFixedFloorPlaces: bookings.bookingsVm.filter(
+          floorBooking => floorBooking.state === BookingStateEnum.$0
+        ),
+        carPlaces: bookings.parkingsVm.filter(
+          parkingBooking => parkingBooking.state === BookingStateEnum.$1
+        ),
+        releasedFixedParking: bookings.parkingsVm.filter(
+          parkingBooking => parkingBooking.state === BookingStateEnum.$0
+        ),
+        isLoading: false,
+      };
+    }
   );
 
   readonly setLoading = this.updater((state, isLoading: boolean) => ({
@@ -105,6 +131,7 @@ export class ReservedPlacesStore extends ComponentStore<ReservedPlacesState> {
                 })
                 .subscribe(data => {
                   console.log(data);
+                  this.getBookings();
                 });
             }
           });

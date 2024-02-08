@@ -92,7 +92,13 @@ export class EditPlaceComponent implements AfterViewInit {
 
       element.classList.toggle(this.fixedClass, isFixed);
       if (isFixed) {
-        element.style.fill = '#D7063B'; // Red for fixed places
+        if (place.bookings?.length > 0) {
+          element.style.fill = '#0641D7FF'; // Red for fixed places
+        } else {
+          element.style.fill = '#D7063B'; // Red for fixed places
+        }
+
+        console.log(place);
       } else if (isHybridWithBookings) {
         element.style.fill = '#808080'; // Grey for hybrid places with bookings
       } else {
@@ -122,6 +128,23 @@ export class EditPlaceComponent implements AfterViewInit {
     element: HTMLElement,
     place: BookingPlaceWithBookingsViewModel
   ): void {
+    // Ensure place is defined
+    if (!place) return;
+
+    const isFixed = place.type === BookingPlaceTypeEnum.$0;
+    const isHybrid = place.type === BookingPlaceTypeEnum.$1;
+    const hasBookings = place.bookings && place.bookings.length > 0;
+
+    // Condition to determine when to open the modal
+    if ((isFixed && hasBookings) || (isHybrid && !hasBookings)) {
+      // Logic to open modal
+      console.log('Opening modal for:', place.name);
+      this.emitPlaceSelected(place);
+    }
+  }
+
+  // Helper method to emit placeSelected event
+  private emitPlaceSelected(place: BookingPlaceWithBookingsViewModel): void {
     this.placeSelected.emit({
       name: place.name,
       id: place.id,

@@ -14,37 +14,6 @@
     margin-bottom: 1rem;
   }
 
-  .places-section {
-    margin-bottom: 2rem;
-
-    .places-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-      gap: 1rem;
-    }
-
-    .place-card {
-      background: white;
-      border: 1px solid #ddd;
-      border-radius: 8px;
-      padding: 1rem;
-      text-align: left;
-      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-
-      input[type="checkbox"] {
-        margin-right: 10px;
-      }
-
-      label {
-        cursor: pointer;
-      }
-
-      h3 {
-        margin-top: 0;
-        color: #4a6fa5;
-      }
-    }
-  }
 
   button {
     background-color: #4a6fa5;

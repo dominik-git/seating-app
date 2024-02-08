@@ -175,12 +175,16 @@ export class ReservePlacesContainerStore
         dialogRef
           .afterClosed()
           .pipe(
-            filter(response => !!response), // Proceed only if there's a response
-            switchMap(() => {
+            switchMap(response => {
+              if (response === true) {
+                return this.fetchPlaces(selectedFloor.id, selectedDate);
+              } else {
+                this.setLoading(false);
+                return EMPTY;
+              }
               // Fetch updated places based on the selected floor and date
-              return this.fetchPlaces(selectedFloor.id, selectedDate);
             }),
-            tap(() => this.setLoading(false)), // Set loading to false after updating
+
             catchError(error => {
               console.error('Error fetching places:', error);
               this.setLoading(false);

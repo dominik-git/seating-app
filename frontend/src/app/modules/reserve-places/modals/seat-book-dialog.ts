@@ -74,7 +74,7 @@ export class SeatBookDialog {
   }
 
   cancelDialog() {
-    this.dialogRef.close();
+    this.dialogRef.close(false);
   }
 
   closeDialog() {

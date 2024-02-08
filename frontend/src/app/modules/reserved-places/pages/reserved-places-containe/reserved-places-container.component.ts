@@ -9,6 +9,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { FormBuilder, FormGroup, FormsModule } from '@angular/forms';
 import { CheckboxComponent } from '../../../shared/components/form/check-box/check-box.component';
 import { BookingPlaceWithBookingsViewModel } from '../../../../api-generated/models/booking-place-with-bookings-view-model';
+import { BookingSectionComponent } from '../../components/booking-section/booking-section.component';
 
 @Component({
   selector: 'app-reserved-places-container',
@@ -24,6 +25,7 @@ import { BookingPlaceWithBookingsViewModel } from '../../../../api-generated/mod
     DatePipe,
     FormsModule,
     CheckboxComponent,
+    BookingSectionComponent,
   ],
   templateUrl: './reserved-places-container.component.html',
   styleUrl: './reserved-places-container.component.scss',
@@ -34,6 +36,11 @@ export class ReservedPlacesContainerComponent {
   selectFixedParkings$ = this.reservedPlacesStore.selectFixedParkings$;
   selectFloorPlaces$ = this.reservedPlacesStore.selectFloorPlaces$;
   selectCarPlaces = this.reservedPlacesStore.selectCarPlaces;
+
+  releasedFixedFloorPlaces$ =
+    this.reservedPlacesStore.selectReleasedFixedFloorPlaces$;
+  releasedFixedParking$ = this.reservedPlacesStore.selectReleasedFixedParking$;
+
   isLoading$ = this.reservedPlacesStore.selectIsLoading$;
 
   selectedBookings: { [bookingId: number]: boolean } = {};
@@ -60,8 +67,11 @@ export class ReservedPlacesContainerComponent {
     this.reservedPlacesStore.openReleaseModal(place);
   }
 
-  releaseSelected() {
-    // Example implementation
-    // Iterate over selectedBookings and handle selected items
+  deleteReleaseOfFixedPlace(data) {
+    console.log('delete release:', data);
+  }
+
+  deleteBooking(data) {
+    console.log('delete booking:', data);
   }
 }
