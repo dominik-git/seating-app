@@ -135,6 +135,11 @@ export class EditPlaceComponent implements AfterViewInit {
     const isHybrid = place.type === BookingPlaceTypeEnum.$1;
     const hasBookings = place.bookings && place.bookings.length > 0;
 
+    if (this.isAdminView) {
+      this.emitPlaceSelected(place);
+      return;
+    }
+
     // Condition to determine when to open the modal
     if ((isFixed && hasBookings) || (isHybrid && !hasBookings)) {
       // Logic to open modal

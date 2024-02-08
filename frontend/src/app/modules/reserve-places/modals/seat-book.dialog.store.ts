@@ -13,6 +13,8 @@ import { BookingViewModel } from '../../../api-generated/models/booking-view-mod
 import { BookingDay, SeatBookDialog } from './seat-book-dialog';
 import { BookingStateEnum } from '../../../api-generated/models/booking-state-enum';
 import { MatDialogRef } from '@angular/material/dialog';
+import { BookingPlaceTypeEnum } from '../../../api-generated/models/booking-place-type-enum';
+import { BookingPlaceWithBookingsViewModel } from '../../../api-generated/models/booking-place-with-bookings-view-model';
 
 export interface SeatBookingState {
   selectedWeek: Date[];
@@ -55,15 +57,16 @@ export class SeatBookingStore extends ComponentStore<SeatBookingState> {
 
   // Updater to set bookings and update days based on bookedDays
   readonly setBookingsAndUpdateDays = this.updater(
-    (state, bookings: BookingViewModel[]) => {
+    (state, response: BookingPlaceWithBookingsViewModel) => {
       const updatedDays = this.createBookingDays(
         state.selectedWeek,
-        bookings,
-        state.bookedDays
+        response.bookings,
+        state.bookedDays,
+        response.type
       );
       return {
         ...state,
-        bookings,
+        bookings: response.bookings,
         days: updatedDays,
         loading: false,
       };
@@ -183,7 +186,7 @@ export class SeatBookingStore extends ComponentStore<SeatBookingState> {
             delay(300),
             tapResponse(
               response => {
-                this.setBookingsAndUpdateDays(response.data.bookings);
+                this.setBookingsAndUpdateDays(response.data);
               },
               error => {
                 console.error('Error fetching bookings:', error);
@@ -202,21 +205,45 @@ export class SeatBookingStore extends ComponentStore<SeatBookingState> {
   private createBookingDays(
     selectedWeek: Date[],
     bookings: BookingViewModel[],
-    bookedDays: Date[]
+    bookedDays: Date[],
+    type: BookingPlaceTypeEnum
   ): BookingDay[] {
     return selectedWeek.map(date => {
-      const bookingForDay = bookings.filter(booking => {
-        return (
+      // Filter bookings for the current day.
+      const bookingForDay = bookings.filter(
+        booking =>
           new Date(booking.bookingDate).toDateString() === date.toDateString()
-        );
-      });
+      );
+
+      // Initially, set the day as not disabled.
+      let isDisabled = this.isWeekend(date); // Disable the day if it's a weekend.
+
+      if (!isDisabled) {
+        // Only proceed with further checks if it's not a weekend.
+        if (type === BookingPlaceTypeEnum.$0) {
+          // For fixed places, the day is disabled if there are no available bookings.
+          isDisabled = !bookingForDay.some(
+            booking => booking.state === BookingStateEnum.$0
+          );
+        } else if (type === BookingPlaceTypeEnum.$1) {
+          // For hybrid places, the day is disabled if there is at least one confirmed booking.
+          isDisabled = bookingForDay.some(
+            booking => booking.state === BookingStateEnum.$1
+          );
+        }
+      }
+
+      // Determine if the day is selected by checking against the bookedDays array.
+      const isSelected = bookedDays.some(
+        bookedDate => bookedDate.toDateString() === date.toDateString()
+      );
+
       return {
-        date: date,
+        date,
         bookings: bookingForDay,
-        bookedByCurrentUser: false, // Logic to determine this
-        isSelected: bookedDays.some(bookedDate => {
-          return bookedDate.toDateString() === date.toDateString();
-        }),
+        bookedByCurrentUser: false, // You'll need to implement logic to determine this.
+        isDisabled,
+        isSelected,
       };
     });
   }
@@ -233,5 +260,9 @@ export class SeatBookingStore extends ComponentStore<SeatBookingState> {
       };
     });
     return request;
+  }
+
+  private isWeekend(day: Date): boolean {
+    return day.getDay() == 6 || day.getDay() == 0;
   }
 }

@@ -1,6 +1,6 @@
 <div class="card">
   <div class="left">
-    <span class="available" [class.reserved-slot]="isPlaceReserved()"></span>
+    <span class="available" [class.reserved-slot]="day.isDisabled"></span>
     <div class="slot-details">
       <div class="date">{{ day.date | dateDay: true }}</div>
       <!--      <div *ngIf="day?.name">Booked by {{ day.name }}</div>-->
@@ -11,7 +11,7 @@
       <mat-checkbox
         class="example-margin"
         (change)="onDateSelect($event)"
-        [disabled]="isPlaceReserved()"
+        [disabled]="day.isDisabled"
         [(ngModel)]="day.isSelected"
       ></mat-checkbox>
     </div>

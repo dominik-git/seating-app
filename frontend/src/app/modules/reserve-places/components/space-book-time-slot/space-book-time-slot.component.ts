@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { DateDayPipe } from '../../../shared/pipes/date-day.pipe';
 import { FormsModule } from '@angular/forms';
 import { MatCheckboxModule } from '@angular/material/checkbox';
@@ -19,15 +19,13 @@ import { BookingDay } from '../../modals/seat-book-dialog';
     JsonPipe,
   ],
 })
-export class SpaceBookTimeSlotComponent implements OnInit {
+export class SpaceBookTimeSlotComponent {
   @Input() day: BookingDay;
   @Input() isDaySelected: boolean;
   @Output() selectDay = new EventEmitter<Date>();
   @Output() unSelectDay = new EventEmitter<Date>();
 
   constructor() {}
-
-  ngOnInit(): void {}
 
   onDateSelect(event: { source: any; checked: boolean }) {
     if (event.checked) {

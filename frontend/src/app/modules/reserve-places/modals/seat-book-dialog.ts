@@ -16,17 +16,20 @@ import { BookingViewModel } from '../../../api-generated/models/booking-view-mod
 import { SeatBookingStore } from './seat-book.dialog.store';
 import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
+import { BookingPlaceTypeEnum } from '../../../api-generated/models/booking-place-type-enum';
 
 export interface BookingDay {
   date: Date;
   bookings?: BookingViewModel[];
   bookedByCurrentUser: boolean;
   isSelected: boolean;
+  isDisabled?: boolean;
+  type?: BookingPlaceTypeEnum;
 }
 
 @Component({
   selector: 'dialog-content-example-dialog',
-  styleUrls: ['seat-book-dialog.css'],
+  styleUrls: ['seat-book-dialog.scss'],
   templateUrl: 'seat-book-dialog.html',
   standalone: true,
   imports: [
