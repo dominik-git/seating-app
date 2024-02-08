@@ -239,7 +239,7 @@ public class BookingController : BaseController
                 }
 
                 var bookings = await _repository.GetBookingByBookingPlaceIdWithDateAsync(bookingVm.BookingPlaceId, bookingVm.BookingDate);
-                if (bookings == null || bookings.First(x => x.State != BookingStateEnum.Available) != null)
+                if (bookings == null || bookings.FirstOrDefault(x => x.State != BookingStateEnum.Available) != null)
                 {
                     errors.Add($"This booking place is reserved for day you choosed. ref: {bookingVm.BookingDate}");
                     continue;
