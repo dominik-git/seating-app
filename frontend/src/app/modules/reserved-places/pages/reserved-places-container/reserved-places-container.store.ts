@@ -156,33 +156,31 @@ export class ReservedPlacesStore extends ComponentStore<ReservedPlacesState> {
     params$.pipe(
       tap(() => this.setLoading(true)),
       switchMap(({ bookingId, bookingType }) =>
-        this.bookingService
-          .apiBookingBookingPlaceIdDelete$Plain({ id: bookingId })
-          .pipe(
-            tap(() => {
-              // Determine the booking type and call the respective updater
-              switch (bookingType) {
-                case BookingTypeEnum.FloorPlace:
-                  this.removeFloorPlaceBooking(bookingId);
-                  break;
-                case BookingTypeEnum.ReleasedFixedFloorPlace:
-                  this.removeReleasedFixedFloorPlaceBooking(bookingId);
-                  break;
-                case BookingTypeEnum.CarPlace:
-                  this.removeCarPlaceBooking(bookingId);
-                  break;
-                case BookingTypeEnum.ReleasedFixedParking:
-                  this.removeReleasedFixedParkingBooking(bookingId);
-                  break;
-              }
-            }),
-            catchError(error => {
-              console.error('Error deleting booking:', error);
-              this.setError(error.toString());
-              return EMPTY;
-            }),
-            finalize(() => this.setLoading(false))
-          )
+        this.bookingService.apiBookingIdDelete$Plain({ id: bookingId }).pipe(
+          tap(() => {
+            // Determine the booking type and call the respective updater
+            switch (bookingType) {
+              case BookingTypeEnum.FloorPlace:
+                this.removeFloorPlaceBooking(bookingId);
+                break;
+              case BookingTypeEnum.ReleasedFixedFloorPlace:
+                this.removeReleasedFixedFloorPlaceBooking(bookingId);
+                break;
+              case BookingTypeEnum.CarPlace:
+                this.removeCarPlaceBooking(bookingId);
+                break;
+              case BookingTypeEnum.ReleasedFixedParking:
+                this.removeReleasedFixedParkingBooking(bookingId);
+                break;
+            }
+          }),
+          catchError(error => {
+            console.error('Error deleting booking:', error);
+            this.setError(error.toString());
+            return EMPTY;
+          }),
+          finalize(() => this.setLoading(false))
+        )
       )
     )
   );
