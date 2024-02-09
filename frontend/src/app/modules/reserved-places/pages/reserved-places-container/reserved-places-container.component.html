@@ -39,28 +39,26 @@
       <app-booking-section
         [sectionTitle]="'Released Floor Places'"
         [bookings]="releasedFixedFloorPlaces$ | async"
-        (releaseActionTriggered)="deleteReleaseOfFixedPlace($event)"
-      >
+        (bookingDeleted)="deleteBooking($event,BookingTypeEnum.ReleasedFixedFloorPlace)">
       </app-booking-section>
 
       <app-booking-section
         [sectionTitle]="'Released Fixed Parking'"
         [bookings]="releasedFixedParking$ | async"
-        (releaseActionTriggered)="deleteReleaseOfFixedPlace($event)"
-      >
+        (bookingDeleted)="deleteBooking($event,BookingTypeEnum.ReleasedFixedParking)">
       </app-booking-section>
 
       <app-booking-section
         [sectionTitle]="'Floor Bookings'"
         [bookings]="selectFloorPlaces$ | async"
-        (releaseActionTriggered)="deleteBooking($event)"
+        (bookingDeleted)="deleteBooking($event,BookingTypeEnum.FloorPlace)"
       >
       </app-booking-section>
 
       <app-booking-section
         [sectionTitle]="'Parking Bookings'"
         [bookings]="selectCarPlaces | async"
-        (releaseActionTriggered)="deleteBooking($event)"
+        (bookingDeleted)="deleteBooking($event,BookingTypeEnum.CarPlace)"
       >
       </app-booking-section>
 

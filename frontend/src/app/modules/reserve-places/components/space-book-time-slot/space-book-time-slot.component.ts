@@ -22,25 +22,16 @@ import { BookingDay } from '../../modals/seat-book-dialog';
 export class SpaceBookTimeSlotComponent {
   @Input() day: BookingDay;
   @Input() isDaySelected: boolean;
-  @Output() selectDay = new EventEmitter<Date>();
-  @Output() unSelectDay = new EventEmitter<Date>();
+  @Output() selectDay = new EventEmitter<BookingDay>();
+  @Output() unSelectDay = new EventEmitter<BookingDay>();
 
   constructor() {}
 
   onDateSelect(event: { source: any; checked: boolean }) {
     if (event.checked) {
-      this.selectDay.emit(this.day.date);
+      this.selectDay.emit(this.day);
     } else {
-      this.unSelectDay.emit(this.day.date);
+      this.unSelectDay.emit(this.day);
     }
-  }
-
-  isWeekend(day: Date): boolean {
-    return day.getDay() == 6 || day.getDay() == 0;
-  }
-
-  isPlaceReserved() {
-    // return !!(this.isWeekend(this.day.date) || this.day?.name);
-    return false;
   }
 }

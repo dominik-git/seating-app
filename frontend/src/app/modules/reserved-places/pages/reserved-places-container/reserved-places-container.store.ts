@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { ComponentStore } from '@ngrx/component-store';
 import { MatDialog } from '@angular/material/dialog';
 import { EMPTY, Observable } from 'rxjs';
-import { catchError, switchMap, tap } from 'rxjs/operators';
+import { catchError, finalize, switchMap, tap } from 'rxjs/operators';
 import { BookingService } from '../../../../api-generated/services/booking.service';
 import { UserBookingsViewModel } from '../../../../api-generated/models/user-bookings-view-model';
 import { UserBookingViewModel } from '../../../../api-generated/models/user-booking-view-model';
@@ -10,6 +10,7 @@ import { BookingPlaceWithBookingsViewModel } from '../../../../api-generated/mod
 import { ReleaseModalComponent } from '../../modals/release-modal/release-modal.component';
 import { BookingViewModel } from '../../../../api-generated/models/booking-view-model';
 import { BookingStateEnum } from '../../../../api-generated/models/booking-state-enum';
+import { BookingTypeEnum } from '../../../shared/enums/bookingType.enum';
 
 export interface ReservedPlacesState {
   fixedPlaces: BookingPlaceWithBookingsViewModel[];
@@ -95,8 +96,41 @@ export class ReservedPlacesStore extends ComponentStore<ReservedPlacesState> {
     error,
   }));
 
+  readonly removeFloorPlaceBooking = this.updater<number>(
+    (state, bookingId) => ({
+      ...state,
+      floorPlaces: state.floorPlaces.filter(
+        booking => booking.bookingId !== bookingId
+      ),
+    })
+  );
+
+  readonly removeReleasedFixedFloorPlaceBooking = this.updater<number>(
+    (state, bookingId) => ({
+      ...state,
+      releasedFixedFloorPlaces: state.releasedFixedFloorPlaces.filter(
+        booking => booking.bookingId !== bookingId
+      ),
+    })
+  );
+
+  readonly removeCarPlaceBooking = this.updater<number>((state, bookingId) => ({
+    ...state,
+    carPlaces: state.carPlaces.filter(
+      booking => booking.bookingId !== bookingId
+    ),
+  }));
+
+  readonly removeReleasedFixedParkingBooking = this.updater<number>(
+    (state, bookingId) => ({
+      ...state,
+      releasedFixedParking: state.releasedFixedParking.filter(
+        booking => booking.bookingId !== bookingId
+      ),
+    })
+  );
+
   // EFFECTS
-  GetAllByUserId;
   readonly getBookings = this.effect((trigger$: Observable<void>) => {
     return trigger$.pipe(
       // 👇 Handle race condition with the proper choice of the flattening operator.
@@ -114,6 +148,44 @@ export class ReservedPlacesStore extends ComponentStore<ReservedPlacesState> {
       )
     );
   });
+
+  readonly deleteBooking = this.effect<{
+    bookingId: number;
+    bookingType: BookingTypeEnum;
+  }>(params$ =>
+    params$.pipe(
+      tap(() => this.setLoading(true)),
+      switchMap(({ bookingId, bookingType }) =>
+        this.bookingService
+          .apiBookingBookingPlaceIdDelete$Plain({ id: bookingId })
+          .pipe(
+            tap(() => {
+              // Determine the booking type and call the respective updater
+              switch (bookingType) {
+                case BookingTypeEnum.FloorPlace:
+                  this.removeFloorPlaceBooking(bookingId);
+                  break;
+                case BookingTypeEnum.ReleasedFixedFloorPlace:
+                  this.removeReleasedFixedFloorPlaceBooking(bookingId);
+                  break;
+                case BookingTypeEnum.CarPlace:
+                  this.removeCarPlaceBooking(bookingId);
+                  break;
+                case BookingTypeEnum.ReleasedFixedParking:
+                  this.removeReleasedFixedParkingBooking(bookingId);
+                  break;
+              }
+            }),
+            catchError(error => {
+              console.error('Error deleting booking:', error);
+              this.setError(error.toString());
+              return EMPTY;
+            }),
+            finalize(() => this.setLoading(false))
+          )
+      )
+    )
+  );
 
   readonly openReleaseModal = this.effect<BookingPlaceWithBookingsViewModel>(
     place$ =>

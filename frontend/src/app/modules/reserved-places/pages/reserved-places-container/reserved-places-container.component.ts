@@ -10,6 +10,7 @@ import { FormBuilder, FormGroup, FormsModule } from '@angular/forms';
 import { CheckboxComponent } from '../../../shared/components/form/check-box/check-box.component';
 import { BookingPlaceWithBookingsViewModel } from '../../../../api-generated/models/booking-place-with-bookings-view-model';
 import { BookingSectionComponent } from '../../components/booking-section/booking-section.component';
+import { BookingTypeEnum } from '../../../shared/enums/bookingType.enum';
 
 @Component({
   selector: 'app-reserved-places-container',
@@ -45,6 +46,7 @@ export class ReservedPlacesContainerComponent {
 
   selectedBookings: { [bookingId: number]: boolean } = {};
   form: FormGroup;
+  protected BookingTypeEnum = BookingTypeEnum;
 
   constructor(
     private readonly reservedPlacesStore: ReservedPlacesStore,
@@ -67,11 +69,8 @@ export class ReservedPlacesContainerComponent {
     this.reservedPlacesStore.openReleaseModal(place);
   }
 
-  deleteReleaseOfFixedPlace(data) {
-    console.log('delete release:', data);
-  }
-
-  deleteBooking(data) {
-    console.log('delete booking:', data);
+  deleteBooking(bookingId: number, type: BookingTypeEnum) {
+    console.log('delete booking:', bookingId);
+    this.reservedPlacesStore.deleteBooking({ bookingId, bookingType: type });
   }
 }

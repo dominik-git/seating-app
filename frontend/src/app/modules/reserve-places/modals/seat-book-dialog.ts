@@ -21,8 +21,8 @@ import { BookingPlaceTypeEnum } from '../../../api-generated/models/booking-plac
 export interface BookingDay {
   date: Date;
   bookings?: BookingViewModel[];
-  bookedByCurrentUser: boolean;
-  isSelected: boolean;
+  bookedByCurrentUser?: boolean;
+  isSelected?: boolean;
   isDisabled?: boolean;
   type?: BookingPlaceTypeEnum;
 }
@@ -69,13 +69,6 @@ export class SeatBookDialog {
     this.loading$ = seatBookingStore.select(state => state.loading);
   }
 
-  ngOnInit() {
-    this.seatBookingStore.setParams({
-      selectedPlaceId: this.data.placeId,
-      selectedDate: this.data.selectedDate,
-    });
-  }
-
   cancelDialog() {
     this.dialogRef.close(false);
   }
@@ -89,12 +82,12 @@ export class SeatBookDialog {
     this.seatBookingStore.changeWeek(daysInWeek);
   }
 
-  onDaySelect(date: Date) {
-    this.seatBookingStore.toggleDaySelection(date);
+  onDaySelect(day: BookingDay) {
+    this.seatBookingStore.selectDay(day);
   }
 
-  onDayUnSelect(date: Date) {
-    this.seatBookingStore.toggleDaySelection(date);
+  onDayUnSelect(day: BookingDay) {
+    this.seatBookingStore.unselectDay(day);
   }
 
   trackByDay(index: number, day: BookingDay): any {

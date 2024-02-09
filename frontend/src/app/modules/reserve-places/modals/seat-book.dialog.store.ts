@@ -23,7 +23,8 @@ export interface SeatBookingState {
   selectedPlaceId: number;
   selectedDate: Date;
   days: BookingDay[];
-  bookedDays: Date[]; // Array to keep track of selected days
+  bookedDays: BookingDay[]; // Array to keep track of selected days
+  type: BookingPlaceTypeEnum;
 }
 
 @Injectable()
@@ -39,11 +40,13 @@ export class SeatBookingStore extends ComponentStore<SeatBookingState> {
       selectedPlaceId: null,
       selectedDate: new Date(),
       days: [],
-      bookedDays: [], // Initialize the bookedDays array
+      bookedDays: [],
+      type: null,
     });
   }
 
   readonly selectSelectedDate$ = this.select(state => state.selectedDate);
+  readonly selectType$ = this.select(state => state.type);
   readonly selectSelectedPlaceId$ = this.select(state => state.selectedPlaceId);
 
   readonly selectDays$ = this.select(state => state.days);
@@ -69,6 +72,7 @@ export class SeatBookingStore extends ComponentStore<SeatBookingState> {
         bookings: response.bookings,
         days: updatedDays,
         loading: false,
+        type: response.type,
       };
     }
   );
@@ -97,35 +101,33 @@ export class SeatBookingStore extends ComponentStore<SeatBookingState> {
     })
   );
 
-  readonly selectDay = this.updater((state, date: Date) => ({
-    ...state,
-    days: state.days.map(day => ({
-      ...day,
-      isSelected:
-        day.date.toDateString() === date.toDateString()
-          ? !day.isSelected
-          : day.isSelected,
-    })),
-  }));
-
-  // Updater to toggle day selection
-  readonly toggleDaySelection = this.updater((state, date: Date) => {
-    const isDateSelected = state.bookedDays.some(
-      d => d.toDateString() === date.toDateString()
+  readonly selectDay = this.updater((state, dayToSelect: BookingDay) => {
+    // Check if the day is already in the bookedDays array
+    const isAlreadySelected = state.bookedDays.some(
+      day => day.date.toDateString() === dayToSelect.date.toDateString()
     );
-    const updatedBookedDays = isDateSelected
-      ? state.bookedDays.filter(d => d.toDateString() !== date.toDateString())
-      : [...state.bookedDays, date];
+
+    if (!isAlreadySelected) {
+      // Add the day to bookedDays if it's not already selected
+      return {
+        ...state,
+        bookedDays: [...state.bookedDays, { ...dayToSelect, isSelected: true }],
+      };
+    }
+
+    return state; // Return current state if the day is already selected
+  });
+
+  // Method to unselect a day
+  readonly unselectDay = this.updater((state, dayToUnselect: BookingDay) => {
+    // Remove the day from bookedDays if it's currently selected
+    const updatedBookedDays = state.bookedDays.filter(
+      day => day.date.toDateString() !== dayToUnselect.date.toDateString()
+    );
 
     return {
       ...state,
       bookedDays: updatedBookedDays,
-      days: state.days.map(day => ({
-        ...day,
-        isSelected: updatedBookedDays.some(
-          d => d.toDateString() === day.date.toDateString()
-        ),
-      })),
     };
   });
 
@@ -136,9 +138,13 @@ export class SeatBookingStore extends ComponentStore<SeatBookingState> {
     (request$: Observable<void>) =>
       request$.pipe(
         tap(() => this.setLoading(true)),
-        withLatestFrom(this.selectedBookedDays$, this.selectSelectedPlaceId$),
-        switchMap(([_, bookedDays, placeId]) => {
-          const bookings = this.mapBookingRequest(bookedDays, placeId);
+        withLatestFrom(
+          this.selectedBookedDays$,
+          this.selectSelectedPlaceId$,
+          this.selectType$
+        ),
+        switchMap(([_, bookedDays, placeId, type]) => {
+          const bookings = this.mapBookingRequest(bookedDays, placeId, type);
 
           return this.bookingService
             .apiBookingCreateOrUpdateBookingsPut$Json({
@@ -205,7 +211,7 @@ export class SeatBookingStore extends ComponentStore<SeatBookingState> {
   private createBookingDays(
     selectedWeek: Date[],
     bookings: BookingViewModel[],
-    bookedDays: Date[],
+    bookedDays: BookingDay[],
     type: BookingPlaceTypeEnum
   ): BookingDay[] {
     return selectedWeek.map(date => {
@@ -235,7 +241,7 @@ export class SeatBookingStore extends ComponentStore<SeatBookingState> {
 
       // Determine if the day is selected by checking against the bookedDays array.
       const isSelected = bookedDays.some(
-        bookedDate => bookedDate.toDateString() === date.toDateString()
+        bookedDate => bookedDate.date.toDateString() === date.toDateString()
       );
 
       return {
@@ -249,16 +255,30 @@ export class SeatBookingStore extends ComponentStore<SeatBookingState> {
   }
 
   private mapBookingRequest(
-    bookedDays: Date[],
-    selectedPlaceId: number
+    bookedDays: BookingDay[],
+    selectedPlaceId: number,
+    type: BookingPlaceTypeEnum
   ): BookingViewModel[] {
-    const request = bookedDays.map(day => {
-      return {
-        bookingDate: day.toISOString(),
-        bookingPlaceId: selectedPlaceId,
-        state: BookingStateEnum.$1,
-      };
-    });
+    let request;
+    if (type === BookingPlaceTypeEnum.$0) {
+      request = bookedDays.map(day => {
+        return {
+          bookingId: day.bookings[0].bookingId,
+          bookingPlaceId: selectedPlaceId,
+          state: BookingPlaceTypeEnum.$1,
+          bookingDate: day.date.toISOString(),
+        };
+      });
+    } else {
+      request = bookedDays.map(day => {
+        return {
+          bookingDate: day.date.toISOString(),
+          bookingPlaceId: selectedPlaceId,
+          state: BookingStateEnum.$1,
+        };
+      });
+    }
+
     return request;
   }
 

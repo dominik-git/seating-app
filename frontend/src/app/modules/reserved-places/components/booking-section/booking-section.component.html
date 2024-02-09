@@ -2,8 +2,7 @@
   <h2>{{ sectionTitle }}</h2>
   <div class="places-grid">
     <div class="place-card" *ngFor="let booking of bookings">
-      <app-check-box [id]="booking.bookingId"
-                     (checkedChange)="toggleSelection(booking.bookingId, $event)"></app-check-box>
+      <mat-icon class="delete-icon" (click)="deleteBooking(booking.bookingId)">delete</mat-icon>
       <div class="booking-details">
         <p>Date: {{ booking.bookingDate | date:'mediumDate' }}</p>
         <p>Status: {{ booking.state }}</p>
@@ -12,14 +11,4 @@
     </div>
   </div>
 </div>
-
-
-<button
-  mat-raised-button
-  color="primary"
-  (click)="releaseSelected()"
-
->
-  Release
-</button>
 
