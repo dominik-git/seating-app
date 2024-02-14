@@ -15,7 +15,7 @@ import { BookingStateEnum } from '../../../api-generated/models/booking-state-en
 import { MatDialogRef } from '@angular/material/dialog';
 import { BookingPlaceTypeEnum } from '../../../api-generated/models/booking-place-type-enum';
 import { BookingPlaceWithBookingsViewModel } from '../../../api-generated/models/booking-place-with-bookings-view-model';
-import { startOfDay } from 'date-fns';
+import { isBefore, startOfDay } from 'date-fns';
 
 export interface SeatBookingState {
   selectedWeek: Date[];
@@ -215,6 +215,8 @@ export class SeatBookingStore extends ComponentStore<SeatBookingState> {
     bookedDays: BookingDay[],
     type: BookingPlaceTypeEnum
   ): BookingDay[] {
+    const today = startOfDay(new Date()); // Ensure comparison is done at the start of today
+
     return selectedWeek.map(date => {
       // Filter bookings for the current day.
       const bookingForDay = bookings.filter(
@@ -222,33 +224,29 @@ export class SeatBookingStore extends ComponentStore<SeatBookingState> {
           new Date(booking.bookingDate).toDateString() === date.toDateString()
       );
 
-      // Initially, set the day as not disabled.
-      let isDisabled = this.isWeekend(date); // Disable the day if it's a weekend.
+      // Check if the day is older than today to disable it.
+      let isDisabled = isBefore(date, today) || this.isWeekend(date);
 
       if (!isDisabled) {
-        // Only proceed with further checks if it's not a weekend.
         if (type === BookingPlaceTypeEnum.$0) {
-          // For fixed places, the day is disabled if there are no available bookings.
           isDisabled = !bookingForDay.some(
             booking => booking.state === BookingStateEnum.$0
           );
         } else if (type === BookingPlaceTypeEnum.$1) {
-          // For hybrid places, the day is disabled if there is at least one confirmed booking.
           isDisabled = bookingForDay.some(
             booking => booking.state === BookingStateEnum.$1
           );
         }
       }
 
-      // Determine if the day is selected by checking against the bookedDays array.
       const isSelected = bookedDays.some(
-        bookedDate => bookedDate.date.toDateString() === date.toDateString()
+        bookedDay => bookedDay.date.toDateString() === date.toDateString()
       );
 
       return {
         date,
         bookings: bookingForDay,
-        bookedByCurrentUser: false, // You'll need to implement logic to determine this.
+        bookedByCurrentUser: false, // Implement logic to determine this if necessary
         isDisabled,
         isSelected,
       };
