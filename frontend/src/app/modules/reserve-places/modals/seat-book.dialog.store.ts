@@ -15,6 +15,7 @@ import { BookingStateEnum } from '../../../api-generated/models/booking-state-en
 import { MatDialogRef } from '@angular/material/dialog';
 import { BookingPlaceTypeEnum } from '../../../api-generated/models/booking-place-type-enum';
 import { BookingPlaceWithBookingsViewModel } from '../../../api-generated/models/booking-place-with-bookings-view-model';
+import { startOfDay } from 'date-fns';
 
 export interface SeatBookingState {
   selectedWeek: Date[];
@@ -266,13 +267,13 @@ export class SeatBookingStore extends ComponentStore<SeatBookingState> {
           bookingId: day.bookings[0].bookingId,
           bookingPlaceId: selectedPlaceId,
           state: BookingPlaceTypeEnum.$1,
-          bookingDate: day.date.toISOString(),
+          bookingDate: startOfDay(day.date).toISOString(),
         };
       });
     } else {
       request = bookedDays.map(day => {
         return {
-          bookingDate: day.date.toISOString(),
+          bookingDate: startOfDay(day.date).toISOString(),
           bookingPlaceId: selectedPlaceId,
           state: BookingStateEnum.$1,
         };

@@ -25,8 +25,4 @@ import { MatExpansionModule } from '@angular/material/expansion';
   templateUrl: './side-nav-menu-list.component.html',
   styleUrl: './side-nav-menu-list.component.scss',
 })
-export class SideNavMenuListComponent {
-  showSubmenu: boolean = false;
-  isShowing = false;
-  showSubSubMenu: boolean = false;
-}
+export class SideNavMenuListComponent {}

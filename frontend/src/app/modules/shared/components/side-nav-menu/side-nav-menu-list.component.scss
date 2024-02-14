@@ -1,17 +1,16 @@
-.example-sidenav {
-  user-select: none;
+@import 'variables';
+
+.navigation-menu {
+  display: flex;
+  flex-direction: column;
+  @media (max-width: map-get($breakpoints, 'sm')) {
+    flex-direction: row;
+    gap: 1rem;
+    align-items: center;
+    justify-content: space-around;
+  }
 }
 
-.full-width {
-  width: 100%;
-}
-
-.toggle-button {
-  position: absolute;
-  top: 50%;
-  right: 0;
-  z-index: 1000;
-}
 
 .navigation-link {
   padding: 0.5rem;
@@ -20,16 +19,6 @@
   justify-content: center;
 }
 
-::ng-deep {
-  .mat-expansion-panel-header {
-    padding: 0 16px !important;
-    flex-direction: column !important;;
-  }
-
-  .mat-expansion-panel-body {
-    padding: 0px !important;
-  }
-}
 
 .active-link {
   background-color: #e0e0e0; /* Example active state style */

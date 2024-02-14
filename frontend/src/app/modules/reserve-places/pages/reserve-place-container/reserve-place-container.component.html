@@ -1,13 +1,11 @@
-<div class="booking-navigation">
-  <app-date-place-selector
-    [isLoading]="isLoadingFloors$| async"
-    [selectedPlaceFilter]="selectedPlaceFilter$| async"
-    [selectOptions]="selectPlacesName$ | async"
-    [selectedDate]="selectedDate$ | async"
-    (dateChanged)="dateChanged($event)"
-    (placeChanged)="optionChanged($event)"
-  ></app-date-place-selector>
-</div>
+<app-date-place-selector
+  [isLoading]="isLoadingFloors$| async"
+  [selectedPlaceFilter]="selectedPlaceFilter$| async"
+  [selectOptions]="selectPlacesName$ | async"
+  [selectedDate]="selectedDate$ | async"
+  (dateChanged)="dateChanged($event)"
+  (placeChanged)="optionChanged($event)"
+></app-date-place-selector>
 
 
 <ng-container *ngIf="(isLoadingCombined$ | async) == false; else showSkeleton">

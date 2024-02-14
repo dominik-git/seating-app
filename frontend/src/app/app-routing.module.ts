@@ -11,13 +11,37 @@ const routes: Routes = [
       ),
   },
   {
-    path: 'app',
+    path: 'seating',
     canActivate: [AuthGuard],
-    loadChildren: () =>
+    loadComponent: () =>
       import(
-        './modules/shared/components/main-layout/main-layout.routing'
-      ).then(m => m.APP_ROUTES),
-    // Main layout module will have child routes for seating, my-reserved-places, edit-places, etc.
+        '../app/modules/reserve-places/pages/reserve-place-container/reserve-place-container.component'
+      ).then(m => m.ReservePlaceContainerComponent),
+  },
+  {
+    path: 'my-reserved-places',
+    canActivate: [AuthGuard],
+    loadComponent: () =>
+      import(
+        '../app/modules/reserved-places/pages/reserved-places-container/reserved-places-container.component'
+      ).then(m => m.ReservedPlacesContainerComponent),
+  },
+  {
+    path: 'edit-places',
+    canActivate: [AuthGuard],
+    loadComponent: () =>
+      import(
+        '../app/modules/administration/pages/edit-places-container/edit-places-container.component'
+      ).then(m => m.EditPlacesContainerComponent),
+  },
+
+  {
+    path: 'edit-floor-container',
+    canActivate: [AuthGuard],
+    loadComponent: () =>
+      import(
+        '../app/modules//administration/pages/edit-floor-container/edit-floor-container.component'
+      ).then(m => m.EditFloorContainerComponent),
   },
 ];
 

@@ -1,26 +1,25 @@
 <ng-container *ngIf="isLoading === false; else showSkeleton ">
-  <div class="flex gap-8">
-    <mat-form-field appearance="fill">
-      <mat-label>Choose a date</mat-label>
-      <input
-        matInput
-        [matDatepicker]="picker"
-        placeholder="From Date"
-        [(ngModel)]="selectedDate"
-        (dateInput)="onDateChanged()"
-      >
-      <mat-hint>MM/DD/YYYY</mat-hint>
-      <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-      <mat-datepicker #picker></mat-datepicker>
-    </mat-form-field>
 
-    <app-place-selector
-      (placeSelected)="onPlaceSelected($event)"
-      [selectOptions]="selectOptions"
-      [selectedOption]="selectedPlaceFilter"
+  <mat-form-field appearance="fill" class="date-picker">
+    <mat-label>Choose a date</mat-label>
+    <input
+      matInput
+      [matDatepicker]="picker"
+      placeholder="From Date"
+      [(ngModel)]="selectedDate"
+      (dateInput)="onDateChanged()"
+    >
+    <mat-hint>MM/DD/YYYY</mat-hint>
+    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+    <mat-datepicker #picker></mat-datepicker>
+  </mat-form-field>
 
-    />
-  </div>
+  <app-place-selector
+    (placeSelected)="onPlaceSelected($event)"
+    [selectOptions]="selectOptions"
+    [selectedOption]="selectedPlaceFilter"
+
+  />
 </ng-container>
 
 

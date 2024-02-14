@@ -15,7 +15,6 @@ import { NgxSkeletonLoaderModule } from 'ngx-skeleton-loader';
 import { BookingViewModel } from '../../../api-generated/models/booking-view-model';
 import { SeatBookingStore } from './seat-book.dialog.store';
 import { Observable } from 'rxjs';
-import { tap } from 'rxjs/operators';
 import { BookingPlaceTypeEnum } from '../../../api-generated/models/booking-place-type-enum';
 
 export interface BookingDay {
@@ -48,9 +47,7 @@ export interface BookingDay {
   providers: [SeatBookingStore],
 })
 export class SeatBookDialog {
-  days$ = this.seatBookingStore.selectDays$.pipe(
-    tap(data => console.log(data, 'asdas'))
-  );
+  days$ = this.seatBookingStore.selectDays$;
   loading$: Observable<boolean>;
 
   constructor(

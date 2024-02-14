@@ -8,15 +8,14 @@
 }
 
 .booking-navigation {
-  z-index: 2;
-  position: absolute;
   display: flex;
-  width: 100%;
+  column-gap: 0.5rem;
   background: white;
-  justify-content: space-between;
   padding: 20px;
-  height: 100px;
-  top: 0px;
+  height: min-content;
+  box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+  z-index: 2;
+  position: relative;
 }
 
 .floor-content {

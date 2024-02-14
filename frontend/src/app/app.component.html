@@ -1,1 +1,6 @@
-<router-outlet></router-outlet>
+<div class="sidebar" *ngIf="(isLoggedIn$ | async) === true">
+  <app-side-nav-menu-list></app-side-nav-menu-list>
+</div>
+<div class="content">
+  <router-outlet></router-outlet>
+</div>

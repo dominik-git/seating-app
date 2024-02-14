@@ -1,0 +1,6 @@
+<div class="items-container">
+  <div class="item-card" *ngFor="let item of items" (click)="onOpenReleaseModal(item)">
+    <p class="item-name">{{ item.name }}</p>
+    <p class="booked-by">Booked By: {{ item.reservedForUserVm?.fullName || 'N/A' }}</p>
+  </div>
+</div>

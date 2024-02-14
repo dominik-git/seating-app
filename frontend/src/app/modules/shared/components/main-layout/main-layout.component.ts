@@ -38,10 +38,6 @@ import { NgIf } from '@angular/common';
 })
 export class MainLayoutComponent implements OnInit {
   @ViewChild('sidenav') sidenav: MatSidenav;
-  isExpanded = true;
-  showSubmenu: boolean = false;
-  isShowing = false;
-  showSubSubMenu: boolean = false;
 
   constructor(
     private readonly observer: BreakpointObserver,

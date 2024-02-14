@@ -1,45 +1,43 @@
+@import 'variables';
+
 :host {
   display: grid;
   grid-template-columns: 64px 1fr;
+  grid-template-areas: 'menu content';
   height: 100%;
   background: white;
+
+  @media (max-width: map-get($breakpoints, 'sm')) {
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr 64px;
+    grid-template-areas:
+      'content'
+      'mobile-menu';
+  }
 }
 
+.menu {
+  grid-area: menu;
+  background: #f1f1f1;
+  @media (max-width: map-get($breakpoints, 'sm')) {
+    display: none;
+  }
+}
+
+.mobile-menu {
+  grid-area: mobile-menu;
+  position: fixed;
+  bottom: 0;
+  justify-content: space-between;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  @media (min-width: map-get($breakpoints, 'sm')) {
+    display: none;
+  }
+}
 
 .content {
-  overflow: auto;
-}
-
-mat-toolbar {
-  color: white;
-}
-
-.example-container {
-  height: 100%;
-  border: 1px solid rgba(0, 0, 0, 0.5);
-  position: relative;
-  display: flex;
-}
-
-.example-sidenav-content {
-  display: flex;
-  height: 100%;
-  align-items: center;
-  justify-content: center;
-}
-
-.example-sidenav {
-  background: #e6e8ee;
-  z-index: 2;
-}
-
-.full-width {
-  width: 100%;
-}
-
-.toggle-button {
-  position: absolute;
-  top: 50%;
-  right: 0;
-  z-index: 1000;
+  grid-area: content;
+  overflow-x: hidden;
 }

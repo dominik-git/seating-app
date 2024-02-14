@@ -39,6 +39,7 @@ export class MonthPickerComponent implements OnInit {
     this.currentMonth = this.currentDate.getMonth();
     this.currentYear = this.currentDate.getFullYear();
     this.updateShowDate();
+    this.emitSelectedDate();
   }
 
   increaseMonth(): void {
@@ -72,7 +73,7 @@ export class MonthPickerComponent implements OnInit {
 
   private emitSelectedDate(): void {
     this.selectedDateOutput.emit({
-      month: this.currentMonth,
+      month: this.currentMonth + 1,
       year: this.currentYear,
     });
   }

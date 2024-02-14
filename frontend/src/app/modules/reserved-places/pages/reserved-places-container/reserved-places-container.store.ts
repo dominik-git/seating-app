@@ -1,8 +1,14 @@
 import { Injectable } from '@angular/core';
-import { ComponentStore } from '@ngrx/component-store';
+import { ComponentStore, tapResponse } from '@ngrx/component-store';
 import { MatDialog } from '@angular/material/dialog';
 import { EMPTY, Observable } from 'rxjs';
-import { catchError, finalize, switchMap, tap } from 'rxjs/operators';
+import {
+  catchError,
+  finalize,
+  switchMap,
+  tap,
+  withLatestFrom,
+} from 'rxjs/operators';
 import { BookingService } from '../../../../api-generated/services/booking.service';
 import { UserBookingsViewModel } from '../../../../api-generated/models/user-bookings-view-model';
 import { UserBookingViewModel } from '../../../../api-generated/models/user-booking-view-model';
@@ -19,6 +25,7 @@ export interface ReservedPlacesState {
   releasedFixedFloorPlaces: BookingViewModel[];
   floorPlaces: UserBookingViewModel[];
   carPlaces: UserBookingViewModel[];
+  selectedMonth: number;
   error: any;
   isLoading: boolean;
 }
@@ -38,6 +45,7 @@ export class ReservedPlacesStore extends ComponentStore<ReservedPlacesState> {
       carPlaces: [],
       isLoading: false,
       error: null,
+      selectedMonth: 0,
     });
   }
 
@@ -96,6 +104,11 @@ export class ReservedPlacesStore extends ComponentStore<ReservedPlacesState> {
     error,
   }));
 
+  readonly setSelectedMonth = this.updater<number>((state, selectedMonth) => ({
+    ...state,
+    selectedMonth,
+  }));
+
   readonly removeFloorPlaceBooking = this.updater<number>(
     (state, bookingId) => ({
       ...state,
@@ -131,23 +144,29 @@ export class ReservedPlacesStore extends ComponentStore<ReservedPlacesState> {
   );
 
   // EFFECTS
-  readonly getBookings = this.effect((trigger$: Observable<void>) => {
-    return trigger$.pipe(
-      // 👇 Handle race condition with the proper choice of the flattening operator.
+
+  readonly getBookings = this.effect((trigger$: Observable<void>) =>
+    trigger$.pipe(
+      withLatestFrom(this.select(state => state.selectedMonth)),
       tap(() => this.setLoading(true)),
-      switchMap(id =>
-        this.bookingService.apiBookingGetAllByUserIdGet$Json().pipe(
-          //👇 Act on the result within inner pipe.
-          tap({
-            next: response => this.setBookings(response.data),
-            error: e => this.setError(e),
-          }),
-          // 👇 Handle potential error within inner pipe.
-          catchError(() => EMPTY)
-        )
-      )
-    );
-  });
+      switchMap(([_, selectedMonth]) => {
+        if (!selectedMonth) return EMPTY; // Handle null case appropriately
+
+        return this.bookingService
+          .apiBookingGetAllByUserIdGet$Json({
+            month: selectedMonth,
+          })
+          .pipe(
+            tapResponse(
+              response => this.setBookings(response.data),
+              error => this.setError(error.toString())
+            ),
+            finalize(() => this.setLoading(false)),
+            catchError(() => EMPTY)
+          );
+      })
+    )
+  );
 
   readonly deleteBooking = this.effect<{
     bookingId: number;

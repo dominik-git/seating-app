@@ -76,18 +76,6 @@ export class ReservePlaceContainerComponent {
   }
 
   onPlaceSelected(data: AssignPlace): void {
-    // if (data.fixedPlace) {
-    //   return;
-    // }
     this.reservePlacesContainerStore.handlePlaceSelection(data.id);
-
-    // let dialogRef = this.dialog.open(SeatBookDialog, {
-    //   data: {
-    //     selectedDate: date,
-    //     selectedDesk,
-    //   },
-    // });
-
-    // return dialogRef.afterClosed();
   }
 }

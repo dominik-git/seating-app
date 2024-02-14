@@ -1,68 +1,88 @@
-<ng-container *ngIf="!(isLoading$ | async)">
-  <div class="reserved-places-container">
+<app-month-picker (selectedDateOutput)="dateChanged($event)"/>
 
 
-    <section *ngIf="!(isLoading$ | async)">
-      <!-- Fixed Places Section -->
-      <div *ngIf="(selectFixedPlaces$ | async) as fixedPlaces">
-        <h2>Fixed Places</h2>
-        <div *ngFor="let place of fixedPlaces">
-          <div (click)="onOpenReleaseModal(place)">
-            <p>{{ place.name }}</p>
-            <p>Booked By: {{ place.reservedForUserVm?.fullName || 'N/A' }}</p>
-            <div *ngFor="let booking of place.bookings">
-              <!--              <mat-checkbox (change)="toggleBookingSelection(booking.bookingId, $event.checked)">-->
-              <!--                {{ booking.bookingDate | date: 'mediumDate' }} by {{ booking.bookedByUserVm?.fullName }}-->
-              <!--              </mat-checkbox>-->
-            </div>
-          </div>
-        </div>
-      </div>
+<mat-tab-group>
+  <mat-tab>
+    <ng-template mat-tab-label>
+      <mat-icon class="example-tab-icon">desktop_windows</mat-icon>
+      Fixed Desks
+    </ng-template>
+    <app-fixed-place-list [items]="selectFixedPlaces$ | async" itemType="place"
+                          (modalOpen)="onOpenReleaseModal($event)"></app-fixed-place-list>
+  </mat-tab>
 
-      <!-- Fixed Parkings Section -->
-      <div *ngIf="(selectFixedParkings$ | async) as fixedParkings">
-        <h2>Fixed Parkings</h2>
-        <div *ngFor="let parking of fixedParkings">
-          <div (click)="onOpenReleaseModal(parking)">
-            <p>{{ parking.name }}</p>
-            <p>Booked By: {{ parking.reservedForUserVm?.fullName || 'N/A' }}</p>
-            <div *ngFor="let booking of parking.bookings">
-              <!--              <mat-checkbox (change)="toggleBookingSelection(booking.bookingId, $event.checked)">-->
-              <!--                {{ booking.bookingDate | date: 'mediumDate' }} by {{ booking.bookedByUserVm?.fullName }}-->
-              <!--              </mat-checkbox>-->
-            </div>
-          </div>
-        </div>
-      </div>
+  <mat-tab>
+    <ng-template mat-tab-label>
+      <mat-icon class="example-tab-icon">local_parking</mat-icon>
+      Fixed Parking
+    </ng-template>
+    <app-fixed-place-list [items]="selectFixedParkings$ | async" itemType="parking"
+                          (modalOpen)="onOpenReleaseModal($event)"></app-fixed-place-list>
+  </mat-tab>
+
+  <mat-tab>
+    <ng-template mat-tab-label>
+      <mat-icon class="example-tab-icon">check_circle_outline</mat-icon>
+      Released Floor Places
+    </ng-template>
 
 
-      <app-booking-section
-        [sectionTitle]="'Released Floor Places'"
-        [bookings]="releasedFixedFloorPlaces$ | async"
-        (bookingDeleted)="deleteBooking($event,BookingTypeEnum.ReleasedFixedFloorPlace)">
-      </app-booking-section>
+    <app-booking-section
+      [sectionTitle]="'Released Floor Places'"
+      [bookings]="releasedFixedFloorPlaces$ | async"
+      (bookingDeleted)="deleteBooking($event,BookingTypeEnum.ReleasedFixedFloorPlace)"/>
 
-      <app-booking-section
-        [sectionTitle]="'Released Fixed Parking'"
-        [bookings]="releasedFixedParking$ | async"
-        (bookingDeleted)="deleteBooking($event,BookingTypeEnum.ReleasedFixedParking)">
-      </app-booking-section>
+  </mat-tab>
 
-      <app-booking-section
-        [sectionTitle]="'Floor Bookings'"
-        [bookings]="selectFloorPlaces$ | async"
-        (bookingDeleted)="deleteBooking($event,BookingTypeEnum.FloorPlace)"
-      >
-      </app-booking-section>
-
-      <app-booking-section
-        [sectionTitle]="'Parking Bookings'"
-        [bookings]="selectCarPlaces | async"
-        (bookingDeleted)="deleteBooking($event,BookingTypeEnum.CarPlace)"
-      >
-      </app-booking-section>
+  <mat-tab>
+    <ng-template mat-tab-label>
+      <mat-icon class="example-tab-icon">directions_car_filled</mat-icon>
+      Released Fixed Parking
+    </ng-template>
 
 
-    </section>
-  </div>
-</ng-container>
+    <app-booking-section
+      [sectionTitle]="'Released Fixed Parking'"
+      [bookings]="releasedFixedParking$ | async"
+      (bookingDeleted)="deleteBooking($event,BookingTypeEnum.ReleasedFixedParking)"/>
+
+  </mat-tab>
+
+  <mat-tab>
+    <ng-template mat-tab-label>
+      <mat-icon class="example-tab-icon">business_center</mat-icon>
+      Floor Bookings
+    </ng-template>
+
+
+    <app-booking-section
+      [sectionTitle]="'Floor Bookings'"
+      [bookings]="selectFloorPlaces$ | async"
+      (bookingDeleted)="deleteBooking($event,BookingTypeEnum.FloorPlace)"
+    />
+  </mat-tab>
+
+  <mat-tab>
+    <ng-template mat-tab-label>
+      <mat-icon class="example-tab-icon">directions_car</mat-icon>
+      Parking Bookings
+    </ng-template>
+
+    <app-booking-section
+      [sectionTitle]="'Parking Bookings'"
+      [bookings]="selectCarPlaces | async"
+      (bookingDeleted)="deleteBooking($event,BookingTypeEnum.CarPlace)"
+    >
+    </app-booking-section>
+  </mat-tab>
+</mat-tab-group>
+
+<!--<ng-container *ngIf="!(isLoading$ | async)">-->
+<!--  <div class="reserved-places-container">-->
+
+
+<!--    <section *ngIf="!(isLoading$ | async)">-->
+<!--      -->
+<!--    </section>-->
+<!--  </div>-->
+<!--</ng-container>-->

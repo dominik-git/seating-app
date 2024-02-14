@@ -1,5 +1,4 @@
 <div class="places-section">
-  <h2>{{ sectionTitle }}</h2>
   <div class="places-grid">
     <div class="place-card" *ngFor="let booking of bookings">
       <mat-icon class="delete-icon" (click)="deleteBooking(booking.bookingId)">delete</mat-icon>

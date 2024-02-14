@@ -1,1 +1,31 @@
+@import 'variables';
 
+:host {
+  display: grid;
+  grid-template-rows: 1fr; /* Default to single row */
+  grid-template-columns: 1fr; /* Full width for mobile */
+  grid-template-areas:
+    "content"
+    "sidebar"; /* Sidebar moves to bottom on mobile */
+  height: 100%;
+  background: white;
+  position: relative;
+
+  @media (min-width: map-get($breakpoints, 'sm')) {
+    /* Larger screens: sidebar on the left */
+    grid-template-columns: 60px 1fr; /* Adjust the 250px as needed for sidebar width */
+    grid-template-areas: "sidebar content";
+  }
+}
+
+.sidebar {
+  grid-area: sidebar;
+  background: #f1f1f1;
+  display: flex;
+  flex-direction: column; /* Stack items vertically */
+}
+
+.content {
+  grid-area: content;
+  overflow-x: hidden;
+}

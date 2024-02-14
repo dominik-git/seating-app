@@ -1,4 +1,4 @@
-<div class="example-sidenav">
+<div class="menu">
   <app-side-nav-menu-list/>
   <div class="language-selector">
     <button mat-button (click)="useLanguage('en')">En</button>
@@ -8,5 +8,13 @@
 </div>
 <div class="content">
   <router-outlet></router-outlet>
+</div>
+<div class="mobile-menu">
+  <app-side-nav-menu-list/>
+  <div class="language-selector">
+    <button mat-button (click)="useLanguage('en')">En</button>
+    <button mat-button (click)="useLanguage('sk')">Sk</button>
+  </div>
+
 </div>
 

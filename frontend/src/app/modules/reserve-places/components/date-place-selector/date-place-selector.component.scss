@@ -1,0 +1,17 @@
+@import 'variables';
+
+:host {
+  display: flex;
+  column-gap: 0.5rem;
+  background: white;
+  padding: 20px;
+  height: min-content;
+  box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+  z-index: 2;
+  position: relative;
+  
+}
+
+.date-picker {
+  width: min-content;
+}

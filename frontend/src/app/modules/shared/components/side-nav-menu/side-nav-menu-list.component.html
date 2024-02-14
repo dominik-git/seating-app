@@ -1,31 +1,24 @@
-<mat-nav-list>
-  <div class="flex flex-col">
-    <div class="navigation-link" [routerLink]="['/app/seating']" routerLinkActive="active-link" [title]="'Booking'">
-      <mat-icon>event_seat</mat-icon>
-    </div>
-
-    <div class="navigation-link" [routerLink]="['/app/my-reserved-places']" routerLinkActive="active-link"
-         [title]="'Reservations'">
-      <mat-icon>lock</mat-icon>
-    </div>
-
-    <mat-expansion-panel [class.mat-elevation-z0]="true">
-      <mat-expansion-panel-header>
-        <div class="navigation-link" routerLinkActive="active-link" [title]="'Administration'">
-          <mat-icon>admin_panel_settings</mat-icon>
-        </div>
-      </mat-expansion-panel-header>
-      <mat-nav-list>
-        <div class="navigation-link" [routerLink]="['/app/edit-places']" routerLinkActive="active-link"
-             [title]="'Edit fixed places'">
-          <mat-icon>edit</mat-icon>
-        </div>
-
-        <div class="navigation-link" [routerLink]="['/app/edit-floor-container']" routerLinkActive="active-link"
-             [title]="'Create floor'">
-          <mat-icon>add</mat-icon>
-        </div>
-      </mat-nav-list>
-    </mat-expansion-panel>
+<mat-nav-list class="navigation-menu">
+  <div class="navigation-link" [routerLink]="['/seating']" routerLinkActive="active-link" [title]="'Booking'">
+    <mat-icon>event_seat</mat-icon>
   </div>
+
+  <div class="navigation-link" [routerLink]="['/my-reserved-places']" routerLinkActive="active-link"
+       [title]="'Reservations'">
+    <mat-icon>lock</mat-icon>
+  </div>
+
+  <div class="navigation-link" [routerLink]="['/edit-places']" routerLinkActive="active-link"
+       [title]="'Edit fixed places'">
+    <mat-icon>edit</mat-icon>
+  </div>
+
+  <div class="navigation-link" [routerLink]="['/edit-floor-container']" routerLinkActive="active-link"
+       [title]="'Create floor'">
+    <mat-icon>add</mat-icon>
+  </div>
+
+
+  <button mat-button>En</button>
+  <button mat-button>Sk</button>
 </mat-nav-list>
