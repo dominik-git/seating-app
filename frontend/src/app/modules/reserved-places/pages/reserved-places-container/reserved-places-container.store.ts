@@ -13,10 +13,10 @@ import { BookingService } from '../../../../api-generated/services/booking.servi
 import { UserBookingsViewModel } from '../../../../api-generated/models/user-bookings-view-model';
 import { UserBookingViewModel } from '../../../../api-generated/models/user-booking-view-model';
 import { BookingPlaceWithBookingsViewModel } from '../../../../api-generated/models/booking-place-with-bookings-view-model';
-import { ReleaseModalComponent } from '../../modals/release-modal/release-modal.component';
 import { BookingViewModel } from '../../../../api-generated/models/booking-view-model';
 import { BookingStateEnum } from '../../../../api-generated/models/booking-state-enum';
 import { BookingTypeEnum } from '../../../shared/enums/bookingType.enum';
+import { ReleaseModalComponent } from '../../modals/release-modal/release-modal.component';
 
 export interface ReservedPlacesState {
   fixedPlaces: BookingPlaceWithBookingsViewModel[];
