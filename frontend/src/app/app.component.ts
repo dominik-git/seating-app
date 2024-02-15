@@ -9,7 +9,10 @@ import { MatButtonModule } from '@angular/material/button';
 import { AsyncPipe, NgIf } from '@angular/common';
 import { SideNavMenuListComponent } from './modules/shared/components/side-nav-menu/side-nav-menu-list.component';
 import { PlacesStore } from './modules/shared/services/places.store';
-import { GoogleSigninButtonModule } from '@abacritt/angularx-social-login';
+import {
+  GoogleSigninButtonModule,
+  SocialAuthService,
+} from '@abacritt/angularx-social-login';
 import { UsersStore } from './modules/shared/services/users.store';
 import { AuthenticationService } from './modules/shared/services/autentification.service';
 
@@ -39,7 +42,8 @@ export class AppComponent implements OnInit {
     private readonly translate: TranslateService,
     private readonly placesStore: PlacesStore,
     private readonly usersStore: UsersStore,
-    private readonly authenticationService: AuthenticationService
+    private readonly authenticationService: AuthenticationService,
+    private readonly _authService: SocialAuthService
   ) {}
 
   ngOnInit(): void {

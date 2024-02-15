@@ -97,8 +97,6 @@ export class EditPlaceComponent implements AfterViewInit {
         } else {
           element.style.fill = '#D7063B'; // Red for fixed places
         }
-
-        console.log(place);
       } else if (isHybridWithBookings) {
         element.style.fill = '#808080'; // Grey for hybrid places with bookings
       } else {

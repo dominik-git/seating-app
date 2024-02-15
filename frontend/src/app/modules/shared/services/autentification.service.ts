@@ -4,7 +4,7 @@ import { SocialAuthService } from '@abacritt/angularx-social-login';
 import { AuthService } from '../../../api-generated/services/auth.service';
 import { JwtService } from '../utils/Jwt';
 import { Router } from '@angular/router';
-import { catchError, switchMap, tap } from 'rxjs/operators';
+import { catchError, filter, switchMap, tap } from 'rxjs/operators';
 import { AuthGuardService } from '../guards/auth.guard';
 
 @Injectable({ providedIn: 'root' })
@@ -37,16 +37,18 @@ export class AuthenticationService {
   }
 
   logout(): void {
-    localStorage.removeItem('authToken');
-    this.isLoggedInSource.next(false);
-    this.authGuardService.token = null; // Clear the token in AuthGuardService
-    // Optional: also sign out from socialAuthService if needed
-    this.router.navigate(['/']); // Adjust as needed
+    this.socialAuthService.signOut().then(r => {
+      localStorage.removeItem('authToken');
+      this.isLoggedInSource.next(false);
+      this.authGuardService.token = null; // Clear the token in AuthGuardService
+      this.router.navigate(['/']);
+    });
   }
 
   private subscribeToSocialAuthState(): void {
     this.socialAuthService.authState
       .pipe(
+        filter(user => !!user),
         switchMap(user =>
           this.authService.apiAuthGoogleSignInPost$Json({
             body: { idToken: user.idToken },
