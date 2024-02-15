@@ -16,7 +16,7 @@ import { BookingPlaceWithBookingsViewModel } from '../../../../api-generated/mod
 import { BookingViewModel } from '../../../../api-generated/models/booking-view-model';
 import { BookingStateEnum } from '../../../../api-generated/models/booking-state-enum';
 import { BookingTypeEnum } from '../../../shared/enums/bookingType.enum';
-import { ReleaseModalComponent } from '../../modals/release-modal/release-modal.component';
+import { ReleaseModalComponent } from '../../modals/free-fixed-place-modal/release-modal.component';
 
 export interface ReservedPlacesState {
   fixedPlaces: BookingPlaceWithBookingsViewModel[];

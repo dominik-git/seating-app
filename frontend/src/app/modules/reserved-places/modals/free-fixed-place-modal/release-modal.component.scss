@@ -1,0 +1,42 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  gap: 20px;
+
+  .full-width {
+    width: 100%;
+    max-width: 400px; /* Adjust based on your preference */
+
+    .mat-form-field {
+      width: 100%;
+    }
+
+    .mat-form-field-wrapper {
+      padding-bottom: 0; /* Reduces the space below the input */
+    }
+  }
+
+  .mat-raised-button {
+    margin: 0 8px; /* Adds space between buttons */
+    font-weight: 500; /* Makes button text slightly bolder */
+
+    &:first-of-type {
+      margin-left: 0;
+    }
+
+    &:last-of-type {
+      margin-right: 0;
+    }
+  }
+
+  /* Customize the datepicker toggle button */
+  .mat-datepicker-toggle {
+    .mat-icon-button {
+      color: var(--primary-color, #1976d2); /* Use your primary color here */
+    }
+  }
+
+}

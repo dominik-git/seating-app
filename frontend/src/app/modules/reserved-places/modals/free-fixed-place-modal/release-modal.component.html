@@ -1,0 +1,11 @@
+<mat-form-field class="full-width">
+  <mat-label>Reactive</mat-label>
+  <ngx-multiple-dates [matDatepicker]="pickerReactive" placeholder="Release"
+                      [formControl]="reactiveControl">
+  </ngx-multiple-dates>
+  <mat-datepicker-toggle matPrefix [for]="pickerReactive"></mat-datepicker-toggle>
+  <mat-datepicker #pickerReactive></mat-datepicker>
+</mat-form-field>
+
+<button mat-raised-button color="primary" (click)="save()">Release</button>
+<button mat-raised-button color="" (click)="closeModal()">Close</button>
