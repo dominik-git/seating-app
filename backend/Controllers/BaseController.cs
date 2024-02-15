@@ -16,7 +16,7 @@ namespace BookingApp.Controllers
 
         protected IActionResult ReturnResponse(dynamic model)
         {
-            if (model.Status == RequestExecution.Successful)
+            if (model.Status == RequestExecution.Successful || model.Status == RequestExecution.PartiallySuccessful)
             {
                 return Ok(model);
             }

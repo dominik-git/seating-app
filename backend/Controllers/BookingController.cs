@@ -222,7 +222,7 @@ public class BookingController : BaseController
         var user = await _authService.GetCurrentUser(User);
         foreach (var bookingVm in request.Bookings)
         {
-            if (bookingVm.BookingDate < DateTime.UtcNow)
+            if (bookingVm.BookingDate < DateTime.Today.Date.ToUniversalTime())
             {
                 errors.Add($"Invalid booking date, requested date: {bookingVm.BookingDate}");
                 continue;
