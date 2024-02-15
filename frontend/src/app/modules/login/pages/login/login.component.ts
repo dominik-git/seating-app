@@ -1,9 +1,5 @@
 import { Component } from '@angular/core';
-import {
-  GoogleSigninButtonModule,
-  SocialAuthService,
-} from '@abacritt/angularx-social-login';
-import { Router } from '@angular/router';
+import { GoogleSigninButtonModule } from '@abacritt/angularx-social-login';
 
 @Component({
   selector: 'app-login',
@@ -12,10 +8,4 @@ import { Router } from '@angular/router';
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss',
 })
-export class LoginComponent {
-  constructor(private authService: SocialAuthService, private router: Router) {}
-
-  signOut(): void {
-    this.authService.signOut().then(r => this.router.navigate(['/']));
-  }
-}
+export class LoginComponent {}
