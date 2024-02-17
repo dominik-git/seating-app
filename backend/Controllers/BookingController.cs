@@ -293,7 +293,7 @@ public class BookingController : BaseController
         }
         if (errors.Count > 0)
         {
-            return ReturnResponse(new BaseResponse<string>("Partially successful", "One or more errors occured", errors, RequestExecution.PartiallySuccessful));
+            return ReturnResponse(new BaseResponse<string>("One or more errors occured", errors));
         }
 
         if (errors.Count > 0 && errors.Count == request.Bookings.Count)
