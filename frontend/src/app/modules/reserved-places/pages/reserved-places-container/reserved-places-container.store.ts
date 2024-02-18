@@ -17,6 +17,7 @@ import { BookingViewModel } from '../../../../api-generated/models/booking-view-
 import { BookingStateEnum } from '../../../../api-generated/models/booking-state-enum';
 import { BookingTypeEnum } from '../../../shared/enums/bookingType.enum';
 import { ReleaseModalComponent } from '../../modals/free-fixed-place-modal/release-modal.component';
+import { ToastrService } from 'ngx-toastr';
 
 export interface ReservedPlacesState {
   fixedPlaces: BookingPlaceWithBookingsViewModel[];
@@ -34,7 +35,8 @@ export interface ReservedPlacesState {
 export class ReservedPlacesStore extends ComponentStore<ReservedPlacesState> {
   constructor(
     private readonly bookingService: BookingService,
-    public dialog: MatDialog
+    public dialog: MatDialog,
+    private readonly toastr: ToastrService
   ) {
     super({
       fixedPlaces: [],
@@ -102,6 +104,7 @@ export class ReservedPlacesStore extends ComponentStore<ReservedPlacesState> {
   readonly setError = this.updater((state, error: string | null) => ({
     ...state,
     error,
+    isLoading: false,
   }));
 
   readonly setSelectedMonth = this.updater<number>((state, selectedMonth) => ({
@@ -176,31 +179,46 @@ export class ReservedPlacesStore extends ComponentStore<ReservedPlacesState> {
       tap(() => this.setLoading(true)),
       switchMap(({ bookingId, bookingType }) =>
         this.bookingService.apiBookingIdDelete$Plain({ id: bookingId }).pipe(
-          tap(() => {
-            // Determine the booking type and call the respective updater
-            switch (bookingType) {
-              case BookingTypeEnum.FloorPlace:
-                this.removeFloorPlaceBooking(bookingId);
-                break;
-              case BookingTypeEnum.ReleasedFixedFloorPlace:
-                this.removeReleasedFixedFloorPlaceBooking(bookingId);
-                break;
-              case BookingTypeEnum.CarPlace:
-                this.removeCarPlaceBooking(bookingId);
-                break;
-              case BookingTypeEnum.ReleasedFixedParking:
-                this.removeReleasedFixedParkingBooking(bookingId);
-                break;
-            }
-          }),
-          catchError(error => {
-            console.error('Error deleting booking:', error);
-            this.setError(error.toString());
-            return EMPTY;
+          tap({
+            next: () => {
+              // On success, determine the booking type and call the respective updater
+              switch (bookingType) {
+                case BookingTypeEnum.FloorPlace:
+                  this.removeFloorPlaceBooking(bookingId);
+                  break;
+                case BookingTypeEnum.ReleasedFixedFloorPlace:
+                  this.removeReleasedFixedFloorPlaceBooking(bookingId);
+                  break;
+                case BookingTypeEnum.CarPlace:
+                  this.removeCarPlaceBooking(bookingId);
+                  break;
+                case BookingTypeEnum.ReleasedFixedParking:
+                  this.removeReleasedFixedParkingBooking(bookingId);
+                  break;
+              }
+
+              this.toastr.success(
+                `Successfully deleted booking with ID: ${bookingId}`
+              );
+            },
+            error: error => {
+              // Handle error scenario
+              console.error('Error deleting booking:', error);
+
+              this.toastr.error('Error deleting booking:', error);
+              this.setError(error.toString());
+              // Optionally, add additional error handling logic here
+            },
           }),
           finalize(() => this.setLoading(false))
         )
-      )
+      ),
+      catchError(error => {
+        // This catchError is for handling errors that may occur in switchMap before the HTTP call
+        console.error('Error in deleteBooking effect:', error);
+        this.setError(error.toString());
+        return EMPTY;
+      })
     )
   );
 

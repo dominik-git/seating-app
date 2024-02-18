@@ -13,7 +13,10 @@ import {
 } from '@angular/common/http';
 import { AppRoutingModule } from './app/app-routing.module';
 import { bootstrapApplication, BrowserModule } from '@angular/platform-browser';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import {
+  BrowserAnimationsModule,
+  provideAnimations,
+} from '@angular/platform-browser/animations';
 import { PlacesStore } from './app/modules/shared/services/places.store';
 import {
   GoogleLoginProvider,
@@ -24,6 +27,7 @@ import { AuthInterceptor } from './app/modules/shared/interceptors/AuthIntercept
 import { UsersStore } from './app/modules/shared/services/users.store';
 import { MAT_DATE_LOCALE, MatNativeDateModule } from '@angular/material/core';
 import { NgxMultipleDatesModule } from 'ngx-multiple-dates';
+import { provideToastr, ToastrModule } from 'ngx-toastr';
 
 if (environment.production) {
   enableProdMode();
@@ -37,6 +41,8 @@ bootstrapApplication(AppComponent, {
       multi: true,
     },
     AuthGuardService,
+    provideAnimations(), // required animations providers
+    provideToastr(), // Toastr providers
     PlacesStore,
     UsersStore,
     { provide: MAT_DATE_LOCALE, useValue: 'en-US' },
@@ -58,6 +64,9 @@ bootstrapApplication(AppComponent, {
       } as SocialAuthServiceConfig,
     },
     importProvidersFrom(
+      ToastrModule.forRoot({
+        closeButton: true,
+      }),
       BrowserModule,
       AppRoutingModule,
       HttpClientModule,

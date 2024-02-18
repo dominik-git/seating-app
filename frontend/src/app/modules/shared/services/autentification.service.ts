@@ -10,8 +10,11 @@ import { AuthGuardService } from '../guards/auth.guard';
 @Injectable({ providedIn: 'root' })
 export class AuthenticationService {
   private logoutTimer: any;
-  private isLoggedInSource = new BehaviorSubject<boolean>(false);
-  isLoggedIn$ = this.isLoggedInSource.asObservable();
+  private isLoggedIn = new BehaviorSubject<boolean>(false);
+  isLoggedIn$ = this.isLoggedIn.asObservable();
+
+  private signedInUser = new BehaviorSubject<any>(null);
+  signedInUser$ = this.signedInUser.asObservable();
 
   constructor(
     private socialAuthService: SocialAuthService,
@@ -24,9 +27,10 @@ export class AuthenticationService {
   initializeAuthState(): void {
     const authToken = localStorage.getItem('authToken');
     if (authToken) {
-      this.isLoggedInSource.next(true);
+      this.isLoggedIn.next(true);
       this.authGuardService.token = authToken;
       this.authGuardService.signedIn.next(true);
+      this.signedInUser.next(this.jwtService.decodeToken(authToken));
       this.setLogoutTimer(authToken);
       // Navigate to a default or a stored return URL
       this.router.navigate(['/seating']);
@@ -39,7 +43,7 @@ export class AuthenticationService {
   logout(): void {
     this.socialAuthService.signOut().then(r => {
       localStorage.removeItem('authToken');
-      this.isLoggedInSource.next(false);
+      this.isLoggedIn.next(false);
       this.authGuardService.token = null; // Clear the token in AuthGuardService
       this.router.navigate(['/']);
     });
@@ -69,7 +73,7 @@ export class AuthenticationService {
 
   private handleAuthenticationSuccess(token: string): void {
     localStorage.setItem('authToken', token);
-    this.isLoggedInSource.next(true);
+    this.isLoggedIn.next(true);
     this.authGuardService.token = token;
     this.authGuardService.signedIn.next(true);
     this.setLogoutTimer(token);

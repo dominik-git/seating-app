@@ -60,6 +60,7 @@ export class ReservePlaceContainerComponent {
   selectedPlaceSvg$ = this.reservePlacesContainerStore.selectSelectedPlaceSvg$;
   selectPlacesName$ = this.reservePlacesContainerStore.selectPlacesName$;
   selectedDate$ = this.reservePlacesContainerStore.selectSelectedDate$;
+  signedInUser$ = this.reservePlacesContainerStore.selectSignedInUser$;
   selectedPlaceFilter$ =
     this.reservePlacesContainerStore.selectSelectedPlaceFilter$;
 

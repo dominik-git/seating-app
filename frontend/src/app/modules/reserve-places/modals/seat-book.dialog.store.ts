@@ -16,6 +16,7 @@ import { MatDialogRef } from '@angular/material/dialog';
 import { BookingPlaceTypeEnum } from '../../../api-generated/models/booking-place-type-enum';
 import { BookingPlaceWithBookingsViewModel } from '../../../api-generated/models/booking-place-with-bookings-view-model';
 import { isBefore, startOfDay } from 'date-fns';
+import { ToastrService } from 'ngx-toastr';
 
 export interface SeatBookingState {
   selectedWeek: Date[];
@@ -31,6 +32,7 @@ export interface SeatBookingState {
 @Injectable()
 export class SeatBookingStore extends ComponentStore<SeatBookingState> {
   constructor(
+    private toastr: ToastrService,
     private bookingService: BookingService,
     private dialogRef: MatDialogRef<SeatBookDialog>
   ) {
@@ -157,12 +159,14 @@ export class SeatBookingStore extends ComponentStore<SeatBookingState> {
               tapResponse(
                 () => {
                   // Handle successful booking update
+                  this.toastr.success('Hello world!', 'Toastr fun!');
                   this.setLoading(false);
                   this.dialogRef.close(true);
                   // Additional actions if required
                 },
                 error => {
                   // Handle error
+                  this.toastr.error('Hello world!', 'Toastr fun!');
                   console.error('Error updating bookings:', error);
                   this.setLoading(false);
                 }

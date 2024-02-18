@@ -28,6 +28,7 @@ import { BookingPlaceWithBookingsViewModel } from '../../../../api-generated/mod
 import { BookingService } from '../../../../api-generated/services/booking.service';
 import { FloorViewModelBaseResponse } from '../../../../api-generated/models/floor-view-model-base-response';
 import { startOfDay } from 'date-fns';
+import { AuthenticationService } from '../../../shared/services/autentification.service';
 
 export interface ReservePlacesState {
   allPlaces: BookingPlaceWithBookingsViewModel[];
@@ -47,9 +48,10 @@ export class ReservePlacesContainerStore
   implements OnStoreInit
 {
   constructor(
-    private bookingService: BookingService,
+    private readonly bookingService: BookingService,
     private readonly placesStore: PlacesStore,
-    private readonly dialog: MatDialog
+    private readonly dialog: MatDialog,
+    private readonly authenticationService: AuthenticationService
   ) {
     super({
       allPlaces: [],
@@ -73,6 +75,9 @@ export class ReservePlacesContainerStore
   readonly selectSelectedDate$: Observable<Date> = this.select(
     state => state.selectedDate
   );
+
+  readonly selectSignedInUser$: Observable<Date> =
+    this.authenticationService.signedInUser$;
 
   readonly selectSelectedPlaceFilter$: Observable<SvgFileSelectorModel> =
     this.select(state => state.selectedPlaceFilter);
