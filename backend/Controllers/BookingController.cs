@@ -263,16 +263,9 @@ public class BookingController : BaseController
                 {
                     errors.Add($"Already reserved for another user ref. date: {bookingVm.BookingDate}");
                 }
-                try
+                if (errors.Count == 0)
                 {
-                    if (errors.Count == 0)
-                    {
-                        bookingsToUpdate.Add(bookingRequest);
-                    }                    
-                }
-                catch (Exception ex)
-                {
-                    errors.Add(ex.Message);
+                    bookingsToUpdate.Add(bookingRequest);
                 }
             }
             else
@@ -286,18 +279,14 @@ public class BookingController : BaseController
                     BookingDate = bookingVm.BookingDate.ToUniversalTime(),
                     BookedById = (int)user.Id
                 };
-                try
+
+                if (errors.Count == 0) 
                 {
                     bookingsToCreate.Add(newBooking);
-                    await _repository.CreateBookingAsync(newBooking);
-                }
-                catch (Exception ex)
-                {
-                    errors.Add(ex.Message);
                 }
             }
         }
-        
+
         if (errors.Count > 0)
         {
             HandleError(new Exception(string.Join('*', errors)));
@@ -305,12 +294,26 @@ public class BookingController : BaseController
         {
             foreach (var item in bookingsToCreate)
             {
-                await _repository.CreateBookingAsync(item);
+                try 
+                {
+                    await _repository.CreateBookingAsync(item);
+                }
+                catch(Exception ex)
+                {
+                    HandleError(ex);
+                }
             }
             
             foreach (var item in bookingsToUpdate)
             {
-                await _repository.UpdateStateAsync(item);
+                try
+                {
+                    await _repository.UpdateStateAsync(item);
+                } 
+                catch(Exception ex)
+                {
+                    HandleError(ex);
+                }
             }
         }
 
