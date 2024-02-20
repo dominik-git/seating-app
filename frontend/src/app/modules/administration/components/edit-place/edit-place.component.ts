@@ -102,7 +102,7 @@ export class EditPlaceComponent implements AfterViewInit {
         return;
       }
 
-      if (place.reservedForUserVm?.id === parseInt(this.signedInUser.id)) {
+      if (place.reservedForUserVm?.id === parseInt(this.signedInUser?.id)) {
         element.style.fill = 'purple'; // Red for fixed places
       } else if (isFixed) {
         if (place.bookings?.length > 0) {

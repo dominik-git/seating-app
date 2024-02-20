@@ -25,7 +25,7 @@ export class AuthenticationService {
   ) {}
 
   initializeAuthState(): void {
-    const authToken = localStorage.getItem('authToken');
+    const authToken = sessionStorage.getItem('authToken');
     if (authToken) {
       this.isLoggedIn.next(true);
       this.authGuardService.token = authToken;
@@ -42,7 +42,7 @@ export class AuthenticationService {
 
   logout(): void {
     this.socialAuthService.signOut().then(r => {
-      localStorage.removeItem('authToken');
+      sessionStorage.removeItem('authToken');
       this.isLoggedIn.next(false);
       this.authGuardService.token = null; // Clear the token in AuthGuardService
       this.router.navigate(['/']);
@@ -72,7 +72,7 @@ export class AuthenticationService {
   }
 
   private handleAuthenticationSuccess(token: string): void {
-    localStorage.setItem('authToken', token);
+    sessionStorage.setItem('authToken', token);
     this.isLoggedIn.next(true);
     this.authGuardService.token = token;
     this.authGuardService.signedIn.next(true);
@@ -83,9 +83,6 @@ export class AuthenticationService {
   private setLogoutTimer(token: string): void {
     const decodedToken = this.jwtService.decodeToken(token);
     const expirationDuration = decodedToken.exp * 1000 - new Date().getTime();
-
-    console.log(expirationDuration);
-
     if (this.logoutTimer) {
       clearTimeout(this.logoutTimer);
     }

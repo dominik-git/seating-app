@@ -237,7 +237,6 @@ export class ReservedPlacesStore extends ComponentStore<ReservedPlacesState> {
                   body: result,
                 })
                 .subscribe(data => {
-                  console.log(data);
                   this.getBookings();
                 });
             }
