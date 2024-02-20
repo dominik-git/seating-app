@@ -219,13 +219,15 @@ public class BookingController : BaseController
     public async Task<IActionResult> CreateOrUpdateBookings(BookingsViewModel request)
     {
         var errors = new List<string>();
+        var bookingsToCreate = new List<BookingDao>();
+        var bookingsToUpdate = new List<BookingModel>();
         var user = await _authService.GetCurrentUser(User);
         foreach (var bookingVm in request.Bookings)
         {
             if (bookingVm.BookingDate < DateTime.Today.Date.ToUniversalTime())
             {
                 errors.Add($"Invalid booking date, requested date: {bookingVm.BookingDate}");
-                continue;
+                break;
             }
 
             var bookingPlace = await _repository.GetBookingPlaceAsync(bookingVm.BookingPlaceId);           
@@ -235,14 +237,14 @@ public class BookingController : BaseController
                 bookingPlace.ReservedForId != user.Id)
                 {
                     errors.Add($"Booking place reserved ref: {bookingVm.BookingDate}");
-                    continue;
+                    break;
                 }
 
                 var bookings = await _repository.GetBookingByBookingPlaceIdWithDateAsync(bookingVm.BookingPlaceId, bookingVm.BookingDate);
                 if (bookings == null || bookings.FirstOrDefault(x => x.State != BookingStateEnum.Available) != null)
                 {
                     errors.Add($"This booking place is reserved for day you choosed. ref: {bookingVm.BookingDate}");
-                    continue;
+                    break;
                 }
             }
             var existingBooking = await _repository.GetBookingByIdAndBookingDateAsync(bookingVm.BookingId, bookingVm.BookingDate);
@@ -261,13 +263,9 @@ public class BookingController : BaseController
                 {
                     errors.Add($"Already reserved for another user ref. date: {bookingVm.BookingDate}");
                 }
-                try
+                if (errors.Count == 0)
                 {
-                    await _repository.UpdateStateAsync(bookingRequest);
-                }
-                catch (Exception ex)
-                {
-                    errors.Add(ex.Message);
+                    bookingsToUpdate.Add(bookingRequest);
                 }
             }
             else
@@ -281,24 +279,42 @@ public class BookingController : BaseController
                     BookingDate = bookingVm.BookingDate.ToUniversalTime(),
                     BookedById = (int)user.Id
                 };
-                try
+
+                if (errors.Count == 0) 
                 {
-                    await _repository.CreateBookingAsync(newBooking);
-                }
-                catch (Exception ex)
-                {
-                    errors.Add(ex.Message);
+                    bookingsToCreate.Add(newBooking);
                 }
             }
         }
+
         if (errors.Count > 0)
         {
-            return ReturnResponse(new BaseResponse<string>("One or more errors occured", errors));
-        }
-
-        if (errors.Count > 0 && errors.Count == request.Bookings.Count)
-        {
             HandleError(new Exception(string.Join('*', errors)));
+        } else
+        {
+            foreach (var item in bookingsToCreate)
+            {
+                try 
+                {
+                    await _repository.CreateBookingAsync(item);
+                }
+                catch(Exception ex)
+                {
+                    HandleError(ex);
+                }
+            }
+            
+            foreach (var item in bookingsToUpdate)
+            {
+                try
+                {
+                    await _repository.UpdateStateAsync(item);
+                } 
+                catch(Exception ex)
+                {
+                    HandleError(ex);
+                }
+            }
         }
 
         return ReturnResponse(new BaseResponse<bool>(true, request.Bookings.Count));
