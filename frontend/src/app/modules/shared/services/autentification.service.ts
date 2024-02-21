@@ -27,10 +27,10 @@ export class AuthenticationService {
   initializeAuthState(): void {
     const authToken = sessionStorage.getItem('authToken');
     if (authToken) {
-      this.isLoggedIn.next(true);
       this.authGuardService.token = authToken;
       this.authGuardService.signedIn.next(true);
       this.signedInUser.next(this.jwtService.decodeToken(authToken));
+      this.isLoggedIn.next(true);
       this.setLogoutTimer(authToken);
       // Navigate to a default or a stored return URL
       this.router.navigate(['/seating']);
@@ -73,6 +73,7 @@ export class AuthenticationService {
 
   private handleAuthenticationSuccess(token: string): void {
     sessionStorage.setItem('authToken', token);
+    this.signedInUser.next(this.jwtService.decodeToken(token));
     this.isLoggedIn.next(true);
     this.authGuardService.token = token;
     this.authGuardService.signedIn.next(true);

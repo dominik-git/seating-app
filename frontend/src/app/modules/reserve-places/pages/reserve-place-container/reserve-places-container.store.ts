@@ -76,8 +76,11 @@ export class ReservePlacesContainerStore
     state => state.selectedDate
   );
 
-  readonly selectSignedInUser$: Observable<Date> =
+  readonly selectSignedInUser$: Observable<any> =
     this.authenticationService.signedInUser$;
+
+  readonly selectIsLoggedIn$: Observable<boolean> =
+    this.authenticationService.isLoggedIn$;
 
   readonly selectSelectedPlaceFilter$: Observable<SvgFileSelectorModel> =
     this.select(state => state.selectedPlaceFilter);
@@ -95,10 +98,14 @@ export class ReservePlacesContainerStore
   readonly isLoadingCombined$: Observable<boolean> = combineLatest([
     this.selectIsLoadingReservePlacePage$,
     this.selectIsLoadingFloors,
+    this.selectSignedInUser$,
   ]).pipe(
+    tap(([isLoadingReservePlace, isLoadingPlaces, user]) => {
+      console.log(isLoadingReservePlace, isLoadingPlaces, user);
+    }),
     map(
-      ([isLoadingReservePlace, isLoadingPlaces]) =>
-        isLoadingReservePlace || isLoadingPlaces
+      ([isLoadingReservePlace, isLoadingPlaces, user]) =>
+        isLoadingReservePlace || isLoadingPlaces || !user
     )
   );
 

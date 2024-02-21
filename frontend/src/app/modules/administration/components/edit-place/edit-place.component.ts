@@ -94,26 +94,26 @@ export class EditPlaceComponent implements AfterViewInit {
 
       if (this.isAdminView) {
         if (isFixed) {
-          element.style.fill = '#D7063B'; // Red for fixed places
+          element.style.fill = '#D6033A';
         } else {
-          element.style.fill = '#7ed321'; // Green otherwise
+          element.style.fill = '#7ED321'; // Green otherwise
         }
 
         return;
       }
 
       if (place.reservedForUserVm?.id === parseInt(this.signedInUser?.id)) {
-        element.style.fill = 'purple'; // Red for fixed places
+        element.style.fill = '#00A6FF'; // Red for fixed places
       } else if (isFixed) {
         if (place.bookings?.length > 0) {
-          element.style.fill = '#0641D7FF'; // Red for fixed places
+          element.style.fill = '#FFA500'; // Red for fixed places
         } else {
-          element.style.fill = '#D7063B'; // Red for fixed places
+          element.style.fill = '#D6033A'; // Red for fixed places
         }
       } else if (isHybridWithBookings) {
         element.style.fill = '#808080'; // Grey for hybrid places with bookings
       } else {
-        element.style.fill = '#7ed321'; // Green otherwise
+        element.style.fill = '#7ED321'; // Green otherwise
       }
     }
   }
