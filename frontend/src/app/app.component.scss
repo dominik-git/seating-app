@@ -1,20 +1,31 @@
 @import 'variables';
 
-:host {
+.main-wrapper {
   display: grid;
   grid-template-rows: 1fr; /* Default to single row */
   grid-template-columns: 1fr; /* Full width for mobile */
   grid-template-areas:
     "content"
-    "sidebar"; /* Sidebar moves to bottom on mobile */
+    "sidebar";
   height: 100%;
   background: white;
   position: relative;
 
+  &__hidden {
+    grid-template-areas:
+    "content"
+  }
+
   @media (min-width: map-get($breakpoints, 'sm')) {
     /* Larger screens: sidebar on the left */
-    grid-template-columns: 60px 1fr; /* Adjust the 250px as needed for sidebar width */
+    grid-template-columns: 60px 1fr;
     grid-template-areas: "sidebar content";
+    &__hidden {
+      grid-template-areas:
+    "content";
+      grid-template-columns:1fr;
+    }
+
   }
 }
 
